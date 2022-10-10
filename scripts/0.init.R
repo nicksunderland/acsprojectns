@@ -1,5 +1,5 @@
 
-DEV_FLAG = "work" #"home" #
+DEV_FLAG = "home" #"work" #
 
 db_conn_struct = list(
   sus_apc      = Database$new(system.file(paste0("database_connections/",DEV_FLAG), "database_apc_sem.csv",               package="acsprojectns")),

@@ -8,6 +8,7 @@
 #' @param window_span d
 #' @param t_units d
 #' @param search_meds d
+#' @param merge_func d
 #'
 #' @importFrom furrr future_map_dfr furrr_options
 #' @importFrom future multisession plan

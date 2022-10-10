@@ -13,7 +13,9 @@ create_medication_timeseries(
   window_span,
   t_units,
   search_meds,
-  merge_func = function(x) {     mean(as.numeric(x), na.rm = T) }
+  merge_func = function(x) {
+     mean(as.numeric(x), na.rm = T)
+ }
 )
 }
 \arguments{
@@ -32,6 +34,8 @@ create_medication_timeseries(
 \item{t_units}{d}
 
 \item{search_meds}{d}
+
+\item{merge_func}{d}
 }
 \value{
 medication timeseries

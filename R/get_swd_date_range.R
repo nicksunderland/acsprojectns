@@ -1,6 +1,6 @@
 #' get_swd_date_range
 #'
-#' @param swd_att_hist_obj an R6 Database object connected to the SWD attributes history database
+#' @param swd_att_hist an R6 Database object connected to the SWD attributes history database
 #' @param patient_ids list of patient ids
 #'
 #' @importFrom magrittr "%>%"
@@ -10,7 +10,7 @@
 #' @export
 #'
 get_swd_date_range <- function(swd_att_hist,
-                                   patient_ids){
+                               patient_ids){
 
   # Timing checks
   ptm <- proc.time() # Start the clock
@@ -24,7 +24,7 @@ get_swd_date_range <- function(swd_att_hist,
   # Starting variables
   . = NULL
 
-  var_dict        <- create_data_table_variable_dictionary(db_conn_struct$swd_att_hist$table_name)       #create the named list to convert to standardised naming
+  var_dict        <- create_data_table_variable_dictionary(swd_att_hist$table_name)       #create the named list to convert to standardised naming
   base_vars       <- c(pseudo_nhs_id         = var_dict[["pseudo_nhs_id"]],                               #grab the basic variables we'll need
                        attribute_period_date = var_dict[["attribute_period_date"]])
 
@@ -45,7 +45,7 @@ get_swd_date_range <- function(swd_att_hist,
                   .data$swd_date_range)
 
   # Check the interval is positive
-  filter
+
 
   ids <- data.frame(pseudo_nhs_id = patient_ids)
   swd_att_hist_data <- dplyr::left_join(ids, swd_att_hist_data, by = "pseudo_nhs_id")

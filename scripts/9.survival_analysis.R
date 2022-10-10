@@ -282,19 +282,40 @@ all_swd_attributes <- load_swd_attributes_v2(db_conn_struct, ids) %>%
 all_measurements <- load_swd_measurements_v2(db_conn_struct, ids) %>%
   tidyr::unnest(swd_measurements) %>%
   dplyr::filter(!is.na(.data$measurement_datetime)) %>%
+  dplyr::left_join(acs_spells %>% dplyr::select(pseudo_nhs_id, spell_interval_acs, age), by="pseudo_nhs_id") %>%
   dplyr::mutate(episode_interval = lubridate::interval(.data$measurement_datetime, .data$measurement_datetime, tzone="GMT"),
-                event_code = dplyr::case_when(.data$measurement_type  == "hba1c" & as.numeric(.data$measurement_value) < 41.999                    ~ "HbA1c_nondiabetic",
-                                              .data$measurement_type  == "hba1c" & dplyr::between(as.numeric(.data$measurement_value), 42, 47.001) ~ "HbA1c_prediabetic",
-                                              .data$measurement_type  == "hba1c" & as.numeric(.data$measurement_value) > 47.001                    ~ "HbA1c_diabetic",
-                                              .data$measurement_type  == "blood_pressure" &
-                                                as.numeric(trimws(sub("\\/.*", "", .data$measurement_value))) < 140 &
-                                                as.numeric(trimws(sub(".*\\/", "", .data$measurement_value))) < 90                                 ~ "BP_well_controlled",
-                                              .data$measurement_type  == "blood_pressure"                                                          ~ "BP_not_controlled",
-                                              TRUE ~ NA_character_)) %>%
+                val1             = as.numeric(gsub("([0-9]+).*$", "\\1", .data$measurement_value)),
+                val2             = as.numeric(gsub("^.+/([0-9]+)", "\\1", .data$measurement_value)),
+                event_code = dplyr::case_when(.data$measurement_type  == "hba1c" & .data$val1 < 41.9999                   ~ "HbA1c_nondiabetic",
+                                              .data$measurement_type  == "hba1c" & dplyr::between(.data$val1, 42, 47.001) ~ "HbA1c_prediabetic",
+                                              .data$measurement_type  == "hba1c" & .data$val1 > 47.001                    ~ "HbA1c_diabetic",
+                                              .data$measurement_type  == "blood_pressure" & .data$age<80  & .data$val1<140 & .data$val2<90 ~ "BP_well_controlled",
+                                              .data$measurement_type  == "blood_pressure" & .data$age<80                                   ~ "BP_not_controlled",
+                                              .data$measurement_type  == "blood_pressure" & .data$age>=80 & .data$val1<150 & .data$val2<90 ~ "BP_well_controlled",
+                                              .data$measurement_type  == "blood_pressure" & .data$age>=80                                  ~ "BP_not_controlled",
+                                              .data$measurement_type  == "cholesterol" & .data$val1<4                     ~ "Chol_controlled",
+                                              .data$measurement_type  == "cholesterol" & .data$val1>=4                    ~ "Chol_not_controlled",
+                                              TRUE ~ NA_character_),
+                rel_days = lubridate::interval(lubridate::int_start(.data$spell_interval_acs), .data$measurement_datetime) %/% lubridate::days(1),
+                rel_acs  = dplyr::case_when(.data$rel_days < 0                     ~ "before_acs",
+                                            dplyr::between(.data$rel_days, 0, 365) ~ "within_1_year",
+                                            .data$rel_days > 0                     ~ "after_1_year",
+                                            TRUE ~ NA_character_))
+
+# Do some sanity checks on who has stuff measured
+all_measurements %>% dplyr::group_by(.data$measurement_type) %>% dplyr::summarise(n=dplyr::n())
+all_measurements %>% dplyr::distinct(.data$pseudo_nhs_id, .keep_all=T) %>% dplyr::group_by(.data$measurement_type) %>% dplyr::summarise(pct=dplyr::n()/length(ids))
+all_measurements %>% dplyr::group_by(.data$measurement_type, .data$event_code) %>% dplyr::summarise(n=dplyr::n())
+all_measurements %>% dplyr::group_by(.data$measurement_type, .data$rel_acs) %>% dplyr::summarise(n=dplyr::n())
+all_measurements %>% dplyr::distinct(.data$pseudo_nhs_id, .data$rel_acs, .keep_all=T) %>% dplyr::group_by(.data$measurement_type, .data$rel_acs) %>% dplyr::summarise(pct=dplyr::n()/length(ids))
+
+# Now continue
+all_measurements <- all_measurements %>%
   dplyr::filter(!is.na(.data$event_code)) %>%
   dplyr::select(.data$pseudo_nhs_id,
                 .data$episode_interval,
                 .data$event_code)
+
 
 # All events
 all_events = rbind(all_admission_episodes,

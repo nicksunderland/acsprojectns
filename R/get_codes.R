@@ -18,7 +18,7 @@ get_codes <- function(file_path, append_character = NA_character_){
       dplyr::mutate(row_number = dplyr::row_number(),
                     icd_codes = paste0(.data$icd_codes, append_character)) %>%
       dplyr::bind_rows(codes %>% dplyr::mutate(row_number = dplyr::row_number())) %>%
-      dplyr::arrange(row_number) %>%
+      dplyr::arrange(.data$row_number) %>%
       dplyr::select(-.data$row_number)
     return(adjusted_codes)
   }

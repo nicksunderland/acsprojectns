@@ -5,6 +5,7 @@
 #'
 #' @importFrom rlang sym
 #' @importFrom plotly plot_ly
+#' @importFrom grDevices palette rainbow
 #'
 #' @return f
 #' @export
@@ -64,8 +65,8 @@ plot_sankey_timeseries <- function(timeseries_df, plot_title){
             dplyr::mutate(group = sub("_.*", "", .data$name))
   # Set up colours
   unique_groups = unique(node_df$group)
-  palette(rainbow(length(unique_groups)))
-  colour_df     = data.frame(group = unique_groups, colour = palette())
+  grDevices::palette(rainbow(length(unique_groups)))
+  colour_df     = data.frame(group = unique_groups, colour = grDevices::palette())
   node_df = dplyr::left_join(node_df, colour_df, by=c("group"))
 
   # Convert source-target matches to numeric

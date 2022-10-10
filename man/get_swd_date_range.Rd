@@ -7,9 +7,9 @@
 get_swd_date_range(swd_att_hist, patient_ids)
 }
 \arguments{
-\item{patient_ids}{list of patient ids}
+\item{swd_att_hist}{an R6 Database object connected to the SWD attributes history database}
 
-\item{swd_att_hist_obj}{an R6 Database object connected to the SWD attributes history database}
+\item{patient_ids}{list of patient ids}
 }
 \value{
 a df to append to the ids
