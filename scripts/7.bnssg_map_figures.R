@@ -160,6 +160,7 @@ age_breaks     = seq(0,120,20)
     dplyr::select(dplyr::all_of(vars)) %>%
     dplyr::distinct() %>%
     dplyr::collect() %>%
+    dplyr::mutate(pseudo_nhs_id = as.numeric(.data$pseudo_nhs_id)) %>%
     dplyr::group_by(.data$pseudo_nhs_id) %>%
     dplyr::slice_max(.data$attribute_period_date, with_ties = FALSE) %>%
     dplyr::ungroup() %>%
@@ -178,10 +179,11 @@ age_breaks     = seq(0,120,20)
   # Get all of the swd ids, the ages, and the lsoa code
   msoa_age_cats <- db_conn_struct$swd_att$data %>%
     dplyr::select(dplyr::all_of(vars)) %>%
-    dplyr::distinct() %>%
     dplyr::collect() %>%
-    dplyr::mutate(age_cat = cut(age, breaks=age_breaks, right=FALSE, labels=paste(age_breaks[1:length(age_breaks)-1], age_breaks[2:length(age_breaks)]-1, sep="-"))) %>%
+    dplyr::mutate(lower_layer_super_output_area_code = toupper(lower_layer_super_output_area_code),
+                  age_cat = cut(age, breaks=age_breaks, right=FALSE, labels=paste(age_breaks[1:length(age_breaks)-1], age_breaks[2:length(age_breaks)]-1, sep="-"))) %>%
     dplyr::left_join(lmlink, by="lower_layer_super_output_area_code") %>%
+    dplyr::ungroup() %>%
     dplyr::group_by(msoa_code, age_cat) %>%
     dplyr::summarise(msoa_age_n = dplyr::n()) %>%
     dplyr::ungroup() %>%
@@ -192,13 +194,17 @@ age_breaks     = seq(0,120,20)
     dplyr::left_join(swd_age_msoa, by=c("pseudo_nhs_id")) %>%
     dplyr::filter(!is.na(.data$msoa_code)) %>%
     dplyr::group_by(msoa_code, age_cat) %>%
-    dplyr::summarise(acs_n = dplyr::n())
+    dplyr::summarise(acs_n = dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(msoa_code, age_cat, fill=list(acs_n=0))
 
   # Get the final age adjustment table
   age_adjusted_msoa_acs_rates <- num_acs_msoa %>%
     dplyr::left_join(msoa_age_cats, by=c("msoa_code", "age_cat")) %>%
-    dplyr::mutate(age_rate = acs_n / msoa_age_n) %>%
+    dplyr::mutate(age_rate = acs_n / msoa_age_n,
+                  age_rate = tidyr::replace_na(age_rate,0)) %>%
     dplyr::left_join(msoa_age_cats %>%
+                       dplyr::filter(!is.na(msoa_code)) %>%
                        dplyr::group_by(age_cat) %>%
                        dplyr::summarise(tot_age_cat_n = sum(msoa_age_n)), by=c("age_cat")) %>%
     dplyr::mutate(exp_events = age_rate*tot_age_cat_n) %>%
@@ -242,6 +248,35 @@ acs_incidence_plot <- ggplot() +
         legend.position = c(0.20, 0.65)
   )
 acs_incidence_plot
+
+# Plot the ACS age adjusted incidence map
+scale_breaks  = unique(c(floor(min(trunc(geo_data$age_adj_rate_1000*100)/100, na.rm=T)),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.05, na.rm=T)[[1]], digits=0),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.10, na.rm=T)[[1]], digits=0),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.25, na.rm=T)[[1]], digits=0),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.50, na.rm=T)[[1]], digits=0),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.75, na.rm=T)[[1]], digits=0),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.90, na.rm=T)[[1]], digits=0),
+                         round(quantile(geo_data$age_adj_rate_1000, 0.95, na.rm=T)[[1]], digits=0),
+                         ceiling(max(ceiling(geo_data$age_adj_rate_1000*100)/100, na.rm=T))))
+scale_labels = c()
+for(x in seq_along(scale_breaks)){
+  if(x!=length(scale_breaks)){
+    scale_labels = c(scale_labels, paste0(as.character(scale_breaks[x]),"-",as.character(scale_breaks[x+1])))
+  }
+}
+acs_age_adj_incidence_plot <- ggplot() +
+  geom_polygon(data=geo_data, aes(x=long, y=lat, group=group, fill=cut(age_adj_rate_1000, breaks=scale_breaks, labels=scale_labels)), alpha=0.9, colour="white", size=0.1) +
+  theme_void() +
+  coord_map() +
+  labs(title = "Acute Coronary Syndrome Admissions", subtitle = "BNSSG middle layer super output areas (July 2018 - Dec 2021)", fill="Age-adjusted event rate (per 1000 population per year)") +
+  scale_fill_viridis_d(option = "plasma", begin = 0.0, end=0.8) +
+  scale_color_discrete(guide = "none") +
+  theme(plot.title      = element_text(size= 16, hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.40, l = 2, unit = "cm")),
+        plot.subtitle   = element_text(size= 12, hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.43, l = 2, unit = "cm")),
+        legend.position = c(0.20, 0.65)
+  )
+acs_age_adj_incidence_plot
 
 # Plot the ethnic minority population map
 scale_breaks  = unique(c(min(trunc(geo_data$msoa_av_ethnic_population*100)/100, na.rm=T),
@@ -442,7 +477,7 @@ gp_distance_plot
 
 
 # Plot ethnicity percentage against ACS rate
-ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
+ggplot(data=geo_data%>%dplyr::group_by(msoa_code)%>%dplyr::slice(1),
        aes(x=msoa_av_ethnic_population, y=msoa_incidence_per1000_peryear)) +
   geom_point() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
@@ -452,7 +487,7 @@ ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
        y = "Local ACS incidence (per 1000 population per year)")
 
 # Plot average MSOA IMD centile against ACS rate
-ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
+ggplot(data=geo_data%>%dplyr::group_by(msoa_code)%>%dplyr::slice(1),
        aes(x=msoa_av_imd_centile, y=msoa_incidence_per1000_peryear)) +
   geom_point() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
@@ -461,8 +496,18 @@ ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
        x = "Local Index of Multiple Deprivation (IMD) centile",
        y = "Local ACS incidence (per 1000 population per year)")
 
+# Plot average MSOA IMD centile against age-adjusted ACS rate
+ggplot(data=geo_data%>%dplyr::group_by(msoa_code)%>%dplyr::slice(1),
+       aes(x=msoa_av_imd_centile, y=age_adj_rate_1000)) +
+  geom_point() +
+  geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+  labs(title = "Local ade_adj ACS rate by local Index of Multiple Deprivation (IMD) centile",
+       subtitle = "BNSSG middle layer super output areas (MSOA)",
+       x = "Local Index of Multiple Deprivation (IMD) centile",
+       y = "Local Age-adj ACS incidence (per 1000 population per year)")
+
 # Plot average MSOA GP distance against ACS rate
-ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
+ggplot(data=geo_data%>%dplyr::group_by(msoa_code)%>%dplyr::slice(1),
        aes(x=msoa_av_km_to_gp, y=msoa_incidence_per1000_peryear)) +
   geom_point() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
@@ -472,7 +517,7 @@ ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
        y = "Local ACS incidence (per 1000 population per year)")
 
 # Plot average MSOA air quailty against ACS rate
-ggplot(data=geo_data%>%dplyr::group_by(id)%>%dplyr::slice(1),
+ggplot(data=geo_data%>%dplyr::group_by(msoa_code)%>%dplyr::slice(1),
        aes(x=msoa_av_air_quality, y=msoa_incidence_per1000_peryear)) +
   geom_point() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
