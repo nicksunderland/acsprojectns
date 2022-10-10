@@ -1,0 +1,81 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# acsprojectns
+
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/nicksunderland/acsprojectns/workflows/R-CMD-check/badge.svg)](https://github.com/nicksunderland/acsprojectns/actions)
+<!-- badges: end -->
+
+
+The goal of acsprojectns is to simplify querying of multiple healthcare databases for important information relating to the estimation of bleeding and ischaemic risk in patients. 
+
+## Installation
+
+You can install the development version of acsprojectns from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("nicksunderland/acsprojectns")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(acsprojectns)
+library(magrittr)
+
+
+# Define a list of ICD-10 codes to search for
+codes = c("I219", "I220", "some_other_code") # 2 acute coronary syndrome codes
+
+# Define a list of CCG provider codes to narrow the population
+ccg_provider_codes = c("11H", "11T", "12A", "15c") # Bristol/BNSSG codes; alternatively 'NA' to search all
+
+# Define a time window to search within
+time_window = lubridate::interval(as.POSIXct("2012-01-01"), as.POSIXct("2022-01-01"), tzone = "GMT")
+
+# Get hospital admissions containing the ICD-10 codes as the primary diagnosis
+cohort <- get_hospital_admissions(ccg_provider_code_list = ccg_provider_codes,
+                                  level                  = "spell",
+                                  codes_list             = codes,
+                                  search_strategy        = "primary_diagnosis",
+                                  return_all_codes       = FALSE,
+                                  datetime_window        = time_window,
+                                  verbose                = TRUE) %>%    # All hospital spells (non-overlapping)
+  dplyr::group_by(pseudo_nhs_id) %>%                                    
+  dplyr::slice_min(lubridate::int_start(spell_interval)) %>%            # Take only the first spell
+  dplyr::ungroup() %>%
+  dplyr::distinct(pseudo_nhs_id,                                        # Rename columns as appropriate
+                  acs_spell_interval_index = spell_interval, 
+                  acs_codes = spell_codes)
+
+print(head(cohort, 10))
+```
+
+What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+
+```{r cars}
+summary(cars)
+```
+
+
+
+
+
+

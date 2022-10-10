@@ -1,0 +1,13 @@
+icd_codes,description,group
+I42,Cardiomyopathy,Non-ischaemic cardiomyopathy
+I420,Dilated cardiomyopathy,Non-ischaemic cardiomyopathy
+I421,Obstructive hypertrophic cardiomyopathy,Non-ischaemic cardiomyopathy
+I422,Other hypertrophic czrdiomyopathy,Non-ischaemic cardiomyopathy
+I423,Endomyocardial (eosinophilic) disease,Non-ischaemic cardiomyopathy
+I424,Endocardial fibroelastosis,Non-ischaemic cardiomyopathy
+I425,Other restrictive cardiomyopathy,Non-ischaemic cardiomyopathy
+I426,Alcoholic cardiomyopathy,Non-ischaemic cardiomyopathy
+I427,Cardiomyopathy due to drugs and other external agents,Non-ischaemic cardiomyopathy
+I428,Other cardiomyopathies,Non-ischaemic cardiomyopathy
+I429,"Cardiomyopathy, unspecified",Non-ischaemic cardiomyopathy
+I430,Cardiomyopathy specified elsewhere,Non-ischaemic cardiomyopathy

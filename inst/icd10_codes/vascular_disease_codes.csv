@@ -1,0 +1,14 @@
+icd_codes,description,group
+I702,Atherosclerosis of arteries of extremities,Peripheral vascular disease
+I731,PVD TAO,Peripheral vascular disease
+I738,PVD other specified,Peripheral vascular disease
+I739,PVD unspecified,Peripheral vascular disease
+I74,All thrombosis and embolism of arteries,Peripheral vascular disease
+I740,Embolism and thrombosis of abdominal aorta,Peripheral vascular disease
+I741,Embolism and thrombosis of other and unspecified parts of aorta,Peripheral vascular disease
+I742,Embolism and thrombosis of arteries of the upper extremities,Peripheral vascular disease
+I743,Embolism and thrombosis of arteries of the lower extremities,Peripheral vascular disease
+I744,"Embolism and thrombosis of arteries of the  extremities, unspecified",Peripheral vascular disease
+I745,Embolism and thrombosis of iliac artery,Peripheral vascular disease
+I748,Embolism and thrombosis of other arteries,Peripheral vascular disease
+I749,Embolism and thrombosis of unpecified artery,Peripheral vascular disease

@@ -1,0 +1,155 @@
+icd_codes,description,group
+N18,Chronic kidney disease,ckd
+N181,"Chronic kidney disease, stage 1",ckd
+N182,"Chronic kidney disease, stage 2 (mild)",ckd
+N183,"Chronic kidney disease, stage 3 (moderate)",ckd
+N184,"Chronic kidney disease, stage 4 (severe)",ckd
+N185,"Chronic kidney disease, stage 5 / end stage renal disease",ckd
+N189,"Chronic kidney disease, unspecified",ckd
+N19,Unspecified kidney failure,ckd
+Z992,Dependence on dialysis,ckd
+Z49,Encounter for care involving dialysis,ckd
+Z940 ,Kidney translant status ,ckd
+N01,Rapidly progressive nephritic syndrome,other ckd
+N010,ÊN01.0ÊRapidly progressive nephritic syndrome with minor glomerular abnormality,other ckd
+N011,ÊN01.1ÊRapidly progressive nephritic syndrome with focal and segmental glomerular lesions,other ckd
+N012,ÊN01.2ÊRapidly progressive nephritic syndrome with diffuse membranous glomerulonephritis,other ckd
+N013,ÊN01.3ÊRapidly progressive nephritic syndrome with diffuse mesangial proliferative glomerulonephritis,other ckd
+N014,ÊN01.4ÊRapidly progressive nephritic syndrome with diffuse endocapillary proliferative glomerulonephritis,other ckd
+N015,ÊN01.5ÊRapidly progressive nephritic syndrome with diffuse mesangiocapillary glomerulonephritis,other ckd
+N016,ÊN01.6ÊRapidly progressive nephritic syndrome with dense deposit disease,other ckd
+N017,ÊN01.7ÊRapidly progressive nephritic syndrome with diffuse crescentic glomerulonephritis,other ckd
+N018,ÊN01.8ÊRapidly progressive nephritic syndrome with other morphologic changes,other ckd
+N019,ÊN01.9ÊRapidly progressive nephritic syndrome with unspecified morphologic changes,other ckd
+N01A,ÊN01.AÊRapidly progressive nephritic syndrome with C3 glomerulonephritis,other ckd
+N02,Recurrent and persistent hematuria,other ckd
+N020,ÊN02.0ÊRecurrent and persistent hematuria with minor glomerular abnormality,other ckd
+N021,ÊN02.1ÊRecurrent and persistent hematuria with focal and segmental glomerular lesions,other ckd
+N022,ÊN02.2ÊRecurrent and persistent hematuria with diffuse membranous glomerulonephritis,other ckd
+N023,ÊN02.3ÊRecurrent and persistent hematuria with diffuse mesangial proliferative glomerulonephritis,other ckd
+N024,ÊN02.4ÊRecurrent and persistent hematuria with diffuse endocapillary proliferative glomerulonephritis,other ckd
+N025,ÊN02.5ÊRecurrent and persistent hematuria with diffuse mesangiocapillary glomerulonephritis,other ckd
+N026,ÊN02.6ÊRecurrent and persistent hematuria with dense deposit disease,other ckd
+N027,ÊN02.7ÊRecurrent and persistent hematuria with diffuse crescentic glomerulonephritis,other ckd
+N028,ÊN02.8ÊRecurrent and persistent hematuria with other morphologic changes,other ckd
+N029,ÊN02.9ÊRecurrent and persistent hematuria with unspecified morphologic changes,other ckd
+N02A,ÊN02.AÊRecurrent and persistent hematuria with C3 glomerulonephritis,other ckd
+N03,need to fill in,other ckd
+N030,need to fill in,other ckd
+N031,need to fill in,other ckd
+N032,need to fill in,other ckd
+N033,need to fill in,other ckd
+N034,need to fill in,other ckd
+N035,need to fill in,other ckd
+N036,need to fill in,other ckd
+N037,need to fill in,other ckd
+N038,need to fill in,other ckd
+N039,need to fill in,other ckd
+N03A,need to fill in,other ckd
+N04,need to fill in,other ckd
+N041,need to fill in,other ckd
+N042,need to fill in,other ckd
+N043,need to fill in,other ckd
+N044,need to fill in,other ckd
+N045,need to fill in,other ckd
+N046,need to fill in,other ckd
+N047,need to fill in,other ckd
+N048,need to fill in,other ckd
+N049,need to fill in,other ckd
+N04A,need to fill in,other ckd
+N05,need to fill in,other ckd
+N050,need to fill in,other ckd
+N051,need to fill in,other ckd
+N052,need to fill in,other ckd
+N053,need to fill in,other ckd
+N054,need to fill in,other ckd
+N055,need to fill in,other ckd
+N056,need to fill in,other ckd
+N057,need to fill in,other ckd
+N058,need to fill in,other ckd
+N059,need to fill in,other ckd
+N05A,need to fill in,other ckd
+N06,need to fill in,other ckd
+N060,need to fill in,other ckd
+N061,need to fill in,other ckd
+N062,need to fill in,other ckd
+N063,need to fill in,other ckd
+N064,need to fill in,other ckd
+N065,need to fill in,other ckd
+N066,need to fill in,other ckd
+N067,need to fill in,other ckd
+N068,need to fill in,other ckd
+N069,need to fill in,other ckd
+N06A,need to fill in,other ckd
+N07,need to fill in,other ckd
+N070,need to fill in,other ckd
+N071,need to fill in,other ckd
+N072,need to fill in,other ckd
+N073,need to fill in,other ckd
+N074,need to fill in,other ckd
+N075,need to fill in,other ckd
+N076,need to fill in,other ckd
+N077,need to fill in,other ckd
+N078,need to fill in,other ckd
+N079,need to fill in,other ckd
+N07A,need to fill in,other ckd
+N08,need to fill in,other ckd
+N080,need to fill in,other ckd
+N081,need to fill in,other ckd
+N082,need to fill in,other ckd
+N083,need to fill in,other ckd
+N084,need to fill in,other ckd
+N085,need to fill in,other ckd
+N086,need to fill in,other ckd
+N087,need to fill in,other ckd
+N088,need to fill in,other ckd
+N089,need to fill in,other ckd
+N08A,need to fill in,other ckd
+N11,need to fill in,other ckd
+N110,need to fill in,other ckd
+N111,need to fill in,other ckd
+N118,need to fill in,other ckd
+N119,need to fill in,other ckd
+N12,need to fill in,other ckd
+N14,need to fill in,other ckd
+N140,need to fill in,other ckd
+N141,need to fill in,other ckd
+N142,need to fill in,other ckd
+N143,need to fill in,other ckd
+N144,need to fill in,other ckd
+N15,need to fill in,other ckd
+N150,need to fill in,other ckd
+N151,need to fill in,other ckd
+N158,need to fill in,other ckd
+N159,need to fill in,other ckd
+N16,need to fill in,other ckd
+N160,need to fill in,other ckd
+N161,need to fill in,other ckd
+N162,need to fill in,other ckd
+N163,need to fill in,other ckd
+N164,need to fill in,other ckd
+N165,need to fill in,other ckd
+N168,need to fill in,other ckd
+N25,need to fill in,other ckd
+N250,need to fill in,other ckd
+N251,need to fill in,other ckd
+N258,need to fill in,other ckd
+N259,need to fill in,other ckd
+N26,need to fill in,other ckd
+N27,need to fill in,other ckd
+I12,need to fill in,other ckd
+I120,need to fill in,other ckd
+I129,need to fill in,other ckd
+I130,need to fill in,other ckd
+I131,need to fill in,other ckd
+I132,need to fill in,other ckd
+I139,need to fill in,other ckd
+Q61,need to fill in,other ckd
+Q610,need to fill in,other ckd
+Q611,need to fill in,other ckd
+Q612,need to fill in,other ckd
+Q613,need to fill in,other ckd
+Q614,need to fill in,other ckd
+Q615,need to fill in,other ckd
+Q618,need to fill in,other ckd
+Q619,need to fill in,other ckd

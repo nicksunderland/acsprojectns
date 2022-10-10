@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+/inst/database_connections
+/data
+/materials/figures
+/materials/notes

@@ -1,0 +1,73 @@
+icd_codes,description,group
+D500,Iron deficiency anaemia secondary to blood loss (chronic),Nutritional anaemias
+D501,Sideropenic dysphagia,Nutritional anaemias
+D508,Other iron deficiency anaemias,Nutritional anaemias
+D509,"Iron deficiency anaemia, unspecified",Nutritional anaemias
+D510,Vitamin B12 deficiency anaemia due to intrinsic factor deficiency,Nutritional anaemias
+D511,Vitamin B12 deficiency anaemia due to selective vitamin B12?malabsorption with proteinuria,Nutritional anaemias
+D512,Transcobalamin II deficiency,Nutritional anaemias
+D513,Other dietary vitamin B12 deficiency anaemia,Nutritional anaemias
+D518,Other vitamin B12 deficiency anaemias,Nutritional anaemias
+D518,"Vitamin B12 deficiency anaemia, unspecified",Nutritional anaemias
+D520,Dietary folate deficiency anaemia,Nutritional anaemias
+D521,Drug-induced folate deficiency anaemia,Nutritional anaemias
+D528,Other folate deficiency anaemias,Nutritional anaemias
+D529,"Folate deficiency anaemia, unspecified",Nutritional anaemias
+D530,Protein deficiency anaemia,Nutritional anaemias
+D531,"Other megaloblastic anaemias, not elsewhere classified",Nutritional anaemias
+D532,Scorbutic anaemia,Nutritional anaemias
+D538,Other specified nutritional anaemias,Nutritional anaemias
+D539,"Nutritional anaemia, unspecified",Nutritional anaemias
+D550,Anaemia due to glucose-6-phosphate dehydrogenase [G6PD] deficiency,Haemolytic anaemias
+D551,Anaemia due to other disorders of glutathione metabolism,Haemolytic anaemias
+D552,Anaemia due to disorders of glycolytic enzymes,Haemolytic anaemias
+D553,Anaemia due to disorders of nucleotide metabolism,Haemolytic anaemias
+D558,Other anaemias due to enzyme disorders,Haemolytic anaemias
+D559,"Anaemia due to enzyme disorder, unspecified",Haemolytic anaemias
+D560,Alpha thalassaemia,Haemolytic anaemias
+D561,Beta thalassaemia,Haemolytic anaemias
+D562,Delta-beta thalassaemia,Haemolytic anaemias
+D563,Thalassaemia trait,Haemolytic anaemias
+D564,Hereditary persistence of fetal haemoglobin [HPFH],Haemolytic anaemias
+D568,Other thalassaemias,Haemolytic anaemias
+D569,"Thalassaemia, unspecified",Haemolytic anaemias
+D570,Sickle-cell anaemia with crisis,Haemolytic anaemias
+D571,Sickle-cell anaemia without crisis,Haemolytic anaemias
+D572,Double heterozygous sickling disorders,Haemolytic anaemias
+D573,Sickle-cell trait,Haemolytic anaemias
+D578,Other sickle-cell disorders,Haemolytic anaemias
+D580,Hereditary spherocytosis,Haemolytic anaemias
+D581,Hereditary elliptocytosis,Haemolytic anaemias
+D582,Other haemoglobinopathies,Haemolytic anaemias
+D588,Other specified hereditary haemolytic anaemias,Haemolytic anaemias
+D589,"Hereditary haemolytic anaemia, unspecified",Haemolytic anaemias
+D590,Drug-induced autoimmune haemolytic anaemia,Haemolytic anaemias
+D591,Other autoimmune haemolytic anaemias,Haemolytic anaemias
+D592,Drug-induced nonautoimmune haemolytic anaemia,Haemolytic anaemias
+D593,Haemolytic-uraemic syndrome,Haemolytic anaemias
+D594,Other nonautoimmune haemolytic anaemias,Haemolytic anaemias
+D595,Paroxysmal nocturnal haemoglobinuria [Marchiafava-Micheli],Haemolytic anaemias
+D596,Haemoglobinuria due to haemolysis from other external causes,Haemolytic anaemias
+D598,Other acquired haemolytic anaemias,Haemolytic anaemias
+D599,"Acquired haemolytic anaemia, unspecified",Haemolytic anaemias
+D600,Chronic acquired pure red cell aplasia,Aplastic and other anaemias
+D601,Transient acquired pure red cell aplasia,Aplastic and other anaemias
+D608,Other acquired pure red cell aplasias,Aplastic and other anaemias
+D609,"Acquired pure red cell aplasia, unspecified",Aplastic and other anaemias
+D610,Constitutional aplastic anaemia,Aplastic and other anaemias
+D611,Drug-induced aplastic anaemia,Aplastic and other anaemias
+D612,Aplastic anaemia due to other external agents,Aplastic and other anaemias
+D613,Idiopathic aplastic anaemia,Aplastic and other anaemias
+D618,Other specified aplastic anaemias,Aplastic and other anaemias
+D619,"Aplastic anaemia, unspecified",Aplastic and other anaemias
+D62,Acute posthaemorrhagic anaemia,Acute posthaemorrhagic anaemia
+D620,Acute posthaemorrhagic anaemia,Acute posthaemorrhagic anaemia
+D630,Anaemia in chronic diseases classified elsewhere,Anaemia in chronic diseases
+D638,Anaemia in other chronic diseases classified elsewhere,Anaemia in chronic diseases
+D640,Hereditary sideroblastic anaemia,Other anaemias
+D641,Secondary sideroblastic anaemia due to disease,Other anaemias
+D642,Secondary sideroblastic anaemia due to drugs and toxins,Other anaemias
+D643,Other sideroblastic anaemias,Other anaemias
+D644,Congenital dyserythropoietic anaemia,Other anaemias
+D648,Other specified anaemias,Other anaemias
+D649,"Anaemia, unspecified",Other anaemias

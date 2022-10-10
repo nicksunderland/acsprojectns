@@ -1,0 +1,13 @@
+icd_codes,description,group
+E10,All type 1 diabetes mellitus,Type 1 diabetes
+E100,T1DM with coma,Type 1 diabetes
+E101,T1DM with ketoacidosis (but no coma),Type 1 diabetes
+E102,T1DM with renal complications,Type 1 diabetes
+E103,T1DM with ophthalmic complications,Type 1 diabetes
+E104,T1DM with neurological complications,Type 1 diabetes
+E105,T1DM with peripheral circulatory complications,Type 1 diabetes
+E105,T1DM with diabetic gangrene,Type 1 diabetes
+E106,T1DM with other complications,Type 1 diabetes
+E107,T1DM with multiple complications,Type 1 diabetes
+E108,T1DM with unspecified complications,Type 1 diabetes
+E109,T1DM without complications,Type 1 diabetes

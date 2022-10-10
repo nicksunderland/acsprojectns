@@ -1,0 +1,16 @@
+icd_codes,description,group
+I10,Essential Hypertension ,Hypertension
+I110,Hypertensive heart disease with (congestive) heart failure,Hypertension
+I119 ,Hypertensive  heart disease without (congestive) heart failure,Hypertension
+I120,hypertensive renal disease with renal failure,Hypertension
+I129,hypertensive renal disease without renal failure ,Hypertension
+I130 ,hypertensive  heart and renal disease with (congestive) heart failure,Hypertension
+I131 ,hypertensive  heart and renal disease with renal failure,Hypertension
+I132 ,hypertensive  heart and renal disease with both (congestive) heart failure and renal failure,Hypertension
+I139,"Hypertensive heart and renal disease, unspecified",Hypertension
+I15,Secondary hypertension,Hypertension
+I150,renovascular hypertension,Hypertension
+I151 ,Hypertension secondary to other renal disorders,Hypertension
+I152,hypertension secondary to endocrine disorders,Hypertension
+I158,Other secondary hypertension,Hypertension
+I159,"Secondary hypertension, unspecified",Hypertension

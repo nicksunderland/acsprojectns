@@ -1,0 +1,17 @@
+icd_codes,description,description_simple,group
+I210,Anterior transmural MI (STEMI),STEMI,Acute coronary syndromes
+I211,Inferior transmural MI (STEMI),STEMI,Acute coronary syndromes
+I212,Other transmural MI (STEMI),STEMI,Acute coronary syndromes
+I213,Unspecified transmural MI (STEMI),STEMI,Acute coronary syndromes
+I220,Subsequent Anterior transmural MI (STEMI within 4 weeks of another MI),STEMI,Acute coronary syndromes
+I221,Subsequent Inferior transmural MI  (STEMI within 4 weeks of another MI),STEMI,Acute coronary syndromes
+I228,Subsequent STEMI of other site (STEMI within 4 weeks of another MI),STEMI,Acute coronary syndromes
+I222,Subsequent Non-ST elevation (NSTEMI) myocardial infarction,NSTEMI,Acute coronary syndromes
+I229,Subsequent NSTEMI of other site (NSTEMI within 4 weeks of another MI),NSTEMI,Acute coronary syndromes
+I21,STEMI or NSTEMI,Other_MI,Acute coronary syndromes
+I214,"NSTEMI, subendocardial MI (NSTEMI)",NSTEMI,Acute coronary syndromes
+I219,"MI, unspecified",Other_MI,Acute coronary syndromes
+I22,All subsequent MI,Other_MI,Acute coronary syndromes
+I200,Unstable angina,Unstable_angina,Acute coronary syndromes
+I248,Other acute ischaemic heart disease,Acute_IHD,Acute coronary syndromes
+I249,Unspecified acute ischaemic heart disease,Acute_IHD,Acute coronary syndromes

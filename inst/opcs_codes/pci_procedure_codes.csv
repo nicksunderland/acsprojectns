@@ -1,0 +1,22 @@
+opcs_codes,description,group
+K49,Transluminal balloon angioplasty of coronary artery,PCI
+K491,Percutaneous transluminal balloon angioplasty of one coronary artery,PCI
+K492,Percutaneous transluminal balloon angioplasty of multiple coronary arteries,PCI
+K493,Percutaneous transluminal balloon angioplasty of bypass graft of coronary artery,PCI
+K494,Percutaneous transluminal cutting balloon angioplasty of coronary artery,PCI
+K498,Other specified transluminal balloon angioplasty of coronary artery,PCI
+K499,Unspecified transluminal balloon angioplasty of coronary artery,PCI
+K50,Other therapeutic transluminal operations on coronary artery,PCI
+K501,Percutaneous transluminal laser coronary angioplasty,PCI
+K502,Percutaneous transluminal coronary thrombolysis using streptokinase,PCI
+K503,Percutaneous transluminal injection of therapeutic substance into coronary artery NEC,PCI
+K504,Percutaneous transluminal atherectomy of coronary artery,PCI
+K508,Other specified other therapeutic transluminal operations on coronary artery,PCI
+K509,Unspecified other therapeutic transluminal operations on coronary artery,PCI
+K75,Percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,PCI
+K751,Percutaneous transluminal balloon angioplasty and insertion of 1-2 drug-eluting stents into coronary artery,PCI
+K752,Percutaneous transluminal balloon angioplasty and insertion of 3 or more drug-eluting stents into coronary artery,PCI
+K753,Percutaneous transluminal balloon angioplasty and insertion of 1-2 stents into coronary artery,PCI
+K754,Percutaneous transluminal balloon angioplasty and insertion of 3 or more stents into coronary artery NEC,PCI
+K758,Other specified percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,PCI
+K759,Unspecified percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,PCI

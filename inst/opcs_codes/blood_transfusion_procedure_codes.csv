@@ -1,0 +1,11 @@
+opcs_codes,description,group
+X332,Intravenous blood transfusion of packed cells,blood trnsfusion
+X333,Intravenous blood transfusion of platelets,blood trnsfusion
+X338,Other specified other blood transfusion,blood trnsfusion
+X339,Unspecified other blood transfusion,blood trnsfusion
+X331,Intra-arterial blood transfusion,blood trnsfusion
+X337,Autologous transfusion of red blood cells,blood trnsfusion
+X341,Transfusion of coagulation factor,blood trnsfusion
+X342,Transfusion of plasma not elsewhere classified,blood trnsfusion
+X343,Transfusion of serum not elsewhere classified,blood trnsfusion
+X344,Transfusion of blood expander,blood trnsfusion

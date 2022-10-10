@@ -1,0 +1,14 @@
+icd_codes,description,group
+I48,All AF and flutter,Atrial fibrillation 
+I480,Paroxysmal AF,Atrial fibrillation 
+I481,Persistent AF,Atrial fibrillation 
+I482,Chronic AF,Atrial fibrillation 
+I483,Typical atrial flutter,Atrial flutter
+I484,Atypical atrial flutter,Atrial flutter
+I489,Unspecified AF and atrial flutter,Atrial fibrillation 
+,,
+,,
+,,
+,,
+,,
+,,

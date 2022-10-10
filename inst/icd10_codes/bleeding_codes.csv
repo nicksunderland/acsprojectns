@@ -1,0 +1,130 @@
+icd_codes,description,group
+I60,All subarachnoid haemorrhage,Intracranial bleeding
+I60-,All subarachnoid haemorrhage,Intracranial bleeding
+I600,Nontraumatic subarachnoid haemorrhage from carotid siphon and bifurcation,Intracranial bleeding
+I601,Nontraumatic subarachnoid haemorrhage from middle cerebral artery,Intracranial bleeding
+I602,Nontraumatic subarachnoid haemorrhage from anterior communicating artery,Intracranial bleeding
+I603,Nontraumatic subarachnoid haemorrhage from posterior communicating artery,Intracranial bleeding
+I604,Nontraumatic subarachnoid haemorrhage from basilar artery,Intracranial bleeding
+I605,Nontraumatic subarachnoid haemorrhage from vertebral artery,Intracranial bleeding
+I606,Nontraumatic subarachnoid haemorrhage from other intracranial arteries,Intracranial bleeding
+I607,Nontraumatic subarachnoid haemorrhage from unspecified intracranial artery,Intracranial bleeding
+I608,Other nontraumatic subarachnoid haemorrhage,Intracranial bleeding
+I609,"Nontraumatic subarachnoid haemorrhage, unspecified",Intracranial bleeding
+I61,All intracerebral haemorrhage,Intracranial bleeding
+I61-,All intracerebral haemorrhage,Intracranial bleeding
+I610,"Nontraumatic intracerebral haemorrhage in hemisphere, subcortical",Intracranial bleeding
+I611,"Nontraumatic intracerebral haemorrhage in hemisphere, cortical",Intracranial bleeding
+I612,"Nontraumatic intracerebral haemorrhage in hemisphere, unpsecified",Intracranial bleeding
+I613,Nontraumatic intracerebral haemorrhage in brainstem,Intracranial bleeding
+I614,Nontraumatic intracerebral haemorrhage in cerebellum,Intracranial bleeding
+I615,"Nontraumatic intracerebral haemorrhage, intraventricular",Intracranial bleeding
+I616,"Nontraumatic intracerebral haemorrhage, multiple localised",Intracranial bleeding
+I618,Other nontraumatic intracerebral hemorrhage,Intracranial bleeding
+I619,"Nontraumatic intracerebral haemorrhage, unspecified",Intracranial bleeding
+I62,All other non-traumatic intracerebral haemorrhage,Intracranial bleeding
+I62-,All other non-traumatic intracerebral haemorrhage,Intracranial bleeding
+I620,Nontraumatic subdural hemorrhage,Intracranial bleeding
+I621,Nontraumatic extradural hemorrhage,Intracranial bleeding
+I629,"Nontraumatic intracranial hemorrhage, unspecified",Intracranial bleeding
+S063,Focal brain injury,Intracranial bleeding
+S064,Epidural hemorrhage,Intracranial bleeding
+S065,Traumatic subdural hemorrhage,Intracranial bleeding
+S066,Traumatic subarachnoid hemorrhage ,Intracranial bleeding
+I850,Esophageal varices with bleeding,Gastrointestinal bleeding 
+I983,Oesophageal varices with bleeding in diseases classified elsewhere ,Gastrointestinal bleeding 
+K226,Gastro-oesophageal laceration-haemorrhage syndrome ,Gastrointestinal bleeding 
+K250,"gastric ulcer, acute with haemorrhage",Gastrointestinal bleeding 
+K252,"gastric ulcer, acute with haemorrhage and perforation",Gastrointestinal bleeding 
+K254,"gastric ulcer, chronic or unspecified with haemorrhage",Gastrointestinal bleeding 
+K256,"gastric ulcer, chronic or unspecified with haemorrhage and perforation",Gastrointestinal bleeding 
+K260,"duodenal ulcer, acute with haemorrage",Gastrointestinal bleeding 
+K262,"duodenal ulcer, acute with haemorrage and perforation",Gastrointestinal bleeding 
+K264,"duodenal ulcer, chronic or unspecified with haemorrage",Gastrointestinal bleeding 
+K266,"duodenal ulcer, chronic or unspecified with haemorrage and perforation",Gastrointestinal bleeding 
+K270,"peptic ulcer, acute with haemorrage",Gastrointestinal bleeding 
+K272,"peptic ulcer, acute with haemorrage and perforation",Gastrointestinal bleeding 
+K274,"peptic ulcer, chronic or unspecified with haemorrage",Gastrointestinal bleeding 
+K276,"peptic ulcer, chronic or unspecified with haemorrage and perforation",Gastrointestinal bleeding 
+K280,"gastrojejunal ulcer, acute with haemorrage",Gastrointestinal bleeding 
+K282,"gastrojejunal ulcer, acute with haemorrage and perforation",Gastrointestinal bleeding 
+K284,"gastrojejunal ulcer, chronic or unspecified with haemorrage",Gastrointestinal bleeding 
+K286,"gastrojejunal ulcer, chronic or unspecified with haemorrage and perforation",Gastrointestinal bleeding 
+K290,acute haemorrhagic gastritis,Gastrointestinal bleeding 
+K625,Hemorrhage of anus and rectum ,Gastrointestinal bleeding 
+K920,Haematemasis,Gastrointestinal bleeding 
+K921,Melaena,Gastrointestinal bleeding 
+K922,"Gastrointestinal hemorrhage, unspecified ",Gastrointestinal bleeding 
+D62,Acute posthemorrhagic anemia,Other bleeding
+D62-,Acute posthemorrhagic anemia,Other bleeding
+D620,Acute posthemorrhagic anemia,Other bleeding
+D683,Haemorrhagic disorder due to circulating anticoagulants ,Other bleeding
+D698,Other specified haemorrhagic conditions ,Other bleeding
+D699,"Haemorrhagic condition, unspecified ",Other bleeding
+H113,Conjunctival hemorrhage,Other bleeding
+H1130,Conjunctival hemorrhage unspcified,Other bleeding
+H1131,Conjunctival hemorrhage right,Other bleeding
+H1132,Conjunctival hemorrhage left,Other bleeding
+H1133,Conjunctival hemorrhage bilateral,Other bleeding
+H210,Hyphaema ,Other bleeding
+H313,Choroidal haemorrhage and rupture ,Other bleeding
+H356,Retinal hemorrhage,Other bleeding
+H3560,Retinal hemorrhage unspecified,Other bleeding
+H3561,Retinal hemorrhage right,Other bleeding
+H3562,Retinal hemorrhage left,Other bleeding
+H3563,Retinal hemorrhage bilateral,Other bleeding
+H431,Vitreous hemorrhage ,Other bleeding
+H4310,Vitreous hemorrhage unspecified,Other bleeding
+H4311,Vitreous hemorrhage right,Other bleeding
+H4312,Vitreous hemorrhage left,Other bleeding
+H4313,Vitreous hemorrhage bilateral,Other bleeding
+H450,Vitreous hemorrhage in disease classified elsewhere,Other bleeding
+H922,Otorrhagia,Other bleeding
+H9220,Otorrhagia unspecified,Other bleeding
+H9221,Otorrhagia right,Other bleeding
+H9222,Otorrhagia left,Other bleeding
+H9223,Otorrhagia bilateral,Other bleeding
+J942,Hemothorax,Other bleeding
+S271,Traumatic hemothorax,Other bleeding
+T792,,Other bleeding
+K661,Hemoperitoneum ,Other bleeding
+I230,Haemopericardium as current complication following acute myocardial infarction ,Other bleeding
+S260,Injury of heart with haemopericardium ,Other bleeding
+I312,"Haemopericardium, not elsewhere classified ",Other bleeding
+M250,Hemarthrosis,Other bleeding
+K762,Central haemorrhagic necrosis of liver ,Other bleeding
+N02,Recurrent and persistent hematuria,Other bleeding
+N02-,Recurrent and persistent hematuria,Other bleeding
+N020,Recurrent and persistent hematuria,Other bleeding
+N021,Recurrent and persistent hematuria,Other bleeding
+N022,Recurrent and persistent hematuria,Other bleeding
+N023,Recurrent and persistent hematuria,Other bleeding
+N024,Recurrent and persistent hematuria,Other bleeding
+N025,Recurrent and persistent hematuria,Other bleeding
+N026,Recurrent and persistent hematuria,Other bleeding
+N027,Recurrent and persistent hematuria,Other bleeding
+N028,Recurrent and persistent hematuria,Other bleeding
+N029,Recurrent and persistent hematuria,Other bleeding
+N421,Congestion and haemorrhage of prostate ,Other bleeding
+N920,Excessive and frequent menstruation,Other bleeding
+N921,Excessive and frequent menstruation,Other bleeding
+N923,Ovulation bleeding,Other bleeding
+N924,Excessive bleeding in the premenopausal period,Other bleeding
+N93,Other abnormal uterine and vaginal bleeding,Other bleeding
+N93-,Other abnormal uterine and vaginal bleeding,Other bleeding
+N930,Postcoital and contact bleeding,Other bleeding
+N938,Other specified abnormal uterine and vaginal bleeding,Other bleeding
+N939,"Abnormal uterine and vaginal bleeding, unspecified",Other bleeding
+N950,Postmenopausal bleeding,Other bleeding
+R040,Epistaxis,Other bleeding
+R041,Hemorrhage from throat,Other bleeding
+R042,Hemoptysis,Other bleeding
+R048,Hemorrhage from other sites in respiratory passages ,Other bleeding
+R049,"Hemorrhage from respiratory passages, unspecified",Other bleeding
+R31,Hematuria,Other bleeding
+R31-,Hematuria,Other bleeding
+R310,Hematuria,Other bleeding
+R58,"Hemorrhage, not elsewhere classified ",Other bleeding
+R58-,"Hemorrhage, not elsewhere classified ",Other bleeding
+R580,"Hemorrhage, not elsewhere classified ",Other bleeding
+T810,"Haemorrhage and haematoma complicating a procedure, not elsewhere classified",Other bleeding

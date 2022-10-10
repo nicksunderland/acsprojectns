@@ -1,0 +1,12 @@
+icd_codes,description,group
+I50,All heart failure,Heart failure
+I500,Congestive cardiac failure,Heart failure
+I501,Left ventricular failure,Heart failure
+I502,Systolic (congestive) heart failure,Heart failure
+I503,Diastolic (congestive) heart failure,Heart failure
+I504,Combined systolic (congestive) and diastolic (congestive) heart failure,Heart failure
+I508,Other heart failure,Heart failure
+I509,"Heart failure, unspecified",Heart failure
+0903,Peripartum cardiomyopathy,Heart failure
+R570,Cardiogenic shock,Heart failure
+J81,Pulmonary edema,Heart failure

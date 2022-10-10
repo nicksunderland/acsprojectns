@@ -1,0 +1,11 @@
+icd_codes,description,group
+E78,Disorders of lipoprotein metabolism and other lipidaemias,Lipid disorder
+E780,Pure hypercholesterolaemia,Lipid disorder
+E781,Pure hyperglyceridaemia,Lipid disorder
+E782,Mixed hyperlipidaemia,Lipid disorder
+E783,Hyperchylomicronaemia,Lipid disorder
+E784,Other hyperlipidaemia,Lipid disorder
+E785,"Hyperlipidaemia, unspecified",Lipid disorder
+E786,Lipoprotein deficiency,Lipid disorder
+E788,Other disorders of lipoprotein metabolism,Lipid disorder
+E789,"Disorder of lipoprotein metabolism, unspecified",Lipid disorder

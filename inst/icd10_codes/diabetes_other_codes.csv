@@ -1,0 +1,12 @@
+icd_codes,description,group
+E14,All unspecified  diabetes mellitus,Other diabetes
+E140,...  with coma,Other diabetes
+E141,...   with ketoacidosis (but no coma),Other diabetes
+E142,...   with renal complications,Other diabetes
+E143,...  with ophthalmic complications,Other diabetes
+E144,...   with neurological complications,Other diabetes
+E145,...   withperipheral circulatory complications,Other diabetes
+E146,...   with other complications,Other diabetes
+E147,...   with multiple complications,Other diabetes
+E148,...   with unspecified complications,Other diabetes
+E149,...  without complications,Other diabetes

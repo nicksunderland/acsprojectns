@@ -1,0 +1,5 @@
+icd_codes,description,group
+I46,Cardiac arrest,Cardiac arrest
+I460,Cardiac arrest with successful resuscitation,Cardiac arrest
+I461,"Sudden cardiac death, so described",Cardiac arrest
+I469,"Cardiac arrest, unspecified",Cardiac arrest

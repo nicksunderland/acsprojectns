@@ -1,0 +1,13 @@
+icd_codes,description,group
+E11,All type 2 diabetes mellitus,Type 2 diabetes
+E110,T2DM with coma,Type 2 diabetes
+E111,T2DM with ketoacidosis (but no coma),Type 2 diabetes
+E112,T2DM with renal complications,Type 2 diabetes
+E113,T2DM with ophthalmic complications,Type 2 diabetes
+E114,T2DM with neurological complications,Type 2 diabetes
+E115,T2DM withperipheral circulatory complications,Type 2 diabetes
+E115,T2DM with diabetic gangrene,Type 2 diabetes
+E116,T2DM with other complications,Type 2 diabetes
+E117,T2DM with multiple complications,Type 2 diabetes
+E118,T2DM with unspecified complications,Type 2 diabetes
+E119,T2DM without complications,Type 2 diabetes

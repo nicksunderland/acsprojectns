@@ -1,0 +1,10 @@
+icd_codes,description,group
+I25,All chronic ischaemic heart disease ,Ischaemic cardiomyopathy
+I251,Atherosclerotic heart disease,Ischaemic cardiomyopathy
+I252,Old MI,Ischaemic cardiomyopathy
+I253,Aneurysm of hart ,Ischaemic cardiomyopathy
+I254,Coronary artery aneurysm and dissection,Ischaemic cardiomyopathy
+I255,Ischaemic cardiomyopathy,Ischaemic cardiomyopathy
+I256,Silent myocardial ischemia,Ischaemic cardiomyopathy
+I258,Other forms of chronic ischaemic heart disease ,Ischaemic cardiomyopathy
+I259,"Chronic ischaemic heart disease, unspecified",Ischaemic cardiomyopathy

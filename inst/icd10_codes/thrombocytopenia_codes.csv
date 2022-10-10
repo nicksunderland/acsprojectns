@@ -1,0 +1,10 @@
+icd_codes,description,group
+D693,Immune thrombocytopenic purpura,thrombocytopenia
+D694,Other primary thrombocytopenia,thrombocytopenia
+D6941,Evans syndrome,thrombocytopenia
+D6942,Congenital and hereditary thrombocytopenia purpura,thrombocytopenia
+D6949,Other primary thrombocytopenia,thrombocytopenia
+D695,Secondary thrombocytopenia,thrombocytopenia
+D6951,Posttransfusion purpura,thrombocytopenia
+D6959,Other secondary thrombocytopenia,thrombocytopenia
+D696,"Thrombocytopenia, unspecified",thrombocytopenia

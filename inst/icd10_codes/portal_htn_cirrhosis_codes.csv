@@ -1,0 +1,18 @@
+icd_codes,description,group
+K766,Portal hypertension,portal hypertension
+K767,hepatorenal syndrome,hepatic failure
+K703,Alcoholic cirrhosis of liver,cirrhosis
+K704,Alcoholic hepatic failure,hepatic failure
+K711,Toxic liver disease with hepatic necrosis,hepatic failure
+K717,Toxic liver disease with fibrosis and cirrhosis of liver,cirrhosis
+K720,Acute and subacute hepatic failure,hepatic failure
+K721,Chronic hepatic failure,hepatic failure
+K729,"Hepatic failure, unspecified",hepatic failure
+K744,Secondary biliary cirrhosis,cirrhosis
+K745,"Biliary cirrhosis, unspecified",cirrhosis
+K746,Other and unspecified cirrhosis of liver,cirrhosis
+I850,Oesophageal varices with bleeding,portal hypertension
+I859,Oesophageal varices without bleeding,portal hypertension
+I864,Gastric varices,portal hypertension
+I982,Oesophageal varices with bleeding in diseases classified elewhere,portal hypertension
+I983,Oesophageal varices without bleeding in diseases classified elewhere,portal hypertension

@@ -1,0 +1,6 @@
+icd_codes,description,group
+Z513,Blood transfusion no diagnosis recorded,blood transfusion
+T803,ABO incompatibility reaction,blood transfusion
+T804,Rh incompatibility reaction,blood transfusion
+T805,Anaphylactic shock due to serum,blood transfusion
+Y650,Mismatched blood used in transfusion,blood transfusion
