@@ -281,9 +281,15 @@ all_swd_attributes <- load_swd_attributes_v2(db_conn_struct, ids) %>%
 # Get all the measurements
 all_measurements <- load_swd_measurements_v2(db_conn_struct, ids) %>%
   tidyr::unnest(swd_measurements) %>%
-  dplyr::filter(!is.na(.data$measurement_datetime)) %>%
+  dplyr::filter(!is.na(.data$measurement_datetime),
+                .data$measurement_datetime > lubridate::as_date("2000-01-01"),
+                .data$measurement_type %in% c("hba1c", "blood_pressure", "cholesterol"),
+                !grepl("unknown", .data$measurement_value, ignore.case=T),
+                !is.na(.data$measurement_value)) %>% # there are some ridiculous dates in the 1800s....
   dplyr::left_join(acs_spells %>% dplyr::select(pseudo_nhs_id, spell_interval_acs, age), by="pseudo_nhs_id") %>%
-  dplyr::mutate(episode_interval = lubridate::interval(.data$measurement_datetime, .data$measurement_datetime, tzone="GMT"),
+  dplyr::mutate(measurement_datetime = lubridate::as_date(.data$measurement_datetime),
+                measurement_type = factor(.data$measurement_type, levels=c("blood_pressure", "hba1c", "cholesterol")),
+                episode_interval = lubridate::interval(.data$measurement_datetime, .data$measurement_datetime, tzone="GMT"),
                 val1             = as.numeric(gsub("([0-9]+).*$", "\\1", .data$measurement_value)),
                 val2             = as.numeric(gsub("^.+/([0-9]+)", "\\1", .data$measurement_value)),
                 event_code = dplyr::case_when(.data$measurement_type  == "hba1c" & .data$val1 < 41.9999                   ~ "HbA1c_nondiabetic",
@@ -302,12 +308,66 @@ all_measurements <- load_swd_measurements_v2(db_conn_struct, ids) %>%
                                             .data$rel_days > 0                     ~ "after_1_year",
                                             TRUE ~ NA_character_))
 
-# Do some sanity checks on who has stuff measured
-all_measurements %>% dplyr::group_by(.data$measurement_type) %>% dplyr::summarise(n=dplyr::n())
-all_measurements %>% dplyr::distinct(.data$pseudo_nhs_id, .keep_all=T) %>% dplyr::group_by(.data$measurement_type) %>% dplyr::summarise(pct=dplyr::n()/length(ids))
-all_measurements %>% dplyr::group_by(.data$measurement_type, .data$event_code) %>% dplyr::summarise(n=dplyr::n())
-all_measurements %>% dplyr::group_by(.data$measurement_type, .data$rel_acs) %>% dplyr::summarise(n=dplyr::n())
-all_measurements %>% dplyr::distinct(.data$pseudo_nhs_id, .data$rel_acs, .keep_all=T) %>% dplyr::group_by(.data$measurement_type, .data$rel_acs) %>% dplyr::summarise(pct=dplyr::n()/length(ids))
+
+ggplot(all_measurements, aes(x=measurement_datetime, fill=measurement_type)) +
+  stat_bin(binwidth = 30) +
+  labs(title="Measurement counts by date", x="Date", y="Count", fill="Measurement") +
+  scale_x_date(breaks = date_breaks(width = "1 year"),
+               limits = c(lubridate::as_date(acs_date_window_min), Sys.Date())) +
+  facet_wrap(~ measurement_type, ncol=1)
+
+
+# Do some sanity checks on who has stuff measured in the first year
+all_measurements %>%
+  dplyr::group_by(.data$measurement_type) %>%
+  dplyr::mutate(n=dplyr::n()) %>%
+  dplyr::group_by(.data$pseudo_nhs_id, .data$measurement_type) %>%
+  dplyr::slice(n=1) %>%
+  dplyr::group_by(.data$measurement_type) %>%
+  dplyr::summarise(n_tot=n[[1]], pct=dplyr::n()/length(ids))
+
+all_measurements %>%
+  dplyr::group_by(.data$measurement_type, .data$event_code) %>%
+  dplyr::mutate(n=dplyr::n()) %>%
+  dplyr::group_by(.data$pseudo_nhs_id, .data$measurement_type, .data$event_code) %>%
+  dplyr::slice(n=1) %>%
+  dplyr::group_by(.data$measurement_type, .data$event_code) %>%
+  dplyr::summarise(n_tot=n[[1]], pct=dplyr::n()/length(ids))
+
+all_measurements %>%
+  dplyr::group_by(.data$measurement_type, .data$rel_acs, .data$event_code) %>%
+  dplyr::mutate(n=dplyr::n()) %>%
+  dplyr::group_by(.data$pseudo_nhs_id, .data$measurement_type, .data$rel_acs, .data$event_code) %>%
+  dplyr::slice(n=1) %>%
+  dplyr::group_by(.data$measurement_type, .data$rel_acs, .data$event_code) %>%
+  dplyr::summarise(n_tot=n[[1]], pct=dplyr::n()/length(ids))
+
+all_measurements %>%
+  dplyr::filter(.data$rel_acs == "within_1_year" &
+                .data$measurement_type=="blood_pressure") %>%
+  dplyr::group_by(.data$pseudo_nhs_id) %>%
+  dplyr::slice(n=1) %>%
+  dplyr::ungroup() %>%
+  dplyr::summarise(n_checked=dplyr::n(), pct_checked=dplyr::n()/length(ids))
+
+all_measurements %>%
+  dplyr::filter(.data$rel_acs == "within_1_year" &
+                  .data$measurement_type=="hba1c") %>%
+  dplyr::group_by(.data$pseudo_nhs_id) %>%
+  dplyr::slice(n=1) %>%
+  dplyr::ungroup() %>%
+  dplyr::summarise(n_checked=dplyr::n(), pct_checked=dplyr::n()/length(ids))
+
+all_measurements %>%
+  dplyr::filter(.data$rel_acs == "within_1_year" &
+                  .data$measurement_type=="cholesterol") %>%
+  dplyr::group_by(.data$pseudo_nhs_id) %>%
+  dplyr::slice(n=1) %>%
+  dplyr::ungroup() %>%
+  dplyr::summarise(n_checked=dplyr::n(), pct_checked=dplyr::n()/length(ids))
+
+
+
 
 # Now continue
 all_measurements <- all_measurements %>%
@@ -386,12 +446,18 @@ df_ml_predictors = acs_spells %>%
                    lubridate::date(lubridate::int_end(.data$episode_interval)) == lubridate::date(lubridate::int_start(.data$spell_interval_acs))) #event occurred on the same day as the first day of the acs spell
                   & .data$event_code %in% c("acute_coronary_syndrome", "pci", "cabg"))) %>%
   dplyr::mutate(event_status  = TRUE,
-                survival_days = lubridate::interval(lubridate::int_end(.data$spell_interval_acs), lubridate::int_start(.data$episode_interval)) / lubridate::ddays(),
-                survival_days = dplyr::if_else(grepl("HbA1c|BP_", .data$event_code) & dplyr::between(.data$survival_days, 0, 365), 0, .data$survival_days)) %>% #set to zero so filtering in a bit keeps the row
-  dplyr::group_by(pseudo_nhs_id) %>%
-  dplyr::filter(.data$survival_days <= 0) %>% # things known before or at the end of the ACS event
+                survival_days = lubridate::interval(lubridate::int_end(.data$spell_interval_acs), lubridate::int_start(.data$episode_interval)) / lubridate::ddays()) %>%
+  dplyr::filter((.data$survival_days <= 0 & !grepl("HbA1c|BP_", .data$event_code)) |
+                (dplyr::between(.data$survival_days, 0, 365) & grepl("HbA1c|BP_", .data$event_code))) %>%  # things known before or at the end of the ACS event
+
+
+  dplyr::mutate(survival_days = dplyr::if_else(grepl("HbA1c|BP_", .data$event_code), -.data$survival_days, .data$survival_days)) %>% # to make the slicing work
+  dplyr::group_by(pseudo_nhs_id, .data$event_code) %>%
   dplyr::slice_max(survival_days, with_ties=F) %>% # most recent diagnosis
   dplyr::ungroup() %>%
+  dplyr::mutate(survival_days = dplyr::if_else(grepl("HbA1c|BP_", .data$event_code), -.data$survival_days, .data$survival_days)) %>% # reverse it
+
+
   dplyr::bind_rows(setNames(data.frame(matrix(ncol=ncol(.), nrow=nrow(endpoint_mappings))), colnames(.)) %>%
                      dplyr::mutate(event_code = endpoint_mappings$event_code)) %>%
   tidyr::complete(tidyr::nesting(pseudo_nhs_id, swd_date_range, spell_interval_acs), .data$event_code) %>%
@@ -406,13 +472,13 @@ df_ml_predictors = acs_spells %>%
                      values_from = c(event_status, survival_days),
                      values_fill = list("event_status" = FALSE, "survival_days" = NA_real_)) %>%
   dplyr::right_join(acs_spells, by="pseudo_nhs_id") %>%
-  dplyr::mutate(bloodpressure_control_1y    = dplyr::case_when(.data$event_status_BP_well_controlled_pred ~ "Controlled",
-                                                    .data$event_status_BP_not_controlled_pred  ~ "Not controlled",
-                                                    TRUE ~ "Not measured"),
+  dplyr::mutate(bloodpressure_control_1y = dplyr::case_when(.data$event_status_BP_well_controlled_pred ~ "Controlled",
+                                                            .data$event_status_BP_not_controlled_pred  ~ "Not controlled",
+                                                            TRUE ~ "Not measured"),
                 diabetic_control_1y = dplyr::case_when(.data$event_status_HbA1c_prediabetic_pred  ~ "HbA1c_prediabetic",
-                                                    .data$event_status_HbA1c_diabetic_pred  ~ "HbA1c_diabetic",
-                                                    .data$event_status_HbA1c_nondiabetic_pred  ~ "HbA1c_nondiabetic",
-                                                    TRUE ~ "Not measured"),
+                                                       .data$event_status_HbA1c_diabetic_pred  ~ "HbA1c_diabetic",
+                                                       .data$event_status_HbA1c_nondiabetic_pred  ~ "HbA1c_nondiabetic",
+                                                       TRUE ~ "Not measured"),
                 bloodpressure_control_1y = factor(bloodpressure_control_1y, labels = c("Not controlled", "Controlled", "Not measured")),
                 diabetic_control_1y = factor(diabetic_control_1y, labels = c("HbA1c_diabetic", "HbA1c_prediabetic", "HbA1c_nondiabetic", "Not measured"))) %>%
   dplyr::mutate(earliest_fu_date = min(lubridate::int_start(swd_date_range), lubridate::int_start(spell_interval_acs)),
@@ -459,7 +525,7 @@ surv_obj <- Surv(time  = survival_dataset$survival_days,
                  event = survival_dataset$event_status)
 
 components_to_plot = c("macce")
-splits = c("bloodpressure_control_1y", "age_cat")
+splits = c("foo", "age_cat") #bloodpressure_control_1y") #,
 
 # bloodpressure_control_1y   diabetic_control_1y
 # [1] acute_coronary_syndrome bleeding                blood_transfusion       cabg                    cv_death
@@ -472,8 +538,9 @@ surv_fit <- survfit(formula = as.formula(paste("surv_obj ~ component + ", paste(
 
 ggsurv <- ggsurvplot(surv_fit,
                      color = splits[[1]],
-                     palette = RColorBrewer::brewer.pal(4, "Set2"),#colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(15),
-                     ylim = c(0.5, 1.0),
+                     palette = RColorBrewer::brewer.pal(5, "Set2"),#colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(15),
+                     ylim = c(0.75, 1.0),
+                     xlim = c(0.0, 2*365),
                      title = paste("Survival from", components_to_plot, "by", paste(splits, collapse=" + ")),
                      xlab = "Days",
                      ylab = "Survival")
@@ -485,6 +552,12 @@ ggsurv$plot +
   facet_grid(~factor(age_cat, levels = c("0-20","20-40","40-60","60-80","80-100","100+")))
 #
 # factor(component, levels=components_to_plot) ~ 1 ) #
+
+
+
+
+
+e = survival_dataset$bloodpressure_control_1y
 
 
 

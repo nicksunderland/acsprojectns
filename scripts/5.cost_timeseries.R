@@ -400,11 +400,28 @@ ggplot(data=full_data %>%
        colour="Activity provider") +
   scale_y_continuous(labels = comma)
 
+
+
+
+cambridge_score_data <- db_conn_struct$camb_scr$data %>%
+  dplyr::select(c("nhs_number","attribute_period","cambridge_score")) %>%                                  #select the variables to work with
+  dplyr::distinct() %>%
+  dplyr::filter(!is.na(.data$nhs_number) & !is.na(.data$attribute_period) & .data$nhs_number %in% ids) %>%
+  dplyr::collect() %>%
+  dplyr::rename(pseudo_nhs_id = nhs_number) %>%
+  dplyr::mutate(pseudo_nhs_id = as.numeric(pseudo_nhs_id)) %>%
+  dplyr::group_by(.data$pseudo_nhs_id) %>%
+  dplyr::slice_max(.data$attribute_period) %>%
+  dplyr::select(.data$pseudo_nhs_id, .data$cambridge_score)
+
+
+
+
 # Who are the bottom and top spenders in the year after the ACS event (inclusive of ACS event?
 ids_top_5pct = full_data %>%
   dplyr::filter(.data$day_group >=0) %>%
   dplyr::group_by(.data$pseudo_nhs_id) %>%
-  dplyr::summarise(pt_cost = sum(.data$activity_cost, na.rm=T)) %>%
+  dplyr::summarise(pt_cost  = sum(.data$activity_cost, na.rm=T)) %>%
   dplyr::arrange(.data$pt_cost) %>%
   dplyr::mutate(cum_pt_cost = cumsum(.data$pt_cost)) %>%
   dplyr::ungroup() %>%
@@ -421,6 +438,7 @@ ids_bot_5pct = full_data %>%
   dplyr::slice_head(prop=0.05) %>%
   dplyr::select(.data$pseudo_nhs_id) %>%
   dplyr::mutate(comp_group="bot_5pct")
+
 foo=dplyr::left_join(rbind(ids_top_5pct, ids_bot_5pct), full_data_2, by="pseudo_nhs_id") %>%
   dplyr::filter(.data$day_group>=0) %>%
   dplyr::group_by(.data$pseudo_nhs_id, .data$activity_provider) %>%
@@ -433,6 +451,12 @@ foo=dplyr::left_join(rbind(ids_top_5pct, ids_bot_5pct), full_data_2, by="pseudo_
                    pct_male   = sum(sex=="male")/dplyr::n(),
                    pct_stemi  = sum(description_simple=="STEMI")/dplyr::n(),
                    pct_nstemi = sum(description_simple=="NSTEMI")/dplyr::n())
+
+# Cambridge multimorbidity score
+dplyr::left_join(rbind(ids_top_5pct, ids_bot_5pct), cambridge_score_data, by="pseudo_nhs_id") %>%
+  dplyr::group_by(comp_group) %>%
+  dplyr::summarise(av_camb_scr = mean(.data$cambridge_score, na.rm=T),
+                   sd_camb_scr = sd  (.data$cambridge_score, na.rm=T)) %>%
 
 # Do the spends differ between those that had BP checks
 load("nhs_bp_map.RData")
@@ -548,6 +572,26 @@ ggplot(data=full_data %>%
 
 
 
+# Secondary care activity type - post ACS - HEATMAP
+x_bin = 30
+my_breaks = c(rev(seq(-x_bin/2, -90-x_bin,by=-x_bin)), seq(x_bin/2,365+x_bin,by=x_bin))
+my_labels = as.character(zoo::rollmean(my_breaks, 2))
+ggplot(data=full_data %>%
+         dplyr::filter(.data$activity_provider=="secondary" & .data$sec_act_type != "Maternity") %>%
+         dplyr::mutate(time_bins = cut(.data$day_group, breaks=my_breaks, labels=my_labels)) %>%
+         dplyr::group_by(time_bins, sec_act_type) %>%
+         dplyr::summarise(total = sum(.data$activity_cost, na.rm=T) / (lubridate::interval(acs_date_window_min, acs_date_window_max) / lubridate::years(1))) %>%
+         dplyr::ungroup(),
+       aes(x=time_bins, y=sec_act_type, fill=total)) +
+  geom_tile() +
+  labs(title="ACS secondary care spend by speciality (-90<day<=365)",
+       subtitle = "BNSSG Acute Coronary Syndrome Patients Jul 2017 - Dec 2021 (n=5743)",
+       y="Activity Type",
+       x="Time (days)",
+       fill="Total cost, averaged per year (£)") +
+  scale_fill_viridis_c(option="magma", begin = 0, end=1, labels = comma,
+                       trans=scales::log10_trans())
+
 # Secondary care activity specialty - post ACS - HEATMAP
 x_bin = 30
 y_len = 15
@@ -557,10 +601,11 @@ ggplot(data=full_data %>%
          dplyr::filter(.data$activity_provider=="secondary") %>%
          dplyr::mutate(time_bins = cut(.data$day_group, breaks=my_breaks, labels=my_labels)) %>%
          dplyr::group_by(activity_specialty, time_bins, sec_act_type) %>%
-         dplyr::summarise(total = sum(.data$activity_cost)) %>%
+         dplyr::summarise(total = sum(.data$activity_cost, na.rm=T) / (lubridate::interval(acs_date_window_min, acs_date_window_max) / lubridate::years(1))) %>%
          dplyr::ungroup() %>%
          dplyr::mutate(activity_specialty = factor(.data$activity_specialty, levels = unique(.data$activity_specialty[order(.data$total, decreasing=T)]), ordered = T)) %>%
          dplyr::filter(as.integer(.data$activity_specialty)<=y_len),
+                      # sec_act_type == "Non-elective IP"),
        aes(x=time_bins, y=activity_specialty, fill=total)) +
   geom_tile() +
   labs(title="ACS secondary care spend by speciality (-90<day<=365)",
@@ -573,39 +618,6 @@ ggplot(data=full_data %>%
                        trans=scales::pseudo_log_trans(sigma = 100, base = exp(1))) +
   facet_wrap(~ sec_act_type)
 
-# Secondary care activity specialty by HbA1c check - HEATMAP
-x_bin = 30
-y_len = 15
-my_breaks = c(rev(seq(-x_bin/2, -90-x_bin,by=-x_bin)), seq(x_bin/2,365+x_bin,by=x_bin))
-my_labels = as.character(zoo::rollmean(my_breaks, 2))
-ggplot(data=full_data %>%
-         dplyr::filter(.data$activity_provider=="secondary") %>%
-         dplyr::mutate(time_bins = cut(.data$day_group, breaks=my_breaks, labels=my_labels)) %>%
-         dplyr::group_by(activity_specialty, time_bins, sec_act_type) %>%
-         dplyr::summarise(total = sum(.data$activity_cost)) %>%
-         dplyr::ungroup() %>%
-         dplyr::mutate(activity_specialty = factor(.data$activity_specialty, levels = unique(.data$activity_specialty[order(.data$total, decreasing=T)]), ordered = T)) %>%
-         dplyr::filter(as.integer(.data$activity_specialty)<=y_len) %>%
 
-         # need to enter the HbA1c and lipid codes here,
-         #
-         #
-         dplyr::mutate(hba1c_check = sample(c("hba1c", "no hba1c"), nrow(.), replace=TRUE)),
-       #
-       #
-       #
-
-
-       aes(x=time_bins, y=activity_specialty, fill=total)) +
-  geom_tile() +
-  labs(title="ACS secondary care spend by speciality (-90<day<=365)",
-       subtitle = "BNSSG Acute Coronary Syndrome Patients Jul 2017 - Dec 2021 (n=5743)",
-       y="Speciality",
-       x="Time (days)",
-       fill="Total cost (£)") +
-  scale_fill_viridis_c(option="viridis", begin = 0, end=1, labels = comma,
-                       breaks = c(1, 1000, 100000, 10000000),
-                       trans=scales::pseudo_log_trans(sigma = 100, base = exp(1))) +
-  facet_grid(hba1c_check ~ sec_act_type)
 
 
