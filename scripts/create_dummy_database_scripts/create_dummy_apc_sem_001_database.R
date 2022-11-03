@@ -12,12 +12,12 @@ library(RSQLite)
 
 # Connect to the MySQL database
 db_connection <- dbConnect(MySQL(),
-                           user="db_user", password="Mjstedman6^^",
+                           user="root", password="Mjstedman6^^",
                            dbname="ABI", host="localhost")
 
 # Load some dummy data
 # must ensure date formatting yyyy-mm-dd in the .csv !!!!!
-foo <- readr:: read_csv("/Users/nicholassunderland/Documents/2.Medical_work/5.Bristol/acsprojectns/acsprojectns/materials/dummy_databases/vw_APC_SEM_001_dummy_database.csv")
+foo <- readr:: read_csv("/Users/nicholassunderland/git/acsprojectns/materials/dummy_databases/vw_APC_SEM_001_dummy_database.csv")
 
 # Write out the table into the MySQL database
 dbWriteTable(db_connection,
