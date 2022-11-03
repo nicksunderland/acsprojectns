@@ -1,0 +1,8 @@
+{
+    "driver":"mysql",
+    "host": "localhost",
+    "user": "root",
+    "password": "Mjstedman6^^",
+    "testdata": false
+}
+
