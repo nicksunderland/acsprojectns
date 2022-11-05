@@ -37,6 +37,7 @@ cohort <- svr$ABI$vw_APC_SEM_001() %>%
   run()
 
 
+
 # What proportion of heart attack patients in this cohort are current smokers?
 smokers <- svr$MODELLING_SQL_AREA$primary_care_attributes() %>%
   select(nhs_number, attribute_period, smoking) %>%
