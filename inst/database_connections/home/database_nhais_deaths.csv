@@ -1,0 +1,10 @@
+variable,value
+driver,MariaDB
+server,mac
+trusted_connection,True
+port,1433
+host,localhost
+database,ABI
+table,vw_NHAIS_Deaths_All
+user,db_user
+password,Mjstedman6^^

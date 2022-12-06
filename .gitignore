@@ -3,7 +3,7 @@
 .Rdata
 .httr-oauth
 .DS_Store
-/inst/database_connections
+/inst/database_connections/work
 /data
 /materials/figures
 /materials/notes
