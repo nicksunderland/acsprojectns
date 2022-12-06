@@ -2,7 +2,7 @@ standardised_var_name,vw_APC_SEM_001,vw_APC_SEM_Spell_001,vw_AE_SEM_001,swd_acti
 pseudo_nhs_id,AIMTC_Pseudo_NHS,AIMTC_Pseudo_NHS,AIMTC_Pseudo_NHS,nhs_number,nhs_number,nhs_number,nhs_number,Derived_Pseudo_NHS,Derived_Pseudo_NHS,nhs_number,NA
 age,AIMTC_Age,AIMTC_Age,AIMTC_Age,NA,age,age,NA,NA,NA,NA,NA
 sex,Sex,Sex,Sex,NA,sex,sex,NA,NA,NA,NA,NA
-ethnicity,EthnicGroup,EthnicGroup,NA,NA,NA,NA,NA,NA,NA,NA,NA
+ethnicity,EthnicGroup,EthnicGroup,NA,NA,ethnicity,ethnicity,NA,NA,NA,NA,NA
 episode_start_date,StartDate_ConsultantEpisode,StartDate_ConsultantEpisode,ArrivalDate,arr_date,NA,NA,NA,NA,NA,NA,NA
 episode_end_date,EndDate_ConsultantEpisode,EndDate_ConsultantEpisode,AEDepartureDate,dep_date,NA,NA,NA,NA,NA,NA,NA
 episode_start_time,StartTime_Episode,StartTime_Episode,ArrivalTime,NA,NA,NA,NA,NA,NA,NA,NA
@@ -123,7 +123,6 @@ smoking_status,NA,NA,NA,NA,smoking,smoking,NA,NA,NA,NA,NA
 bmi,NA,NA,NA,NA,NA,bmi,NA,NA,NA,NA,NA
 obesity,NA,NA,NA,NA,obesity,obesity,NA,NA,NA,NA,NA
 obesity_qof,NA,NA,NA,NA,qof_obesity,qof_obesity,NA,NA,NA,NA,NA
-ethnicity,NA,NA,NA,NA,ethnicity,ethnicity,NA,NA,NA,NA,NA
 electronic_frailty_index,NA,NA,NA,NA,NA,efi_category,NA,NA,NA,NA,NA
 dna_cpr,NA,NA,NA,NA,NA,dna_cpr,NA,NA,NA,NA,NA
 hypertension,NA,NA,NA,NA,ht,ht,NA,NA,NA,NA,NA
