@@ -2,6 +2,7 @@
 library(devtools)
 library(icdb)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 rm(list=ls())
 load_all()
@@ -26,6 +27,9 @@ dat_pcn <- svr$MODELLING_SQL_AREA$swd_attribute %>%
 # Get the first ACS episode within the time window
 dat_sus <- svr$ABI$vw_APC_SEM_001 %>%
   select(AIMTC_Pseudo_NHS,
+         AIMTC_Age,
+         Sex,
+         EthnicGroup,
          AIMTC_PCTRegGP,
          AIMTC_PracticeCodeOfRegisteredGP,
          AdmissionMethod_HospitalProviderSpell,
@@ -37,30 +41,47 @@ dat_sus <- svr$ABI$vw_APC_SEM_001 %>%
          AdmissionMethod_HospitalProviderSpell %in% !!adm$admission_method_code[grep("emergency", adm$admission_method_description)],
          AIMTC_PCTRegGP %in% !!ccg$ccg_provider_code) %>%
   codes_from("icd10/acs.yaml", DiagnosisPrimary_ICD) %>%
+  run() %>%
   group_by(AIMTC_Pseudo_NHS) %>%
+  arrange(AIMTC_ProviderSpell_Start_Date, .by_group=T) %>%
+  fill(c(AIMTC_Age, Sex, EthnicGroup), .direction="downup") %>%
   slice_min(AIMTC_ProviderSpell_Start_Date, with_ties = FALSE) %>%
   ungroup() %>%
-  show_query() %>%
-  run() %>%
+  mutate(DiagnosisPrimary_ICD = drop_detail(.data$DiagnosisPrimary_ICD, level=2)) %>%
   select(nhs_number = AIMTC_Pseudo_NHS,
+         age        = AIMTC_Age,
+         sex        = Sex,
+         ethnicity  = EthnicGroup,
          prac_code  = AIMTC_PracticeCodeOfRegisteredGP,
          epi_start  = AIMTC_ProviderSpell_Start_Date,
          epi_end    = AIMTC_ProviderSpell_End_Date,
-         primary_diagnosis = DiagnosisPrimary_ICD) %>%
-  mutate(primary_diagnosis = drop_detail(.data$primary_diagnosis, level=2)) %>%
-  left_join(dat_pcn, by="prac_code")
+         primary_diagnosis = DiagnosisPrimary_ICD)
 
 # The SWD date range
 dat_attr <- svr$MODELLING_SQL_AREA$primary_care_attributes %>%
-  select(nhs_number, attribute_period) %>%
+  select(nhs_number, attribute_period, sex, ethnicity) %>%
   filter(nhs_number %in% !!sus$nhs_number) %>%
   run() %>%
   group_by(nhs_number) %>%
   mutate(swd_min = min(attribute_period, na.rm=T),
          swd_max = max(attribute_period, na.rm=T)) %>%
-  select(nhs_number, swd_min, swd_max) %>%
-  slice(n=1) %>%
-  ungroup()
+  arrange(attribute_period, .by_group=T) %>%
+  fill(c(sex, ethnicity), .direction="downup") %>%
+  slice_max(attribute_period, with_ties = FALSE) %>%
+  ungroup() %>%
+  select(nhs_number, sex, ethnicity, swd_min, swd_max)
+
+# Create the cohort
+ethnicity_codes <- get_codes(file_path = system.file("ethnicity_codes/ethnicity_codes.csv", package = "acsprojectns"))
+sex_codes       <- get_codes(file_path = system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
+cohort <- dat_sus %>%
+  left_join(dat_pcn, by="prac_code") %>%
+  left_join(dat_attr, by="nhs_number") %>%
+  mutate(sex_code       = do.call(dplyr::coalesce, across(contains("sex"))),
+         ethnicity_code = do.call(dplyr::coalesce, across(contains("ethnicity")))) %>%
+  left_join(sex_codes, by="sex_code") %>%
+  left_join(ethnicity_codes, by="ethnicity_code") %>%
+  select(nhs_number, age, sex, ethnicity, ethnicity_group, prac_code, epi_start, epi_end, primary_diagnosis, swd_min, swd_max)
 
 # The prescriptions
 med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
@@ -78,35 +99,27 @@ dat_meds <- svr$MODELLING_SQL_AREA$swd_activity %>%
   dplyr::mutate(med_name  = trimws(stringr::str_match(spec_l1b, pattern = med_filter_string)[,2]),
                 med_dose  = stringr::str_match(spec_l1b, pattern = med_filter_string)[,3],
                 med_units = stringr::str_match(spec_l1b, pattern = med_filter_string)[,4]) %>%
-  select(nhs_number,
-         prescription_date = arr_date,
-         med_name,
-         med_dose,
-         med_units) %>%
-  # Get the lipid strategy
   mutate(lipid_strat = case_when(is.na(med_name)                               ~ "None",
                                  med_name=="inclisiran" |
                                  (med_name=="atorvastatin" & med_dose >=40) |
                                  (med_name=="rosuvastatin" & med_dose >=20) |
                                  (med_name=="simvastatin"  & med_dose >=80)    ~ "High intensity",
                                  TRUE                                          ~ "Low or Medium Intensity"),
-         lipid_strat = factor(lipid_strat, levels=c("None","Low or Medium Intensity","High intensity")))
+         lipid_strat = factor(lipid_strat, levels=c("None","Low or Medium Intensity","High intensity"))) %>%
+  select(nhs_number, prescription_date = arr_date, med_name, med_dose, med_units)
 
 #############################################
 ## ANALYSIS
-
 strategy_over_time <- purrr::map_df(.x = 1:12,
                                     .f = function(win, win_unit="months", dat_sus, dat_attr, dat_meds){
 
-  cohort_with_swd_coverage <- dat_sus %>%
-    # Join the swd date range from the attributes history data
-    left_join(dat_attr, by="nhs_number") %>%
+  cohort_with_swd_coverage <- cohort %>%
     # filter out people that do not have swd data covering the period of interest
     filter(across(c(swd_min, swd_max, epi_start, epi_end), ~!is.na(.x)),
            lubridate::interval(epi_end, epi_end+lubridate::duration(win,win_unit)) %within% lubridate::interval(swd_min, swd_max))
 
 
-  avg_med_strat_in_window <- dat_sus %>%
+  avg_med_strat_in_window <- cohort %>%
     # Join the medication data
     left_join(dat_meds, by="nhs_number") %>%
     # Filter out the prescriptions that are out of range
