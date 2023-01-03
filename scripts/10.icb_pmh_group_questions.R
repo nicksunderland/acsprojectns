@@ -4,6 +4,8 @@ library(icdb)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(grid)
+library(rayshader)
 library(viridis)
 library(bigsnpr)
 library(kableExtra)
@@ -62,7 +64,7 @@ dat_sus <- svr$ABI$vw_APC_SEM_001 %>%
 
 # The SWD date range
 dat_attr <- svr$MODELLING_SQL_AREA$primary_care_attributes %>%
-  select(nhs_number, attribute_period, sex, ethnicity, lsoa) %>%
+  select(nhs_number, attribute_period, sex, ethnicity, lsoa, prim_language) %>%
   filter(nhs_number %in% !!dat_sus$nhs_number) %>%
   run() %>%
   group_by(nhs_number) %>%
@@ -72,7 +74,7 @@ dat_attr <- svr$MODELLING_SQL_AREA$primary_care_attributes %>%
   fill(c(sex, ethnicity, lsoa), .direction="downup") %>%
   slice_max(attribute_period, with_ties = FALSE) %>%
   ungroup() %>%
-  select(nhs_number, sex, ethnicity, lsoa, swd_min, swd_max)
+  select(nhs_number, sex, ethnicity, lsoa, swd_min, swd_max, prim_language)
 
 # LSOA : MSOA mapping
 dat_msoa <- svr$MODELLING_SQL_AREA$swd_LSOA_descriptions %>%
@@ -110,7 +112,7 @@ cohort <- dat_sus %>%
          ethnicity_code = do.call(dplyr::coalesce, across(contains("ethnicity")))) %>%
   left_join(sex_codes, by="sex_code") %>%
   left_join(ethnicity_codes, by="ethnicity_code") %>%
-  select(nhs_number, age, sex, ethnicity, ethnicity_group, lsoa, msoa, prac_code, pcn, imd, segment, epi_start, epi_end, primary_diagnosis, swd_min, swd_max)
+  select(nhs_number, age, sex, ethnicity, ethnicity_group, prim_language, lsoa, msoa, prac_code, pcn, imd, segment, epi_start, epi_end, primary_diagnosis, swd_min, swd_max)
 
 # The prescriptions
 med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
@@ -221,14 +223,100 @@ strategy_over_time %>%
   coord_flip() +
   facet_wrap(~period, nrow=1)
 
-# Bar chart of average strategy per practice
+# PCN data
+df_pcn <- strategy_over_time %>%
+  group_by(period, pcn) %>%
+  mutate(n_per_group=n()) %>%
+  group_by(period, pcn, strat_mode) %>%
+  summarise(pct = n()/n_per_group[[1]], n=n_per_group[[1]]) %>%
+  mutate(pcn = factor(pcn, levels=filter(.,period=="3_months",strat_mode=="None") %>% arrange(pct) %>% pull(pcn) %>% as.character(.))) %>%
+  filter(!is.na(pcn)) %>%
+  ungroup()
+
+# 5 PCN with most no therapy patients
+pcn5 <- df_pcn %>%
+  filter(period=="3_months",
+         strat_mode=="None") %>%
+  mutate(num_none = pct*n) %>%
+  slice_max(num_none, n=5) %>%
+  pull(pcn)
+
+# Demographics of the 5 worst PCNs
 strategy_over_time %>%
+  filter(pcn %in% pcn5) %>%
+  group_by(pcn) %>%
+  summarise(n = n(),
+            min_age= min(age, na.rm=T),
+            av_age = mean(age, na.rm=T),
+            av_imd = mean(imd, na.rm=T),
+            av_camb= mean(segment, na.rm=T),
+            pct_stemi= sum(primary_diagnosis=="acs.stemi")/n(),
+            n_none   = sum(strat_mode=="None"),
+            pct_none = sum(strat_mode=="None")/n(),
+            pct_low  = sum(strat_mode=="Low or Medium Intensity")/n(),
+            pct_high = sum(strat_mode=="High intensity")/n()) %>%
+  arrange(desc(n_none)) %>%
+  kbl() %>%
+  kable_minimal()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Bar chart of average strategy per practice
+df_prac <- strategy_over_time %>%
   group_by(period, prac_code) %>%
   mutate(n_per_group=n()) %>%
   group_by(period, prac_code, strat_mode) %>%
   summarise(pct = n()/n_per_group[[1]], n=n_per_group[[1]]) %>%
   mutate(prac_code = factor(prac_code, levels=filter(.,period=="3_months",strat_mode=="None") %>% arrange(pct) %>% pull(prac_code) %>% as.character(.))) %>%
   filter(!is.na(prac_code)) %>%
+  ungroup()
+
+# GP practice data
+gp_prac_data = read.csv(system.file("gp_practice_details", "epraccur.csv", package="acsprojectns"),header = FALSE) %>%
+  select(prac_code = V1,
+         prac_name = V2,
+         prac_postcode = V10)
+
+# 10 practices with most no therapy patients
+gp10 <- df_prac %>%
+  filter(period=="3_months",
+         strat_mode=="None") %>%
+  mutate(num_none = pct*n) %>%
+  slice_max(num_none, n=10) %>%
+  left_join(gp_prac_data, by="prac_code") %>%
+  pull(prac_code)
+
+# Demographics of the 10 worst GP practices
+strategy_over_time %>%
+  filter(prac_code %in% gp10) %>%
+  group_by(prac_code) %>%
+  summarise(n = n(),
+            min_age= min(age, na.rm=T),
+            av_age = mean(age, na.rm=T),
+            av_imd = mean(imd, na.rm=T),
+            av_camb= mean(segment, na.rm=T),
+            pct_stemi= sum(primary_diagnosis=="acs.stemi")/n(),
+            n_none   = sum(strat_mode=="None"),
+            pct_none = sum(strat_mode=="None")/n(),
+            pct_low  = sum(strat_mode=="Low or Medium Intensity")/n(),
+            pct_high = sum(strat_mode=="High intensity")/n()) %>%
+  arrange(desc(n_none)) %>%
+  left_join(gp_prac_data, by="prac_code")
+
+# Bar chart of average strategy per practice
+df_prac %>%
   ggplot(aes(x=prac_code, y=pct, fill=forcats::fct_rev(strat_mode))) +
   geom_col() +
   geom_text(data = . %>% group_by(prac_code) %>% slice(n=1) %>% select(n, strat_mode),
@@ -238,10 +326,42 @@ strategy_over_time %>%
        subtitle = "Cohort July 2018 - Dec 2021",
        fill="Lipid lowering therapy",
        xlab = "Percentage",
-       ylab= "GP practice")
+       ylab= "GP practice") +
   facet_wrap(~period, nrow=1)
 
-# Maps
+
+
+
+# # Ethnicity across practices
+# strategy_over_time %>%
+#   group_by(pcn) %>% # Number in each practice
+#   mutate(n_prac=n()) %>%
+#   group_by(period, pcn) %>% # Number in each practice in each period
+#   mutate(n_period_prac=n()) %>%
+#   group_by(period, pcn, strat_mode) %>%  # % in each medication strategy, in each period, in each practice
+#   mutate(pct_strategy = n()/n_period_prac[[1]]) %>%
+#   mutate(pcn = factor(pcn, levels = filter(., period=="3_months",strat_mode=="None") %>%  # Reorder practice code factor by the % of patients with "None" therapy at 3 months
+#                                                 arrange(pct_strategy) %>%
+#                                                 pull(pcn) %>%
+#                                                 unique(.) %>%
+#                                                 as.character(.))) %>%
+#   filter(!is.na(pcn)) %>% # Ditch NA practices
+#   group_by(pcn, ethnicity_group) %>% # % each ethnicity in each practice
+#   summarise(pct_ethnic_group = n()/n_prac[[1]],
+#             n_prac = n_prac[[1]]) %>%
+#   ungroup() %>%
+#   complete(pcn, ethnicity_group, fill=list(pct_ethnic_group=0)) %>%
+#   ggplot(aes(x=pcn, y=pct_ethnic_group, fill=forcats::fct_rev(ethnicity_group))) +
+#   geom_col() +
+#   coord_flip() +
+#   labs(title = "Prescribed lipid lowering therapy post heart attack",
+#        subtitle = "Cohort July 2018 - Dec 2021",
+#        fill="Lipid lowering therapy",
+#        xlab = "Percentage",
+#        ylab= "GP practice") +
+# facet_wrap(~period, nrow=1)
+
+# Maps - percentage not on lipid therapy at 3 months
 ggplot() +
   geom_polygon(data    = gen_msoa_geo_data(dat=strategy_over_time %>%
                                              filter(period=="3_months") %>%
@@ -251,7 +371,7 @@ ggplot() +
                                              filter(strat_mode=="None") %>%
                                              summarise(values=n()/n[[1]]) %>%
                                              select(msoa, values)),
-               mapping = aes(x=long, y=lat, group=group, fill=values), alpha=0.9, colour="white", linewidth=0.1) +
+               mapping = aes(x=long, y=lat, group=group, fill=values), alpha=0.9, colour="white", size=0.1) +
   theme_void() +
   coord_map() +
   labs(title = "Percetage of heart attack patients not prescribed lipid lowering\ntherapy at 3 months post event",
@@ -265,6 +385,50 @@ ggplot() +
   )
 
 
+
+
+
+# Maps - absolut numbers not on lipid therapy at 3 months
+ggplot() +
+  geom_polygon(data    = gen_msoa_geo_data(dat=strategy_over_time %>%
+                                             filter(period=="3_months") %>%
+                                             group_by(msoa) %>%
+                                             summarise(values=mean(n())) %>%
+                                             select(msoa, values)),
+               mapping = aes(x=long, y=lat, group=group, fill=values), alpha=0.9, colour="white", size=0.1) +
+  theme_void() +
+  coord_map() +
+  scale_fill_continuous(name = 'Num. ACS patients', low="lightgray", high="black") +
+
+  geom_point(data    = cbind(gen_msoa_geo_data(dat=strategy_over_time %>%
+                                           filter(period=="3_months") %>%
+                                           group_by(msoa) %>%
+                                           mutate(n=n()) %>%
+                                           filter(strat_mode=="None") %>%
+                                           summarise(values=n()/n[[1]]) %>%
+                                           select(msoa, values)),
+                             gen_msoa_geo_data(dat=strategy_over_time %>%
+                                                 filter(period=="3_months" & (strat_mode=="None")) %>%
+                                                 group_by(msoa) %>%
+                                                 summarise(values=n()) %>%
+                                                 select(msoa, values)) %>%
+                               select(n=values)) %>%
+               group_by(msoa) %>%
+               summarise(lat=mean(lat), long=mean(long), value=mean(values), n=mean(n)),
+             mapping = aes(x=long, y=lat, color=value, size=n)) +
+  scale_colour_gradient(name = '% no therapy', low="green", high="red") +
+  scale_size_continuous(name = 'Num. no therapy', range = c(1, 6), breaks = seq(0, 20, 5)) +
+  # scale_size_continuous(range = c(1, 5)) +
+
+
+  labs(title = "Number of heart attack patients not prescribed lipid lowering\ntherapy at 3 months post event",
+       subtitle = "BNSSG middle layer super output areas (July 2018 - Dec 2021)",
+       fill="Heart attack patients") +
+
+  theme(plot.title      = element_text(size= 16, hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.40, l = 2, unit = "cm")),
+        plot.subtitle   = element_text(size= 12, hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.43, l = 2, unit = "cm")),
+        legend.position = c(0.20, 0.65)
+  )
 
 
 
