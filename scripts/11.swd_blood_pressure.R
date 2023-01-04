@@ -28,6 +28,9 @@ load_all()
 # Connect to the ICB server
 svr <- icdb::server("XSW")
 
+# Number of people in SWD
+total_num_swd <- svr$MODELLING_SQL_AREA$swd_activity %>% distinct(nhs_number) %>% run() %>% nrow()
+
 # All SWD patients with at least one blood pressure measurement
 bp <- svr$MODELLING_SQL_AREA$swd_measurement %>%
   select(nhs_number, measurement_name, measurement_date, measurement_value) %>%
@@ -104,7 +107,6 @@ blood_pressure_meds <- c(diuretics, beta_blockers, ace_inhibitors, arbs, ccbs, a
 
 # Get the medication data
 med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
-med_filter <- paste0("\"spec_l1b\" %LIKE% %", blood_pressure_meds, "%", collapse = " | ")
 medications <- svr$MODELLING_SQL_AREA$swd_measurement %>%
   select(nhs_number, measurement_name, measurement_value) %>%
   filter(measurement_name == "blood_pressure",
@@ -114,12 +116,12 @@ medications <- svr$MODELLING_SQL_AREA$swd_measurement %>%
   # joins much quicker than passing in loads of IDs
   left_join( svr$MODELLING_SQL_AREA$swd_activity %>% select(nhs_number, prescription_date = arr_date, pod_l1, spec_l1b),
              by = "nhs_number") %>%
-  filter(pod_l1 == "primary_care_prescription") %>%
+  filter(pod_l1 == "primary_care_prescription",
+         nhs_number =="9000000018") %>%
   filter(spec_l1b  %LIKE% '%chlorthalidone%' | spec_l1b  %LIKE% '%chlorothiazide%' | spec_l1b  %LIKE% '%hydrochlorothiazide%' | spec_l1b  %LIKE% '%indapamide%' | spec_l1b  %LIKE% '%metolazone%' | spec_l1b  %LIKE% '%amiloride%' | spec_l1b  %LIKE% '%spironolactone%' | spec_l1b  %LIKE% '%triamterene%' | spec_l1b  %LIKE% '%bumetanide%' | spec_l1b  %LIKE% '%furosemide%' | spec_l1b  %LIKE% '%torsemide%' | spec_l1b  %LIKE% '%acebutolol%' | spec_l1b  %LIKE% '%atenolol%' | spec_l1b  %LIKE% '%betaxolol%' | spec_l1b  %LIKE% '%bisoprolol%' | spec_l1b  %LIKE% '%metoprolol%' | spec_l1b  %LIKE% '%nadolol%' | spec_l1b  %LIKE% '%pindolol%' | spec_l1b  %LIKE% '%propranolol%' | spec_l1b  %LIKE% '%solotol%' | spec_l1b  %LIKE% '%timolol%' | spec_l1b  %LIKE% '%benazepril%' | spec_l1b  %LIKE% '%captopril%' | spec_l1b  %LIKE% '%enalapril%' | spec_l1b  %LIKE% '%fosinopril%' | spec_l1b  %LIKE% '%lisinopril%' | spec_l1b  %LIKE% '%moexipril%' | spec_l1b  %LIKE% '%perindopril%' | spec_l1b  %LIKE% '%quinapril%' | spec_l1b  %LIKE% '%ramipril%' | spec_l1b  %LIKE% '%trandolapril%' | spec_l1b  %LIKE% '%candesartan%' | spec_l1b  %LIKE% '%eprosartan%' | spec_l1b  %LIKE% '%irbesartan%' | spec_l1b  %LIKE% '%losartan%' | spec_l1b  %LIKE% '%telmisartan%' | spec_l1b  %LIKE% '%valsartan%' | spec_l1b  %LIKE% '%amlodipine%' | spec_l1b  %LIKE% '%diltiazem%' | spec_l1b  %LIKE% '%felodipine%' | spec_l1b  %LIKE% '%isradipine%' | spec_l1b  %LIKE% '%nicardipine%' | spec_l1b  %LIKE% '%nifedipine%' | spec_l1b  %LIKE% '%nisoldipine%' | spec_l1b  %LIKE% '%verapamil%' | spec_l1b  %LIKE% '%doxazosin%' | spec_l1b  %LIKE% '%prazosin%' | spec_l1b  %LIKE% '%terazosin%' | spec_l1b  %LIKE% '%carvedilol%' | spec_l1b  %LIKE% '%labetalol%' | spec_l1b  %LIKE% '%methyldopa%' | spec_l1b  %LIKE% '%clonidine%' | spec_l1b  %LIKE% '%guanfacine%' | spec_l1b  %LIKE% '%hydralazine%' | spec_l1b  %LIKE% '%minoxidil%' | spec_l1b  %LIKE% '%eplerenone%' | spec_l1b  %LIKE% '%spironolactone%' | spec_l1b  %LIKE% '%aliskiren%') %>%
   select(nhs_number, prescription_date, spec_l1b) %>%
   show_query() %>%
   run() %>%
-
   filter(nhs_number %in% !!blood_pressures$nhs_number) %>%
   mutate(med_name  = trimws(stringr::str_match(spec_l1b, pattern = med_filter_string)[,2]),
          med_dose  = stringr::str_match(spec_l1b, pattern = med_filter_string)[,3],
@@ -186,11 +188,22 @@ data <- blood_pressures %>%
 t1 <- data %>%
   group_by(bp_control_cat_any) %>%
   summarise(n=n()) %>%
-  kable()
+  ungroup() %>%
+  complete(bp_control_cat_any, fill=list("n"=0)) %>%
+  rbind(data.frame("bp_control_cat_any" = "TOTAL", n = total_num_swd)) %>%
+  kbl() %>%
+  kable_minimal()
+t1
+
 t2 <- data %>%
   group_by(bp_control_cat_any, age_cat) %>%
   summarise(n=n()) %>%
-  kable()
+  ungroup() %>%
+  complete(bp_control_cat_any, age_cat, fill=list("n"=0)) %>%
+  rbind(data.frame("bp_control_cat_any" = "TOTAL", "age_cat"=NA, "n"= total_num_swd)) %>%
+  kbl() %>%
+  kable_minimal()
+t2
 
 # Plot the bar chats for numbers of patients - ANY BP value
 p1 <- ggplot(data    = data,
@@ -205,7 +218,11 @@ p1 <- ggplot(data    = data,
        x        = 'BP control category',
        y        = 'Count',
        fill     = 'Age')
+png(file=paste0(system.file("extdata/figures", package="acsprojectns"), "/p1.png"),
+    width=600, height=800)
 p1
+dev.off()
+
 
 # Plot the bar chats for numbers of patients - MEAN BP value
 p2 <- ggplot(data    = data,
@@ -219,7 +236,10 @@ p2 <- ggplot(data    = data,
        x        = 'BP control category',
        y        = 'Count',
        fill     = 'Age')
+png(file=paste0(system.file("extdata/figures", package="acsprojectns"), "/p2.png"),
+    width=800, height=800)
 p2
+dev.off()
 
 # # Plot the bar chats for numbers of patients - ANY BP value but split by whether or not the time
 # # period in which the patient has hypertensive values, overlaps the period in which they are
@@ -243,8 +263,18 @@ figure <- ggarrange(p1, p2,
                     labels = c("A", "B"),
                     ncol = 1, nrow = 2)
 
-png(file=paste0(system.file("extdata/figures/"), "bp_counts.png"),
-    width=600, height=1200)
+png(file=paste0(system.file("extdata/figures", package="acsprojectns"), "/bp_counts.png"),
+    width=800, height=1600)
 figure
 dev.off()
 
+
+#push to github
+library(gert)
+git_config_global_set("user.name", "nicksunderland")
+git_config_global_set("user.email", "nicholas.p.sunderland@gmail.com")
+git_config_global()
+git_find("\\\\BNS-000-FS02.BNSSG.XSWhealth.nhs.uk/BNS-CCG-Home/Nicholas.Sunderland/Documents/git_projects/acsprojectns")
+git_add(".")
+git_commit("message", repo = ".")
+git_push(remote = "origin")
