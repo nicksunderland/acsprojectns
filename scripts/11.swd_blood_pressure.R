@@ -116,8 +116,7 @@ medications <- svr$MODELLING_SQL_AREA$swd_measurement %>%
   # joins much quicker than passing in loads of IDs
   left_join( svr$MODELLING_SQL_AREA$swd_activity %>% select(nhs_number, prescription_date = arr_date, pod_l1, spec_l1b),
              by = "nhs_number") %>%
-  filter(pod_l1 == "primary_care_prescription",
-         nhs_number =="9000000018") %>%
+  filter(pod_l1 == "primary_care_prescription") %>%
   filter(spec_l1b  %LIKE% '%chlorthalidone%' | spec_l1b  %LIKE% '%chlorothiazide%' | spec_l1b  %LIKE% '%hydrochlorothiazide%' | spec_l1b  %LIKE% '%indapamide%' | spec_l1b  %LIKE% '%metolazone%' | spec_l1b  %LIKE% '%amiloride%' | spec_l1b  %LIKE% '%spironolactone%' | spec_l1b  %LIKE% '%triamterene%' | spec_l1b  %LIKE% '%bumetanide%' | spec_l1b  %LIKE% '%furosemide%' | spec_l1b  %LIKE% '%torsemide%' | spec_l1b  %LIKE% '%acebutolol%' | spec_l1b  %LIKE% '%atenolol%' | spec_l1b  %LIKE% '%betaxolol%' | spec_l1b  %LIKE% '%bisoprolol%' | spec_l1b  %LIKE% '%metoprolol%' | spec_l1b  %LIKE% '%nadolol%' | spec_l1b  %LIKE% '%pindolol%' | spec_l1b  %LIKE% '%propranolol%' | spec_l1b  %LIKE% '%solotol%' | spec_l1b  %LIKE% '%timolol%' | spec_l1b  %LIKE% '%benazepril%' | spec_l1b  %LIKE% '%captopril%' | spec_l1b  %LIKE% '%enalapril%' | spec_l1b  %LIKE% '%fosinopril%' | spec_l1b  %LIKE% '%lisinopril%' | spec_l1b  %LIKE% '%moexipril%' | spec_l1b  %LIKE% '%perindopril%' | spec_l1b  %LIKE% '%quinapril%' | spec_l1b  %LIKE% '%ramipril%' | spec_l1b  %LIKE% '%trandolapril%' | spec_l1b  %LIKE% '%candesartan%' | spec_l1b  %LIKE% '%eprosartan%' | spec_l1b  %LIKE% '%irbesartan%' | spec_l1b  %LIKE% '%losartan%' | spec_l1b  %LIKE% '%telmisartan%' | spec_l1b  %LIKE% '%valsartan%' | spec_l1b  %LIKE% '%amlodipine%' | spec_l1b  %LIKE% '%diltiazem%' | spec_l1b  %LIKE% '%felodipine%' | spec_l1b  %LIKE% '%isradipine%' | spec_l1b  %LIKE% '%nicardipine%' | spec_l1b  %LIKE% '%nifedipine%' | spec_l1b  %LIKE% '%nisoldipine%' | spec_l1b  %LIKE% '%verapamil%' | spec_l1b  %LIKE% '%doxazosin%' | spec_l1b  %LIKE% '%prazosin%' | spec_l1b  %LIKE% '%terazosin%' | spec_l1b  %LIKE% '%carvedilol%' | spec_l1b  %LIKE% '%labetalol%' | spec_l1b  %LIKE% '%methyldopa%' | spec_l1b  %LIKE% '%clonidine%' | spec_l1b  %LIKE% '%guanfacine%' | spec_l1b  %LIKE% '%hydralazine%' | spec_l1b  %LIKE% '%minoxidil%' | spec_l1b  %LIKE% '%eplerenone%' | spec_l1b  %LIKE% '%spironolactone%' | spec_l1b  %LIKE% '%aliskiren%') %>%
   select(nhs_number, prescription_date, spec_l1b) %>%
   show_query() %>%
@@ -151,14 +150,14 @@ data <- blood_pressures %>%
   mutate(max_num_meds = replace_na(max_num_meds, 0),
          age          = replace_na(age, 70),
          bp_control_cat_any = case_when(
-         max_num_meds>3 & age<80  & (sbp_hi>=140 | dbp_hi>=90) ~ "resistant HTN (>=3 meds, any BP)",
-      max_num_meds>=3 & age>=80 & (sbp_hi>=150 | dbp_hi>=90) ~ "resistant HTN (>=3 meds, any BP)",
-      max_num_meds<3  & age<80  & (sbp_hi>=140 | dbp_hi>=90) ~ "uncontrolled HTN (<=2 meds, any BP)",
-      max_num_meds<3  & age>=80 & (sbp_hi>=150 | dbp_hi>=90) ~ "uncontrolled HTN (<=2 meds, any BP)",
-      max_num_meds==0 ~ "normal BP (0 meds)",
-      max_num_meds<3  ~ "controlled HTN (<=2 meds, any BP)",
-      max_num_meds>=3 ~ "controlled HTN (>=3 meds, any BP)",
-      TRUE ~ "error"),
+         max_num_meds>=3 & age<80  & (sbp_hi>=140 | dbp_hi>=90) ~ "resistant HTN (>=3 meds, any BP)",
+         max_num_meds>=3 & age>=80 & (sbp_hi>=150 | dbp_hi>=90) ~ "resistant HTN (>=3 meds, any BP)",
+         max_num_meds<3  & age<80  & (sbp_hi>=140 | dbp_hi>=90) ~ "uncontrolled HTN (<=2 meds, any BP)",
+         max_num_meds<3  & age>=80 & (sbp_hi>=150 | dbp_hi>=90) ~ "uncontrolled HTN (<=2 meds, any BP)",
+         max_num_meds==0 ~ "normal BP (0 meds)",
+         max_num_meds<3  ~ "controlled HTN (<=2 meds, any BP)",
+         max_num_meds>=3 ~ "controlled HTN (>=3 meds, any BP)",
+         TRUE ~ "error"),
     bp_control_cat_any = factor(bp_control_cat_any, levels = c("resistant HTN (>=3 meds, any BP)",
                                                                "uncontrolled HTN (<=2 meds, any BP)",
                                                                "controlled HTN (>=3 meds, any BP)",
@@ -184,23 +183,23 @@ data <- blood_pressures %>%
     age_cat = cut(age, right=FALSE, breaks=age_bands, labels=age_band_labs)
   )
 
-# Tables for the data
+# Tables for the data - for mean BP
 t1 <- data %>%
-  group_by(bp_control_cat_any) %>%
+  group_by(bp_control_cat_mean) %>%
   summarise(n=n()) %>%
   ungroup() %>%
-  complete(bp_control_cat_any, fill=list("n"=0)) %>%
-  rbind(data.frame("bp_control_cat_any" = "TOTAL", n = total_num_swd)) %>%
+  complete(bp_control_cat_mean, fill=list("n"=0)) %>%
+  rbind(data.frame("bp_control_cat_mean" = "TOTAL", n = total_num_swd)) %>%
   kbl() %>%
   kable_minimal()
 t1
 
 t2 <- data %>%
-  group_by(bp_control_cat_any, age_cat) %>%
+  group_by(bp_control_cat_mean, age_cat) %>%
   summarise(n=n()) %>%
   ungroup() %>%
-  complete(bp_control_cat_any, age_cat, fill=list("n"=0)) %>%
-  rbind(data.frame("bp_control_cat_any" = "TOTAL", "age_cat"=NA, "n"= total_num_swd)) %>%
+  complete(bp_control_cat_mean, age_cat, fill=list("n"=0)) %>%
+  rbind(data.frame("bp_control_cat_mean" = "TOTAL", "age_cat"=NA, "n"= total_num_swd)) %>%
   kbl() %>%
   kable_minimal()
 t2
