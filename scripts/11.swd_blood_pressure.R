@@ -50,7 +50,7 @@ bp <- svr$MODELLING_SQL_AREA$swd_measurement %>%
 # Patient current age
 #TODO change this to mean that when calculating the BP cutoff we have the age on the date of the BP
 age_bands     <- c(0,40,60,80,110)
-age_band_labs <- paste0(age_bands[1:length(age_bands)-1], "-", age_bands[2:length(age_bands)]-1)
+age_band_labs <- paste0(age_bands[1:length(age_bands)-1], "-", age_bands[2:length(age_bands)])
 age <- svr$MODELLING_SQL_AREA$swd_attribute %>%
   select(nhs_number, age) %>%
   run() %>%
