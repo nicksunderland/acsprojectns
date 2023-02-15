@@ -26,8 +26,16 @@ header-includes:
 knitr::opts_chunk$set(
   tidy="styler",
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  echo=FALSE
 )
+
+
+# HOW TO GUIDE
+# https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf
+
+
+
 ```
 ```{r child = 'introduction.Rmd'}
 ```
