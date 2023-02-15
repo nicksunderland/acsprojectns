@@ -1,0 +1,66 @@
+---
+title: BNSSG Acute Coronary Syndrome Project
+author: Nicholas Sunderland
+output: 
+  pdf_document: 
+    highlight: pygments # kate/pygments/haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+bibliography: /Users/nicholassunderland/git/thesis/bibliography/phd_proposal.bib
+csl: https://www.zotero.org/styles/nature
+link-citations: true
+reference-section-title: References
+header-includes:
+- \usepackage{fvextra}
+- \usepackage[htt]{hyphenat}
+- \let\NormalTok\texttt
+- \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaksymbolleft={}, showspaces=false, showtabs = false, breaklines, breakanywhere, breaksymbol=, breakanywheresymbolpre=, commandchars=\\\{\}}
+---
+```{=tex}
+\listoffigures
+\listoftables
+\newpage
+```
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  tidy="styler",
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+```{r child = 'introduction.Rmd'}
+```
+```{=tex}
+\newpage
+```
+```{r child = 'methods.Rmd'}
+```
+```{=tex}
+\newpage
+```
+```{r child = 'demographics.Rmd'}
+```
+```{=tex}
+\newpage
+```
+```{r child = 'index_event.Rmd'}
+```
+```{=tex}
+\newpage
+```
+```{r child = 'survival.Rmd'}
+```
+```{=tex}
+\newpage
+```
+```{r child = 'cost.Rmd'}
+```
+```{=tex}
+\newpage
+```
+```{r child = 'discussion.Rmd'}
+```
+```{=tex}
+\newpage
+```
