@@ -1,3 +1,18 @@
 # Demographics
 
-Lorem...
+## Installation
+```{r installation_demog}
+library(acsprojectns)
+library(devtools)
+load_all()
+library(icdb)
+library(kableExtra)
+```
+
+## Connect to the server
+If working outside of the ICB we need to use the synthetic testing data, to create run the script located in scripts/create_dummy_database_scripts/write_testing_sqlite_database.R
+```{r connection}
+flag <- "home"
+srv <- server(config = system.file("database_connections", flag, "sqlite.yaml", package="acsprojectns"))
+kbl(srv$test1, longtable=T, booktabs=T, caption="Test data")
+```

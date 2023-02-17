@@ -1,0 +1,8 @@
+library(RSQLite)
+data("mtcars")
+mtcars$car_names <- rownames(mtcars)
+rownames(mtcars) <- c()
+head(mtcars)
+conn <- dbConnect(RSQLite::SQLite(), file.path(system.file("extdata", package="acsprojectns"), "testing_db.db"))
+dbWriteTable(conn, "test1", mtcars, overwrite=T)
+dbListTables(conn)
