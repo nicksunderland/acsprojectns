@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Homebrew) (preloaded format=pdflatex 2023.1.13)  17 FEB 2023 22:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Homebrew) (preloaded format=pdflatex 2023.1.13)  18 FEB 2023 23:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**/private/var/folders/ml/m1f9g5kj01z9vyy28k7k4j8h0000gn/T/RtmpFttEd6/preview-2
-d063d6166e.dir/main_report.tex
+**/private/var/folders/ml/m1f9g5kj01z9vyy28k7k4j8h0000gn/T/Rtmp5rKGzH/preview-8
+36a6f56bd.dir/main_report.tex
 
-(/private/var/folders/ml/m1f9g5kj01z9vyy28k7k4j8h0000gn/T/RtmpFttEd6/preview-2d
-063d6166e.dir/main_report.tex
+(/private/var/folders/ml/m1f9g5kj01z9vyy28k7k4j8h0000gn/T/Rtmp5rKGzH/preview-83
+6a6f56bd.dir/main_report.tex
 LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2022-02-24>
 (/usr/local/Cellar/texlive/20220321_4/share/texmf-dist/tex/latex/base/article.c
@@ -979,19 +979,24 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {/usr/local/Cellar/texlive/20220321_4/share/texmf-dist/fonts/map/pdftex/updmap/
-pdftex.map}] [2] [3] [4] [5] [6] [7] [8] [9] [10] (./main_report.aux)
+pdftex.map}] [2] [3] [4]
+Overfull \hbox (99.93857pt too wide) in alignment at lines 267--278
+ [] [] [] [] [] 
+ []
+
+[5] [6] [7] [8] [9] (./main_report.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 16338 strings out of 478268
- 268209 string characters out of 5836863
- 626551 words of memory out of 5000000
- 34128 multiletter control sequences out of 15000+600000
+ 16341 strings out of 478268
+ 268257 string characters out of 5836863
+ 602491 words of memory out of 5000000
+ 34130 multiletter control sequences out of 15000+600000
  520716 words of font info for 108 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 74i,7n,77p,1100b,452s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 74i,7n,77p,1099b,452s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/Cellar/texlive/20220321_4/share/texmf-dist/fonts/enc/dvips/lm/lm-
 ec.enc}</usr/local/Cellar/texlive/20220321_4/share/texmf-dist/fonts/type1/publi
 c/lm/lmbx10.pfb></usr/local/Cellar/texlive/20220321_4/share/texmf-dist/fonts/ty
@@ -1000,10 +1005,10 @@ pe1/public/lm/lmbx12.pfb></usr/local/Cellar/texlive/20220321_4/share/texmf-dist
 xmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/Cellar/texlive/20220321_4/
 share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/Cellar/texlive/202
 20321_4/share/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on main_report.pdf (10 pages, 177771 bytes).
+Output written on main_report.pdf (9 pages, 177971 bytes).
 PDF statistics:
- 182 PDF objects out of 1000 (max. 8388607)
- 156 compressed objects within 2 object streams
- 49 named destinations out of 1000 (max. 500000)
- 26713 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 184 PDF objects out of 1000 (max. 8388607)
+ 159 compressed objects within 2 object streams
+ 50 named destinations out of 1000 (max. 500000)
+ 26721 words of extra memory for PDF output out of 29859 (max. 10000000)
 

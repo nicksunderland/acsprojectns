@@ -12,7 +12,23 @@ library(kableExtra)
 ## Connect to the server
 If working outside of the ICB we need to use the synthetic testing data, to create run the script located in scripts/create_dummy_database_scripts/write_testing_sqlite_database.R
 ```{r connection}
-flag <- "home"
-srv <- server(config = system.file("database_connections", flag, "sqlite.yaml", package="acsprojectns"))
-kbl(srv$test1, longtable=T, booktabs=T, caption="Test data")
+flag <- "home" #work
+if(flag == "home"){
+  config <- system.file("database_connections", flag, "mysql.yaml", package="acsprojectns")
+}else{
+  config <- system.file("database_connections", flag, "....fix...", package="acsprojectns")
+}
+srv <- server(config=config)
+kbl(srv$ABI$vw_APC_SEM_001 |> run() |> head(5) |> dplyr::select(1:5), longtable=T, booktabs=T, caption="Example data")
 ```
+
+## Extract the cohort
+We first define the cohort in terms of the ICD-10 codes we are interested in and the time-window in which to look.
+```{r extract_cohort_from_sem}
+#
+```
+
+
+
+
+
