@@ -1,0 +1,76 @@
+## A configuration file is a list of objects. The objects are dictionaries
+## (structures with keys mapped to values). There are four kinds of objects,
+## determined by which of the following keys is present in the object:
+## "database", "table", or "column", or "include"  Configuration files can be
+## included, but the top level of the included file must always be a list
+## (meaning the top level elements begin with a dash). The include line itself
+## is always prefixed by a dash, making the include key an element of a list.
+## The effect of the include is to copy all the contents of the included
+## file into the list which contained the original include.
+##
+## The valid keys in each of the object are as follows:
+##
+## -- Database --
+## Keys: database   the name of the database (unique key in the list)
+##       docs       a description of what the database contains
+##       source     the underlying source database (informational)
+##       tables     a list of table objects stored in the database,
+##                  or include objects storing tables
+##
+## -- Table --
+## Keys: table     the name of the table (unique key in the list)
+##       docs      a description of what the table contains
+##       source    the fully-qualified table name
+##       columns   a list of column objects stored in the database,
+##                 or include objects storing columns
+##
+## -- Column --
+## Keys: column    the name of the column (unique key in the list)
+##       docs      a description of what the database
+##       source    a list of column names to draw values from
+##       strategy  a rule to use to combine the underlying columns
+##
+##
+##
+- database: "sus"
+  docs: "The SUS database contains hospital episode statistics, which contain records of patient care activities that take place in a hospital visit."
+  source: "ABI"
+  tables:
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_episodes.yaml"
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells.yaml"
+
+- database: "mort"
+  docs: "There are two main tables containing death information....."
+  source: "ABI"
+  tables:
+    - table: "civ-reg"
+      docs: "The Civil Registry Mortality table contains information about when a person died and what they died of, listed as ICD10 diagnosis codes. It also has lots of other information, such as where they died."
+      source: "test_lookup_test"
+      # Raw is used to import all the columns as-is. This overrides the columns key. Mapping the columns properly is preferred.
+      raw: yes
+    - table: "nhais"
+      docs: "NHAIS Deaths table...."
+      source: "test_lookup_test"
+      raw: yes
+
+- database: "swd"
+  docs: "The MODELLING_SQL_AREA database contains the System Wide Dataset tables (activity, attributes, measurements), which bring together data from primary care (GPs), secondary care (hsopitals), mental health, and community care services."
+  source: "MODELLING_SQL_AREA"
+  tables:
+    ## This will paste a list at the current level. (If there were a leading dash, the list would be nested)
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/swd.yaml"
+    - table: "attr_h"
+      docs: "The SWD attributes-history table contains every monthly snapshot of patient attributes going back to inception of the swd attributes table in 201X(?when, look this up)."
+      source:
+        catalog: "MODELLING_SQL_AREA"
+        # schema: "dbo"
+        table: "primary_care_attributes"
+      raw: yes
+
+    - table: "lsoa"
+      docs: "The LSOA (Lower Super Output Area) table contains details about the local areas in Bristol. We need this as it provides the key for matching patients to the various local 'regions' - in order of size: 'wards', 'LSOAs' and 'MSOAs' (Middle Super Output Areas). TODO: there are quite a few of these tables, find the right one"
+      source:
+        catalog: "MODELLING_SQL_AREA"
+        # schema: "dbo"
+        table: "swd_LSOA_descriptions"
+      raw: yes

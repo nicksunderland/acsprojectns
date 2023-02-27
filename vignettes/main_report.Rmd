@@ -22,20 +22,19 @@ header-includes:
 \listoftables
 \newpage
 ```
-```{r, include = FALSE}
+```{r}
 knitr::opts_chunk$set(
   tidy="styler",
   collapse = TRUE,
   comment = "#>",
-  echo=FALSE
+  echo=TRUE, 
+  include = TRUE
 )
 
+flag <- "home" #bnssg
 
 # HOW TO GUIDE
 # https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf
-
-
-
 ```
 ```{r child = 'introduction.Rmd'}
 ```

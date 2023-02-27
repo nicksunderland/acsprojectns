@@ -1,0 +1,78 @@
+---
+categories:
+  acs:
+    docs: "Acute coronary syndromes"
+    categories:
+      stemi:
+        ## At any name which is a category (i.e. directly underneath the category:
+        ## key in the YAML file), you can include an exclude key. Set to true to
+        ## ignore this subtree of codes.
+        exclude: false
+        docs: "ST-elevation (raised ST-segment on an ECG) is present"
+        categories:
+          myocardial-infarction:
+            docs: "Tissue death in the myocardium (heart muscle) due to reduced blood flow, e.g. occuring during a heart attack."
+            categories:
+              anterior-transmural:
+                docs: "Across the full myocardium, involving left anterior descending coronary artery"
+                codes: "I210"
+              inferior-transmural:
+                docs: "Across the full myocardium, involving right coronary artery"
+                codes: "I211"
+              other-transmural:
+                docs: "Across the full myocardium, not inferior or anterior"
+                codes: "I212"
+              unspecified-transmural:
+                docs: "Across the full myocardium, further detail not specified"
+                codes: "I213"
+              subsequent:
+                tags : "catch-all-tags"
+                docs: "Occuring within four weeks of another myocardial infarction"
+                categories:
+                  anterior-transmural:
+                    docs: "Across the full myocardium, involving left anterior descending coronary artery"
+                    codes: "I220"
+                  inferior-transmural:
+                    docs: "Across the full myocardium, involving right coronary artery"
+                    codes: "I221"
+                  other-site:
+                    docs: "STEMI of other site (compared to previous myocardial infarction)"
+                    codes: "I228"
+
+      nstemi:
+        docs: "No ST-elevation (raised ST-segment on an ECG) is present"
+        categories:
+          myocardial-infarction:
+            docs: "Tissue death in the myocardium (heart muscle) due to reduced blood flow, e.g. occuring during a heart attack."
+            categories:
+              subendocardial:
+                docs: "Involving only the innermost aspect of the myocardium"
+                codes: "I214"
+              unspecified:
+                docs: "Unspecified myocardial infarction (but assumed to be NSTEMI?)"
+                codes: ["I219","I21.9"]
+              subsequent:
+                docs: "Occuring within four weeks of another myocardial infarction"
+                categories:
+                  generic:
+                    docs: "Generic subsequent NSTEMI"
+                    codes: "I222"
+                  other-site:
+                    docs: "NSTEMI of other site (compared to previous myocardial infarction)"
+                    codes: "I229"
+          non-myocardial-infarction:
+            docs: "No tissue death (or little tissue death) has occured in the myocardium (very low levels of troponin measured)"
+            categories:
+              coronary-thrombosis:
+                docs: "Formation of a blook clot inside a blood vessel in the heart"
+                codes: "I240"
+              other:
+                docs: "Other acute ischaemic heart disease (todo more detail)"
+                codes: "I248"
+              unspecified:
+                docs: "Unspecified acute ischaemic heart disease (todo more detail)"
+                codes: "I249"
+
+      unstable-angina:
+        docs: "No ST-elevation, and also no presence of troponin, but patient presents with MI-like symptomns"
+        codes: "I200"

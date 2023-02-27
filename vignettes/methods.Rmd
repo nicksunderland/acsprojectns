@@ -3,8 +3,9 @@
 ## Installation
 
 ```{r installation}
-library(acsprojectns)
-# library(icdb)
+library(devtools)
+load_all()
+#library(acsprojectns)
 library(kableExtra)
 ```
 
@@ -20,15 +21,6 @@ acs_date_max <- as.POSIXct("2021-12-31", tz="GMT")
 kbl(data.frame("Variable"=c("Start date", "End date"), "Value"=c(acs_date_min, acs_date_max)), longtable=T, booktabs=T, caption="Date window")
 ```
 
-### CCG provider codes
-
-BNSSG patients were identified by filtering on the appropriate CCG provider codes.
-
-```{r ccg_provider_codes_definition}
-bnssg_ccg_codes <- acsprojectns::get_codes(file_path=system.file("ccg_provider_codes", "bnssg_ccg_provider_codes.csv", package="acsprojectns"))
-kbl(bnssg_ccg_codes, longtable=T, booktabs=T, caption="CCG provider codes")
-```
-
 ### Hospital admission method
 
 Acute admissions were identified by filtering on the appropriate admission method codes. Here we accept admission methods that contain the word "emergency".
@@ -41,9 +33,47 @@ kbl(adm_method, longtable = T, booktabs = T, caption = "Admission methods")
 
 ### Acute coronary syndrome
 
-Acute coronary syndrome codes were defined as the following. We append a "-" to the end of each ICD-10 code simply because the SQL database contains a few codes such as "I200-". The "-" is removed in the table below.
+Acute coronary syndrome codes were defined as the following.
 
 ```{r acs_code_definition}
-acs_icd_codes <- acsprojectns::get_codes(file_path=system.file("icd10_codes", "acs_codes.csv", package="acsprojectns"), append_character="-")
-kbl(acs_icd_codes |> dplyr::filter(!grepl("-", acs_icd_codes$icd_codes)), longtable=T, booktabs=T, caption="Acute coronary syndrome ICD-10 codes") |> kable_styling(full_width=F) |> column_spec(2, width = "10em")
+acs_icd_codes <- yaml::read_yaml(system.file("icd10_codes", "acs.yaml", package="acsprojectns")) |>
+  icdb::parse_codes()
+acs_icd_codes
+```
+
+## Connect to the server
+If working outside of the ICB we need to use the synthetic testing data, to create run the script located in scripts/create_dummy_database_scripts/write_testing_sqlite_database.R
+```{r connection}
+if(flag == "home"){
+  msrv <- icdb::mapped_server(config  = system.file("database_connections", flag, "mysql.yaml", package="acsprojectns"), 
+                              mapping = system.file("database_connections", flag, "mapping.yaml", package="acsprojectns"))
+}else{
+  msrv <- icdb::mapped_server(dsn     ="XSW", 
+                              mapping = system.file("database_connections", flag, "mapping.yaml", package="acsprojectns"))
+}
+```
+
+### Generate the cohort
+```{r generate_cohort_ids}
+# All of the NHS numbers in the System Wide Dataset
+swd_bnssg_all <- msrv$swd$attr_h |>
+  dplyr::distinct(nhs_number) |>
+  icdb::run() |>
+  dplyr::pull()
+
+# define the unique cohort ids
+cohort_ids <- msrv$sus$apc_spells |>
+  # Time window
+  dplyr::filter(spell_start > acs_date_min & spell_end < acs_date_max) |>
+  # Emergency admission
+  dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
+  # Acute coronary syndrome primary diagnosis
+  icdb::codes_from(system.file("icd10_codes", "acs.yaml", package="acsprojectns"), primary_diagnosis_icd) |>
+  # collect to local
+  icdb::run() |>
+  # only bnssg patients
+  dplyr::filter(nhs_number %in% swd_bnssg_all) |>
+  # remove duplicates
+  dplyr::distinct(nhs_number) |> 
+  dplyr::pull()
 ```

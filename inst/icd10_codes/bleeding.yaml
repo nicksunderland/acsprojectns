@@ -1,0 +1,420 @@
+---
+categories:
+  bleeding:
+    docs: "Bleeding"
+    categories:
+      intracranial:
+        docs: "Intracranial bleeding"
+        categories:
+          subarachnoid:
+            docs: "Subarachnoid haemorrhage - all types"
+            codes: ["I60", "I60-"]
+            categories:
+              traumatic:
+                docs: "Traumatic subarachnoid haemorrhage"
+                codes: "S066"
+              non-traumatic:
+                docs: "Non-traumatic subarachnoid haemorrhage"
+                categories:
+                  carotid:
+                    docs: "Nontraumatic subarachnoid haemorrhage from carotid siphon and bifurcation"
+                    codes: "I600"
+                    tags: "example"
+                  middle-cerebral-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from middle cerebral artery"
+                    codes: "I601"
+                  anterior-communicating-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from anterior communicating artery"
+                    codes: "I602"
+                  posterior-communicating-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from posterior communicating artery"
+                    codes: "I603"
+                  basilar-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from basilar artery"
+                    codes: "I604"
+                  vertebral-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from vertebral artery"
+                    codes: "I605"
+                  other-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from other intracranial arteries"
+                    codes: "I606"
+                  unspecified-artery:
+                    docs: "Nontraumatic subarachnoid haemorrhage from unspecified intracranial artery"
+                    codes: "I607"
+                  other:
+                    docs: "Other nontraumatic subarachnoid haemorrhage"
+                    codes: "I608"
+                  unspecified:
+                    docs: "Nontraumatic subarachnoid haemorrhage, unspecified"
+                    codes: "I609"
+          intracerebral:
+            docs: "Intracerebral haemorrhage - all types"
+            codes: ["I61", "I61-", "I629"]
+            categories:
+              traumatic:
+                docs: "Traumatic intracerebral haemorrhage"
+                codes: "S063"
+              non-traumatic:
+                docs: "Non-traumatic intracerebral haemorrhage"
+                codes: ["I62", "I62-"]
+                categories:
+                  subcortical:
+                    docs: "Nontraumatic intracerebral haemorrhage in hemisphere, subcortical"
+                    codes: "I610"
+                  cortical:
+                    docs: "Nontraumatic intracerebral haemorrhage in hemisphere, cortical"
+                    codes: "I611"
+                  hemisphere-unspecified:
+                    docs: "Nontraumatic intracerebral haemorrhage in hemisphere, unpsecified"
+                    codes: "I612"
+                  brainstem:
+                    docs: "Nontraumatic intracerebral haemorrhage in brainstem"
+                    codes: "I613"
+                  cerebellum:
+                    docs: "Nontraumatic intracerebral haemorrhage in cerebellum"
+                    codes: "I614"
+                  intraventricular:
+                    docs: "Nontraumatic intracerebral haemorrhage, intraventricular"
+                    codes: "I615"
+                  multiple-areas:
+                    docs: "Nontraumatic intracerebral haemorrhage, multiple localised"
+                    codes: "I616"
+                  other:
+                    docs: "Other nontraumatic intracerebral hemorrhage"
+                    codes: "I618"
+                  unspecified:
+                    docs: "Nontraumatic intracerebral haemorrhage, unspecified"
+                    codes: "I619"
+            subdural:
+              docs: "Subdural haemorrhage"
+              categories:
+                traumatic:
+                  docs: "Traumatic subdural haemorrhage"
+                  codes: "S065"
+                non-traumatic:
+                  docs: "Non-traumatic subdural haemorrhage"
+                  codes: "I620"
+            extradural:
+              docs: "Extradural haemorrhage"
+              codes: "S064"
+              categories:
+                traumatic:
+                  docs: "Traumatic extradural haemorrhage"
+                non-traumatic:
+                  docs: "Non-traumatic extradural haemorrhage"
+                  codes: "I621"
+      gastrointestinal:
+        docs: "Gastrointestinal bleeding, adapted from ICD-10 codess in Sehested et al. (doi: 10.1093/eurheartj/ehz104)."
+        codes: ["K920", "K921", "K922"]
+        categories:
+          oesophageal:
+            docs: "Oesophgeal bleeding"
+            categories:
+              varices:
+                docs: "Oesophgeal variceal bleeding"
+                codes: ["I850", "I983"]
+              lacertaion:
+                docs: "Gastro-oesophageal laceration-haemorrhage syndrome"
+                codes: "K226"
+          gastric:
+            docs: "Gastric (stomach) bleeding"
+            categories:
+              acute-ulcer:
+                docs: "gastric ulcer, acute with haemorrhage"
+                codes: "K250"
+              acute-ulcer-perforation:
+                docs: "gastric ulcer, acute with haemorrhage and perforation"
+                codes: "K252"
+              chronic-ulcer:
+                docs: "gastric ulcer, chronic or unspecified with haemorrhage"
+                codes: "K254"
+              chronic-ulcer-perforation:
+                docs: "gastric ulcer, chronic or unspecified with haemorrhage and perforation"
+                codes: "K256"
+              haemorrhagic-gastritis:
+                docs: "acute haemorrhagic gastritis"
+                codes: ["K290","K2901","K2921","K2931","K2941","K2951","K2961","K2971"]
+              haemorrhagic-duodenitis:
+                docs: "acute haemorrhagic duodenitis"
+                codes: ["K2981","K2991"]
+          duodenal:
+            docs: "Duodenal bleeding"
+            categories:
+              acute-ulcer:
+                docs: "duodenal ulcer, acute with haemorrage"
+                codes: "K260"
+              acute-ulcer-perforation:
+                docs: "duodenal ulcer, acute with haemorrage and perforation"
+                codes: "K262"
+              chronic-ulcer:
+                docs: "duodenal ulcer, chronic or unspecified with haemorrage"
+                codes: "K264"
+              chronic-ulcer-perforation:
+                docs: "duodenal ulcer, chronic or unspecified with haemorrage and perforation"
+                codes: "K266"
+          peptic:
+            docs: "Peptic (oesophagus, stomach, or small intestine) ulcer bleeding"
+            categories:
+              acute-ulcer:
+                docs: "peptic ulcer, acute with haemorrage"
+                codes: "K270"
+              acute-ulcer-perforation:
+                docs: "peptic ulcer, acute with haemorrage and perforation"
+                codes: "K272"
+              chronic-ulcer:
+                docs: "peptic ulcer, chronic or unspecified with haemorrage"
+                codes: "K274"
+              chronic-ulcer-perforation:
+                docs: "peptic ulcer, chronic or unspecified with haemorrage and perforation"
+                codes: "K276"
+          gastrojejunal:
+            docs: "Gastrojejunal (jejunal section of the small intestine) ulcer bleeding"
+            categories:
+              acute-ulcer:
+                docs: "gastrojejunal ulcer, acute with haemorrage"
+                codes: "K280"
+              acute-ulcer-perforation:
+                docs: "gastrojejunal ulcer, acute with haemorrage and perforation"
+                codes: "K282"
+              chronic-ulcer:
+                docs: "gastrojejunal ulcer, chronic or unspecified with haemorrage"
+                codes: "K284"
+              chronic-ulcer-perforation:
+                docs: "gastrojejunal ulcer, chronic or unspecified with haemorrage and perforation"
+                codes: "K286"
+          diverticular:
+            docs: "Bowel diverticular bleeding"
+            categories:
+              small-intestine:
+                docs: "Diverticular or diverticulitis of small intestine with with bleeding"
+                codes: ["K5701", "K5711", "K5713"]
+              large-intestine:
+                docs: "Diverticular or diverticulitis of large intestine with with bleeding"
+                codes: ["K5731", "K5733"]
+              intestine:
+                docs: "Diverticular or diverticulitis of small or large intestine with with bleeding"
+                codes: ["K5741", "K5751", "K5753"]
+              unspecified:
+                docs: "Diverticular or diverticulitis of unspecified bowel with with bleeding"
+                codes: ["K5781", "K5791", "K5793"]
+          rectum-anus:
+            docs: "Hemorrhage of anus and rectum"
+            codes: "K625"
+              
+          ## Nick: I started adding codes below here, sorry if I have
+          ## messed up the categories. I have left everything at the bottom so
+          ## you have a reference to go back to if there are problems
+          peritoneum:
+            docs: "Bleeding relating to the peritoneum"
+            codes: "K661"
+          liver:
+            docs: "Central haemorrhagic necrosis of liver" 
+            codes: "K762" 
+            
+      blood-disease:
+        docs: "Added as a rough category for D--- codes"
+        categories:
+          acute-posthemorrhagic-anaemia:
+            docs: "Anaemia due to sudden loss of a large amount of blood"
+            codes: ["D62", "D62-", "D629"]
+          anticoagulant-haemorrhage:
+            docs: "Haemorrhage due to long term use of anti-coagulants"
+            codes: "D683"
+          other-specified:
+            docs: "Other specified haemorrhagic conditions"
+            codes: "D698"
+          unspecified:
+            docs: "Haemorrhagic condition, unspecified"
+            codes: "D699"
+      eye-disease:
+        docs: "Added as a category for H--- codes"
+        categories:
+          conjunctival-hemorrhage:
+            docs: "Conjunctival (relating to conjunctiva -- protects and cleans the eye)"
+            codes: ["H113", "H113%"]
+            categories:
+              right:
+                docs: "Right eye"
+                codes: "H1131"
+              left:
+                docs: "Left eye"
+                codes: "H1132"
+              bilateral:
+                docs: "Both eyes?"
+                codes: "H1133"
+              unspecified:
+                docs: "Eye unspecified"
+                codes: "H1130"
+          hyphaema:
+            docs: "Accumulation of red blood cells within the anterior chamber"
+            codes: "H210"
+          choroidal-haemorrhage:
+            docs: "Choroidal haemorrhage and rupture"
+            codes: "H313"
+          retinal-haemorrhage:
+            docs: "Bleeding from the blood vessels in the retina"
+            codes: ["H356", "H356%"]
+            categories:
+              right:
+                docs: "Right eye"
+                codes: "H3561"
+              left:
+                docs: "Left eye"
+                codes: "H3562"
+              bilateral:
+                docs: "Both eyes?"
+                codes: "H3563"
+              unspecified:
+                docs: "Eye unspecified"
+                codes: "H3560"
+          vitreous-haemorrhage:
+            docs: "Bleeding into the vitreous gel"
+            codes: ["H431", "H431%"]
+            categories:
+              right:
+                docs: "Right eye"
+                codes: "H4311"
+              left:
+                docs: "Left eye"
+                codes: "H4312"
+              bilateral:
+                docs: "Both eyes?"
+                codes: "H4313"
+              unspecified:
+                docs: "Eye unspecified"
+                codes: "H4310"
+              classified-elsewhere:
+                docs: "Vitreous hemorrhage in disease classified elsewhere"
+                codes: "H450"
+      ear-disease:
+        docs: "Added for codes H---"
+        categories:
+          otorrhagia:
+            docs: "Bleeding from the ear"
+            codes: ["H922", "H922%"]
+            categories:
+              right:
+                docs: "Right ear"
+                codes: "H9221"
+              left:
+                docs: "Left ear"
+                codes: "H9222"
+              bilateral:
+                docs: "Both ears?"
+                codes: "H9223"
+              unspecified:
+                docs: "Ear unspecified"
+                codes: "H9220"
+      respiratory-disease:
+        docs: "Codes for J---"
+        categories:
+          heamothorax:
+            docs: "Bleeding/blood in the chest cavity"
+            codes: "J942"
+            categories:
+              traumatic:
+                docs: "Hemothorax caused by traumatic event (e.g. fall, etc.)"
+                codes: "S271"
+          respiratory-tract:
+            docs: "Bleeding from the respiratory tract"
+            categories:
+              nose:
+                docs: "From nose (nosebleed, epistaxis)"
+                codes: "R040"
+              throat:
+                docs: "From throat"
+                codes: "R041"
+              haemoptysis:
+                docs: "Blood-stained sputum/cough with haemorrhage"
+                codes: "R042"
+              other:
+                docs: "Haemorrhage from other site in respiratory passage"
+                codes: "R048"
+              unspecified:
+                docs: "Hemorrhage from respiratory passages, unspecified"
+                codes: "R049"
+
+
+                
+      haemopericardium:
+        docs: "Bleading relating to the pericardium"
+        categories:
+          following-mi:
+            docs: "Haemopericardium as current complication following acute myocardial infarction"
+            codes: "I230"
+          heart-injury:
+            docs: "Haemopericardium as current complication following acute myocardial infarction"
+            codes: "S260"
+          other:
+            docs: "Haemopericardium, not elsewhere classified"
+            codes: "I312"
+
+      musculoskeletal:
+        docs: "Bleeding relating to the musculoskeletal system"
+        categories:
+          haemarthrosis:
+            docs: "Bleeding into a joint"
+            codes: "M250"
+
+      urinary:
+        docs: "For codes N---"
+        categories:
+          hematuria:
+            docs: "Symptom of blood in urine"
+            codes: ["R31", "R31-", "R310"]
+          persistent-hematuria:
+            docs: "Recurrent and persistent hematuria (blood in unrine)"
+            codes: ["N02", "N02-", "N020", "N021", "N022", "N023", "N024",
+            "N025", "N026", "N027", "N028", "N029"]
+          prostate-haemorrhage:
+            docs: "Congestion and haemorrhage of prostate"
+            codes: "N421"
+
+      gynaecological:
+        docs: "Bleeding from the uterus, cervix or genital tract"
+        categories:
+          excessive-menstruation:
+            docs: "Excessive and frequent menstruation"
+            codes: ["N920", "N291"]
+          ovulation:
+            docs: "Ovulation bleeding"
+            codes: "N923"
+          premenopausal:
+            docs: "Excessive bleeding in the premenopausal period"
+            codes: "N924"
+          postmenopausal:
+            docs: "Postmenopausal bleeding"
+            codes: "N950"
+          abnormal-uterine:
+            docs: "Other abnormal uterine and vaginal bleeding"
+            codes: ["N93", "N93-"]
+            categories:
+              other-specified:
+                docs: "Other specified abnormal uterine and vaginal bleeding"
+                codes: "N938"
+              unspecified:
+                docs: "Abnormal uterine and vaginal bleeding, unspecified"
+                codes: "N939"
+          postcoital:
+            docs: "Postcoital and contact bleeding"
+            codes: "N930"
+          
+      symptoms:
+        docs: "For R--- codes"
+        categories:
+          haemorrhage:
+            docs: "Bleeding as a symptom"
+            codes:
+            categories:
+              unclassified:
+                docs: "Hemorrhage, not elsewhere classified"
+                codes: ["R58", "R58-", "R580"]
+
+      procedural:
+        docs: "Relating to a medical intervention/procedure"
+        codes: ["T810"]   
+                
+      other:
+        docs: "Other codes not categorised elsewhere"
+        codes: ["R58", "R58-", "R580"]
+          
