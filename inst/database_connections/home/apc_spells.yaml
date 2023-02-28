@@ -301,7 +301,7 @@
   - column: ethnic_category
     docs: "The ethnicity of a PERSON, as specified by the PERSON.\r\n\r\nNote: ETHNIC
       CATEGORY is the classification used for the 2001 census."
-    use: yes
+    use: no
     source:
     - EthnicCategory
     strategy: coalesce
@@ -312,7 +312,7 @@
       to provide advance notice to data providers and system suppliers of the intention
       to report this item at a later date. This item should not be submitted until
       further development by NHS Digital has been undertaken."
-    use: yes
+    use: no
     source:
     - EthnicCategory2021
     strategy: coalesce
@@ -375,7 +375,7 @@
     docs: The method of admission to a Hospital Provider Spell.
     use: yes
     source:
-    - MethodOfAdmission_HospitalProviderSpell
+    - AdmissionMethod_HospitalProviderSpell
     strategy: coalesce
   - column: admission_source_hospital_provider_spell
     docs: "The source of admission to a Hospital Provider Spell or a Nursing Episode
@@ -1892,6 +1892,14 @@
     - "DischargeTime_HospitalProviderSpell"
     strategy: "coalesce"
     use: yes
+  - column: "ethnic_group"
+    docs: "Listed as "
+    source:
+    - "EthnicGroup"
+    strategy: "coalesce"
+    use: yes
+
+
 
   - column: secondary_diagnosis_1_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases

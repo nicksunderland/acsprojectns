@@ -6,34 +6,83 @@ library(acsprojectns)
 library(devtools)
 load_all()
 library(icdb)
+library(modeest)
 library(kableExtra)
 ```
+
+## Index ACS event
+Get the index ACS event
+```{r index_acs, results="markup"}
+# The index event
+index_acs <- msrv$sus$apc_spells |>
+  # Time window
+  dplyr::filter(spell_start > acs_date_min & spell_end < acs_date_max) |>
+  # Emergency admission
+  dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
+  # Only cohort NHS numbers
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Collect to local
+  icdb::run() |>
+  # Recode the ICD10 codes
+  dplyr::mutate(primary_diagnosis = icdb::icd10(primary_diagnosis_icd, 
+                                                system.file("extdata", "icd10/icd10_example.yaml", package="icdb"))) %>% 
+  # Make sure ICD10 codes are all valid
+  {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1")} |>
+  # Only ACS events TODO: change this to filter
+  dplyr::mutate(filter_test = primary_diagnosis %in_group% c("acs_stemi", "acs_nstemi", "acs_unstable_angina")) |>
+  # Only the first ACS event
+  dplyr::group_by(nhs_number) |>
+  dplyr::slice_min(spell_start, with_ties=F) |>
+  # select the final columns 
+  dplyr::select(
+    nhs_number, 
+    spell_start, 
+    spell_end, 
+    age_on_admission,
+    primary_diagnosis,
+    filter_test
+  ) |>
+  # always ungroup stuff
+  dplyr::ungroup()
+
+# Tests
+stopifnot(nrow(index_acs)==length(cohort_ids),
+          all(cohort_ids %in% index_acs$nhs_number))
+
+# View
+kbl(index_acs |> dplyr::slice_head(n=5), longtable = T, booktabs = T, caption = "Index ACS event")
+```
+
+
 ## Static patient factors
 Analyse the non-time varying patient factors.
-```{r demographics_ethnicity}
+```{r demographics_ethnicity, results="markup"}
+# read in the ethnicity mappings
+ethnicity_codes <- read.csv(system.file("ethnicity_codes/ethnicity_codes.csv", package = "acsprojectns"))
+
 # extract the SUS ACP Spell data for the index event
 dat_ethnicity <- msrv$sus$apc_spells |>
   # Just ethnicity
-  dplyr::select(nhs_number, ethnic_category, ethnic_category2021) |>
+  dplyr::select(nhs_number, ethnic_group) |>
   # just the cohort IDs
   dplyr::filter(nhs_number %in% cohort_ids) |>
   # Add SWD attribute data
   dplyr::left_join(msrv$swd$swd_attribute |> dplyr::select(nhs_number, ethnicity), by="nhs_number") |>
   # collect to local
   icdb::run() |>
-  # combine static variables
+  # coalesce the sources from different tables
+  dplyr::mutate(ethnic_group = dplyr::coalesce(as.character(ethnic_group),
+                                               as.character(ethnicity))) |>
+  # keep the modal value
   dplyr::group_by(nhs_number) |>
-  # number of different codings
-  dplyr::mutate(num_codes = n_distinct(ethnic_category, ethnic_category2021, ethnicity, na.rm=T)) |>
-  # arrange and review 
-  dplyr::ungroup() |>
-  dplyr::arrange(dplyr::desc(num_codes))
+  dplyr::summarise(ethnic_group = acsprojectns::mode(ethnic_group))
 
 # View 
-dplyr::slice(dat_ethnicity, n=10)
+kbl(dplyr::slice_head(dat_ethnicity, n=5), longtable = T, booktabs = T, caption = "Ethnicity data")
 ```
 
 ```{r demographics_sex}
+#sex_codes       <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
 # extract the SUS ACP Spell data for the index event
 # dat_ethnicity <- msrv$sus$apc_spells |>
 #   # Cohort IDs
@@ -57,59 +106,16 @@ dplyr::slice(dat_ethnicity, n=10)
 #   # remove duplicates
 #   dplyr::distinct(nhs_number) |> 
 #   dplyr::pull()
-```
 
-### Extract the data
-```{r extract_cohort_data}
-# SUS APC Spells data
-# data_index_acs <- msrv$sus$apc_spells |>
-#   # only the cohort ids
-#   dplyr::filter(nhs_number %in% !!cohort_ids)
-# 
-# 
-# # Attributes data
-# 
-# 
-#   
-#   
-#   
-#   
-#   dplyr::mutate(idx_acs_diagnosis = icdb::drop_detail(primary_diagnosis_icd, level=2), 
-#                 method_of_admission_hospital_provider_spell = as.character(method_of_admission_hospital_provider_spell)) |>
-#   dplyr::left_join(data.frame(adm_method), by=c("method_of_admission_hospital_provider_spell"="admission_method_code")) |>
-#   dplyr::select(nhs_number, 
-#                 spell_start, 
-#                 spell_end, 
-#                 "admission_method" = admission_method_description, 
-#                 idx_acs_diagnosis)
-# 
-# # define the NHS numbers for the cohort
-# cohort_ids <- unique(cohort$nhs_number)
-# 
-# # View 
-# kbl(cohort |> dplyr::slice_head(n=10), longtable = T, booktabs = T, caption = "Initial cohort")
-# 
-# 
-# 
-# 
-# 
-# sus_apc <- msrv$sus$apc_spells |>
-#   # in our cohort
-#   dplyr::filter(nhs_number %in% !!cohort_ids) |>
-#   # specifics to select
-#   dplyr:
-# 
-# index_cohort <- cohort |>
-#   dplyr::group_by(nhs_number) |>
-#   dplyr::slice_min(spell_start)
-# 
-# # Check that there are no duplicate spells for patients
-# stopifnot(dplyr::n_distinct(index_cohort$nhs_number) == nrow(index_cohort))
-# 
-# 
-# # age, sex, ethnicity , acs type
-# 
-# static_factors <- 
+
+
+
+
+
+# <!-- index_of_multiple_deprivation_decile -->
+# <!-- income_decile -->
+# <!-- employment_decile -->
+# <!-- urban_rural_classification -->
 ```
 
 

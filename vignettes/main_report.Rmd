@@ -22,13 +22,16 @@ header-includes:
 \listoftables
 \newpage
 ```
-```{r}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   tidy="styler",
-  collapse = TRUE,
-  comment = "#>",
-  echo=TRUE, 
-  include = TRUE
+  collapse=TRUE,
+  comment="#>",
+  echo=FALSE, 
+  results = 'hide',
+  error=FALSE,
+  warning=FALSE,
+  message=FALSE
 )
 
 flag <- "home" #bnssg

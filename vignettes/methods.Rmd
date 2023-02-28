@@ -11,22 +11,28 @@ library(kableExtra)
 
 ## Cohort definitions
 
-All patients in the BNSSG area with a hospital admission for an acute coronary syndrome event, between July 2018 and December 2021, were included in the main cohort. This date window was chosen as prescription data in the SWD only exists from July 2018 onward. GP attribute data only exists from October 2019 onward.
+All patients in the BNSSG area with a hospital admission for an acute coronary syndrome event,
+between July 2018 and December 2021, were included in the main cohort. This date window was chosen
+as prescription data in the SWD only exists from July 2018 onward. GP attribute data only exists
+from October 2019 onward.
 
 ### Date window
 
-```{r acs_date_window_definition}
+```{r acs_date_window_definition, results="markup"}
 acs_date_min <- as.POSIXct("2018-07-01", tz="GMT")
 acs_date_max <- as.POSIXct("2021-12-31", tz="GMT")
-kbl(data.frame("Variable"=c("Start date", "End date"), "Value"=c(acs_date_min, acs_date_max)), longtable=T, booktabs=T, caption="Date window")
+kbl(data.frame("Variable" = c("Start date", "End date"), 
+               "Value"    = c(acs_date_min, acs_date_max)), 
+    longtable=T, booktabs=T, caption="Date window")
 ```
 
 ### Hospital admission method
 
 Acute admissions were identified by filtering on the appropriate admission method codes. Here we accept admission methods that contain the word "emergency".
 
-```{r admission_method_definition}
-adm_method <- acsprojectns::get_codes(file_path = system.file("admission_method_codes", "admission_method_codes.csv", package = "acsprojectns")) |>
+```{r admission_method_definition, results="markup"}
+adm_method_codes <- system.file("admission_method_codes/admission_method_codes.csv", package="acsprojectns")
+adm_method <- acsprojectns::get_codes(adm_method_codes) |>
   dplyr::filter(grepl("emergency", .data$admission_method_description))
 kbl(adm_method, longtable = T, booktabs = T, caption = "Admission methods")
 ```
@@ -35,10 +41,10 @@ kbl(adm_method, longtable = T, booktabs = T, caption = "Admission methods")
 
 Acute coronary syndrome codes were defined as the following.
 
-```{r acs_code_definition}
+```{r acs_code_definition, results="markup"}
 acs_icd_codes <- yaml::read_yaml(system.file("icd10_codes", "acs.yaml", package="acsprojectns")) |>
   icdb::parse_codes()
-acs_icd_codes
+unlist(unname(acs_icd_codes))
 ```
 
 ## Connect to the server
@@ -54,14 +60,8 @@ if(flag == "home"){
 ```
 
 ### Generate the cohort
-```{r generate_cohort_ids}
-# All of the NHS numbers in the System Wide Dataset
-swd_bnssg_all <- msrv$swd$attr_h |>
-  dplyr::distinct(nhs_number) |>
-  icdb::run() |>
-  dplyr::pull()
-
-# define the unique cohort ids
+```{r generate_cohort_ids, results="markup"}
+# Define the unique cohort ids
 cohort_ids <- msrv$sus$apc_spells |>
   # Time window
   dplyr::filter(spell_start > acs_date_min & spell_end < acs_date_max) |>
@@ -69,11 +69,15 @@ cohort_ids <- msrv$sus$apc_spells |>
   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
   # Acute coronary syndrome primary diagnosis
   icdb::codes_from(system.file("icd10_codes", "acs.yaml", package="acsprojectns"), primary_diagnosis_icd) |>
-  # collect to local
+  # Distinct NHS numbers
+  dplyr::distinct(nhs_number) |>
+  # Only bnssg patients
+  dplyr::inner_join(msrv$swd$attr_h |> dplyr::distinct(nhs_number), by="nhs_number") |>
+  # Collect to local
   icdb::run() |>
-  # only bnssg patients
-  dplyr::filter(nhs_number %in% swd_bnssg_all) |>
-  # remove duplicates
-  dplyr::distinct(nhs_number) |> 
-  dplyr::pull()
+  # As a plain character vector
+  dplyr::pull() |> as.character()
+
+# View
+head(cohort_ids, n=10L)
 ```
