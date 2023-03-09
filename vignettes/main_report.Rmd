@@ -23,6 +23,26 @@ header-includes:
 \newpage
 ```
 ```{r setup, include=FALSE}
+
+# Plan 
+# demographics at index ACS
+#     age, sex, ethnicity, comorbidities, frailty measures, IMD, employment, income
+#     split by frailty, age, type of ACS
+# index ACS details 
+#     type of ACS, admission length, ICU stay, procedures
+#     split by frailty
+# subsequent events
+#     death, MACCE, bleeding, any hospital admission
+#     split by frailty, age, type of ACS
+#     overlaid KM curves for 1st hospital admission, 2nd, 3rd, 4th etc (decreasing demominator in each)
+# cost over time
+#     stacked cost by macro service
+#     cost as % of cohort
+#     secondary care cost by secondary care type and then by i/p service
+#     split by frailty
+
+# end
+
 knitr::opts_chunk$set(
   tidy="styler",
   collapse=TRUE,
@@ -74,3 +94,5 @@ flag <- "home" #bnssg
 ```{=tex}
 \newpage
 ```
+
+

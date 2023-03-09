@@ -3048,6 +3048,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - A00
     - B99
@@ -5941,6 +5954,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - C00
     - D48
@@ -6682,6 +6708,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - D50
     - D89
@@ -6845,6 +6884,8 @@ child:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - obesity
+      - lipid_disorder
       index:
       - E00
       - E07
@@ -7038,6 +7079,9 @@ child:
         - type_2_diabetes
         index: E14
       docs: Diabetes mellitus
+      exclude:
+      - obesity
+      - lipid_disorder
       index:
       - E10
       - E14
@@ -7076,6 +7120,8 @@ child:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - obesity
+      - lipid_disorder
       index:
       - E15
       - E16
@@ -7374,6 +7420,8 @@ child:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - obesity
+      - lipid_disorder
       index:
       - E20
       - E35
@@ -7412,6 +7460,8 @@ child:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - obesity
+      - lipid_disorder
       index:
       - E40
       - E46
@@ -7601,6 +7651,8 @@ child:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - obesity
+      - lipid_disorder
       index:
       - E50
       - E64
@@ -7608,6 +7660,8 @@ child:
       child:
       - code: E65
         docs: Localized adiposity
+        exclude:
+        - obesity
         index: E65
       - category: E66
         child:
@@ -7646,15 +7700,20 @@ child:
           docs: Other specified hyperalimentation
           index: E678
         docs: Other hyperalimentation
+        exclude:
+        - obesity
         index: E67
       - code: E68
         docs: Sequelae of hyperalimentation
+        exclude:
+        - obesity
         index: E68
       docs: Obesity and other hyperalimentation
       exclude:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - lipid_disorder
       index:
       - E65
       - E68
@@ -7681,6 +7740,8 @@ child:
           docs: Disorder of aromatic amino-acid metabolism, unspecified
           index: E709
         docs: Disorders of aromatic amino-acid metabolism
+        exclude:
+        - lipid_disorder
         index: E70
       - category: E71
         child:
@@ -7697,6 +7758,8 @@ child:
           docs: Disorders of fatty-acid metabolism
           index: E713
         docs: Disorders of branched-chain amino-acid metabolism and fatty-acid metabolism
+        exclude:
+        - lipid_disorder
         index: E71
       - category: E72
         child:
@@ -7725,6 +7788,8 @@ child:
           docs: Disorder of amino-acid metabolism, unspecified
           index: E729
         docs: Other disorders of amino-acid metabolism
+        exclude:
+        - lipid_disorder
         index: E72
       - category: E73
         child:
@@ -7741,6 +7806,8 @@ child:
           docs: Lactose intolerance, unspecified
           index: E739
         docs: Lactose intolerance
+        exclude:
+        - lipid_disorder
         index: E73
       - category: E74
         child:
@@ -7766,6 +7833,8 @@ child:
           docs: Disorder of carbohydrate metabolism, unspecified
           index: E749
         docs: Other disorders of carbohydrate metabolism
+        exclude:
+        - lipid_disorder
         index: E74
       - category: E75
         child:
@@ -7791,6 +7860,8 @@ child:
           docs: Lipid storage disorder, unspecified
           index: E756
         docs: Disorders of sphingolipid metabolism and other lipid storage disorders
+        exclude:
+        - lipid_disorder
         index: E75
       - category: E76
         child:
@@ -7813,6 +7884,8 @@ child:
           docs: Disorder of glucosaminoglycan metabolism, unspecified
           index: E769
         docs: Disorders of glycosaminoglycan metabolism
+        exclude:
+        - lipid_disorder
         index: E76
       - category: E77
         child:
@@ -7829,6 +7902,8 @@ child:
           docs: Disorder of glycoprotein metabolism, unspecified
           index: E779
         docs: Disorders of glycoprotein metabolism
+        exclude:
+        - lipid_disorder
         index: E77
       - category: E78
         child:
@@ -7876,6 +7951,8 @@ child:
           docs: Disorder of purine and pyrimidine metabolism, unspecified
           index: E799
         docs: Disorders of purine and pyrimidine metabolism
+        exclude:
+        - lipid_disorder
         index: E79
       - category: E80
         child:
@@ -7904,6 +7981,8 @@ child:
           docs: Disorder of bilirubin metabolism, unspecified
           index: E807
         docs: Disorders of porphyrin and bilirubin metabolism
+        exclude:
+        - lipid_disorder
         index: E80
       - category: E83
         child:
@@ -7932,6 +8011,8 @@ child:
           docs: Disorder of mineral metabolism, unspecified
           index: E839
         docs: Disorders of mineral metabolism
+        exclude:
+        - lipid_disorder
         index: E83
       - category: E84
         child:
@@ -7948,6 +8029,8 @@ child:
           docs: Cystic fibrosis, unspecified
           index: E849
         docs: Cystic fibrosis
+        exclude:
+        - lipid_disorder
         index: E84
       - category: E85
         child:
@@ -7973,9 +8056,13 @@ child:
           docs: Amyloidosis, unspecified
           index: E859
         docs: Amyloidosis
+        exclude:
+        - lipid_disorder
         index: E85
       - code: E86
         docs: Volume depletion
+        exclude:
+        - lipid_disorder
         index: E86
       - category: E87
         child:
@@ -8007,6 +8094,8 @@ child:
           docs: Other disorders of electrolyte and fluid balance, not elsewhere classified
           index: E878
         docs: Other disorders of fluid, electrolyte and acid-base balance
+        exclude:
+        - lipid_disorder
         index: E87
       - category: E88
         child:
@@ -8029,6 +8118,8 @@ child:
           docs: Metabolic disorder, unspecified
           index: E889
         docs: Other metabolic disorders
+        exclude:
+        - lipid_disorder
         index: E88
       - category: E89
         child:
@@ -8060,15 +8151,20 @@ child:
           docs: Postprocedural endocrine and metabolic disorder, unspecified
           index: E899
         docs: Postprocedural endocrine and metabolic disorders, not elsewhere classified
+        exclude:
+        - lipid_disorder
         index: E89
       - code: E90
         docs: Nutritional and metabolic disorders in diseases classified elsewhere
+        exclude:
+        - lipid_disorder
         index: E90
       docs: Metabolic disorders
       exclude:
       - type_1_diabetes
       - type_2_diabetes
       - diabetes_unspecified
+      - obesity
       index:
       - E70
       - E90
@@ -8095,6 +8191,17 @@ child:
     - acs_nstemi
     - acs_unstable_angina
     - ischaemic_stroke
+    - periph_vasc_disease
+    - cardiac_arrest
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - E00
     - E90
@@ -8144,6 +8251,17 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I00
       - I02
@@ -8257,6 +8375,17 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I05
       - I09
@@ -8335,6 +8464,16 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I10
       - I15
@@ -8365,6 +8504,7 @@ child:
         - bleeding
         - acs_stemi
         - acs_nstemi
+        - isch_cardiomyopathy
         index: I20
       - category: I21
         child:
@@ -8402,6 +8542,7 @@ child:
         exclude:
         - bleeding
         - acs_unstable_angina
+        - isch_cardiomyopathy
         index: I21
       - category: I22
         child:
@@ -8429,6 +8570,7 @@ child:
         exclude:
         - bleeding
         - acs_unstable_angina
+        - isch_cardiomyopathy
         index: I22
       - category: I23
         child:
@@ -8475,6 +8617,7 @@ child:
         - acs_stemi
         - acs_nstemi
         - acs_unstable_angina
+        - isch_cardiomyopathy
         index: I23
       - category: I24
         child:
@@ -8496,6 +8639,7 @@ child:
         - acs_stemi
         - acs_nstemi
         - acs_unstable_angina
+        - isch_cardiomyopathy
         index: I24
       - category: I25
         child:
@@ -8539,6 +8683,16 @@ child:
       - atrial_fib
       - portal_hypertension
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I20
       - I25
@@ -8599,6 +8753,17 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I26
       - I28
@@ -8622,6 +8787,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I30
       - category: I31
         child:
@@ -8656,6 +8827,12 @@ child:
         docs: Other diseases of pericardium
         exclude:
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I31
       - category: I32
         child:
@@ -8672,6 +8849,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I32
       - category: I33
         child:
@@ -8685,6 +8868,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I33
       - category: I34
         child:
@@ -8707,6 +8896,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I34
       - category: I35
         child:
@@ -8729,6 +8924,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I35
       - category: I36
         child:
@@ -8751,6 +8952,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I36
       - category: I37
         child:
@@ -8773,12 +8980,24 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I37
       - code: I38
         docs: Endocarditis, valve unspecified
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I38
       - category: I39
         child:
@@ -8804,6 +9023,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I39
       - category: I40
         child:
@@ -8823,6 +9048,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I40
       - category: I41
         child:
@@ -8842,6 +9073,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I41
       - category: I42
         child:
@@ -8879,6 +9116,11 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I42
       - category: I43
         child:
@@ -8898,6 +9140,11 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I43
       - category: I44
         child:
@@ -8929,6 +9176,11 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
         index: I44
       - category: I45
         child:
@@ -8963,6 +9215,11 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
         index: I45
       - category: I46
         child:
@@ -8979,25 +9236,44 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I46
       - category: I47
         child:
         - code: I47.0
           docs: Re-entry ventricular arrhythmia
+          exclude:
+          - ventricular_arrhy
+          - atrial_arrhy
           index: I470
         - code: I47.1
           docs: Supraventricular tachycardia
+          exclude:
+          - ventricular_arrhy
           index: I471
         - code: I47.2
           docs: Ventricular tachycardia
+          exclude:
+          - atrial_arrhy
           index: I472
         - code: I47.9
           docs: Paroxysmal tachycardia, unspecified
+          exclude:
+          - ventricular_arrhy
+          - atrial_arrhy
           index: I479
         docs: Paroxysmal tachycardia
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - conduction_disease
         index: I47
       - category: I48
         child:
@@ -9022,37 +9298,71 @@ child:
         docs: Atrial fibrillation and flutter
         exclude:
         - bleeding
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - conduction_disease
         index: I48
       - category: I49
         child:
         - code: I49.0
           docs: Ventricular fibrillation and flutter
+          exclude:
+          - atrial_arrhy
+          - conduction_disease
           index: I490
         - code: I49.1
           docs: Atrial premature depolarization
+          exclude:
+          - ventricular_arrhy
+          - conduction_disease
           index: I491
         - code: I49.2
           docs: Junctional premature depolarization
+          exclude:
+          - ventricular_arrhy
+          - conduction_disease
           index: I492
         - code: I49.3
           docs: Ventricular premature depolarization
+          exclude:
+          - atrial_arrhy
+          - conduction_disease
           index: I493
         - code: I49.4
           docs: Other and unspecified premature depolarization
+          exclude:
+          - ventricular_arrhy
+          - atrial_arrhy
+          - conduction_disease
           index: I494
         - code: I49.5
           docs: Sick sinus syndrome
+          exclude:
+          - ventricular_arrhy
           index: I495
         - code: I49.8
           docs: Other specified cardiac arrhythmias
+          exclude:
+          - ventricular_arrhy
+          - atrial_arrhy
+          - conduction_disease
           index: I498
         - code: I49.9
           docs: Cardiac arrhythmia, unspecified
+          exclude:
+          - ventricular_arrhy
+          - atrial_arrhy
+          - conduction_disease
           index: I499
         docs: Other cardiac arrhythmias
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
         index: I49
       - category: I50
         child:
@@ -9069,6 +9379,11 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I50
       - category: I51
         child:
@@ -9106,6 +9421,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I51
       - category: I52
         child:
@@ -9122,6 +9443,12 @@ child:
         exclude:
         - bleeding
         - atrial_fib
+        - cardiac_arrest
+        - nonisch_cardiomyopathy
+        - heart_failure
+        - ventricular_arrhy
+        - atrial_arrhy
+        - conduction_disease
         index: I52
       docs: Other forms of heart disease
       exclude:
@@ -9131,6 +9458,11 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - haem_stroke
+      - hypertension
+      - isch_cardiomyopathy
+      - dementia
       index:
       - I30
       - I52
@@ -9171,6 +9503,7 @@ child:
         docs: Subarachnoid haemorrhage
         exclude:
         - ischaemic_stroke
+        - dementia
         index: I60
       - category: I61
         child:
@@ -9204,6 +9537,7 @@ child:
         docs: Intracerebral haemorrhage
         exclude:
         - ischaemic_stroke
+        - dementia
         index: I61
       - category: I62
         child:
@@ -9212,6 +9546,8 @@ child:
           index: I620
         - code: I62.1
           docs: Nontraumatic extradural haemorrhage
+          exclude:
+          - haem_stroke
           index: I621
         - code: I62.9
           docs: Intracranial haemorrhage (nontraumatic), unspecified
@@ -9219,6 +9555,7 @@ child:
         docs: Other nontraumatic intracranial haemorrhage
         exclude:
         - ischaemic_stroke
+        - dementia
         index: I62
       - category: I63
         child:
@@ -9252,12 +9589,16 @@ child:
         docs: Cerebral infarction
         exclude:
         - bleeding
+        - haem_stroke
+        - dementia
         index: I63
       - code: I64
         docs: Stroke, not specified as haemorrhage or infarction
         exclude:
         - bleeding
         - ischaemic_stroke
+        - haem_stroke
+        - dementia
         index: I64
       - category: I65
         child:
@@ -9283,6 +9624,8 @@ child:
         exclude:
         - bleeding
         - ischaemic_stroke
+        - haem_stroke
+        - dementia
         index: I65
       - category: I66
         child:
@@ -9311,43 +9654,64 @@ child:
         exclude:
         - bleeding
         - ischaemic_stroke
+        - haem_stroke
+        - dementia
         index: I66
       - category: I67
         child:
         - code: I67.0
           docs: Dissection of cerebral arteries, nonruptured
+          exclude:
+          - dementia
           index: I670
         - code: I67.1
           docs: Cerebral aneurysm, nonruptured
+          exclude:
+          - dementia
           index: I671
         - code: I67.2
           docs: Cerebral atherosclerosis
+          exclude:
+          - dementia
           index: I672
         - code: I67.3
           docs: Progressive vascular leukoencephalopathy
           index: I673
         - code: I67.4
           docs: Hypertensive encephalopathy
+          exclude:
+          - dementia
           index: I674
         - code: I67.5
           docs: Moyamoya disease
+          exclude:
+          - dementia
           index: I675
         - code: I67.6
           docs: Nonpyogenic thrombosis of intracranial venous system
+          exclude:
+          - dementia
           index: I676
         - code: I67.7
           docs: Cerebral arteritis, not elsewhere classified
+          exclude:
+          - dementia
           index: I677
         - code: I67.8
           docs: Other specified cerebrovascular diseases
+          exclude:
+          - dementia
           index: I678
         - code: I67.9
           docs: Cerebrovascular disease, unspecified
+          exclude:
+          - dementia
           index: I679
         docs: Other cerebrovascular diseases
         exclude:
         - bleeding
         - ischaemic_stroke
+        - haem_stroke
         index: I67
       - category: I68
         child:
@@ -9367,6 +9731,8 @@ child:
         exclude:
         - bleeding
         - ischaemic_stroke
+        - haem_stroke
+        - dementia
         index: I68
       - category: I69
         child:
@@ -9397,6 +9763,8 @@ child:
         docs: Sequelae of cerebrovascular disease
         exclude:
         - ischaemic_stroke
+        - haem_stroke
+        - dementia
         index: I69
       docs: Cerebrovascular diseases
       exclude:
@@ -9406,6 +9774,15 @@ child:
       - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
+      - periph_vasc_disease
+      - cardiac_arrest
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
       index:
       - I60
       - I69
@@ -9460,6 +9837,8 @@ child:
           docs: Aortic aneurysm of unspecified site, without mention of rupture
           index: I719
         docs: Aortic aneurysm and dissection
+        exclude:
+        - periph_vasc_disease
         index: I71
       - category: I72
         child:
@@ -9491,11 +9870,15 @@ child:
           docs: Aneurysm and dissection of unspecified site
           index: I729
         docs: Other aneurysm and dissection
+        exclude:
+        - periph_vasc_disease
         index: I72
       - category: I73
         child:
         - code: I73.0
           docs: Raynaud syndrome
+          exclude:
+          - periph_vasc_disease
           index: I730
         - code: I73.1
           docs: Thromboangiitis obliterans [Buerger]
@@ -9566,6 +9949,8 @@ child:
           docs: Disorder of arteries and arterioles, unspecified
           index: I779
         docs: Other disorders of arteries and arterioles
+        exclude:
+        - periph_vasc_disease
         index: I77
       - category: I78
         child:
@@ -9582,6 +9967,8 @@ child:
           docs: Disease of capillaries, unspecified
           index: I789
         docs: Diseases of capillaries
+        exclude:
+        - periph_vasc_disease
         index: I78
       - category: I79
         child:
@@ -9598,6 +9985,8 @@ child:
           docs: Other disorders of arteries, arterioles and capillaries in diseases classified elsewhere
           index: I798
         docs: Disorders of arteries, arterioles and capillaries in diseases classified elsewhere
+        exclude:
+        - periph_vasc_disease
         index: I79
       docs: Diseases of arteries, arterioles and capillaries
       exclude:
@@ -9609,6 +9998,16 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I70
       - I79
@@ -9803,6 +10202,17 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I80
       - I89
@@ -9896,6 +10306,17 @@ child:
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
+      - periph_vasc_disease
+      - cardiac_arrest
+      - haem_stroke
+      - hypertension
+      - nonisch_cardiomyopathy
+      - isch_cardiomyopathy
+      - heart_failure
+      - ventricular_arrhy
+      - atrial_arrhy
+      - conduction_disease
+      - dementia
       index:
       - I95
       - I99
@@ -9917,6 +10338,8 @@ child:
     - type_1_diabetes
     - type_2_diabetes
     - diabetes_unspecified
+    - obesity
+    - lipid_disorder
     index:
     - I00
     - I99
@@ -9989,20 +10412,28 @@ child:
         index: F03
       - code: F04
         docs: Organic amnesic syndrome, not induced by alcohol and other psychoactive substances
+        exclude:
+        - dementia
         index: F04
       - category: F05
         child:
         - code: F05.0
           docs: Delirium not superimposed on dementia, so described
+          exclude:
+          - dementia
           index: F050
         - code: F05.1
           docs: Delirium superimposed on dementia
           index: F051
         - code: F05.8
           docs: Other delirium
+          exclude:
+          - dementia
           index: F058
         - code: F05.9
           docs: Delirium, unspecified
+          exclude:
+          - dementia
           index: F059
         docs: Delirium, not induced by alcohol and other psychoactive substances
         index: F05
@@ -10039,6 +10470,8 @@ child:
           docs: Unspecified mental disorder due to brain damage and dysfunction and to physical disease
           index: F069
         docs: Other mental disorders due to brain damage and dysfunction and to physical disease
+        exclude:
+        - dementia
         index: F06
       - category: F07
         child:
@@ -10058,9 +10491,13 @@ child:
           docs: Unspecified organic personality and behavioural disorder due to brain disease, damage and dysfunction
           index: F079
         docs: Personality and behavioural disorders due to brain disease, damage and dysfunction
+        exclude:
+        - dementia
         index: F07
       - code: F09
         docs: Unspecified organic or symptomatic mental disorder
+        exclude:
+        - dementia
         index: F09
       docs: Organic, including symptomatic, mental disorders
       exclude:
@@ -10074,33 +10511,51 @@ child:
         child:
         - code: F10.0
           docs: 'Mental and behavioural disorders due to use of alcohol : acute intoxication'
+          exclude:
+          - dementia
           index: F100
         - code: F10.1
           docs: 'Mental and behavioural disorders due to use of alcohol : harmful use'
+          exclude:
+          - dementia
           index: F101
         - code: F10.2
           docs: 'Mental and behavioural disorders due to use of alcohol : dependence syndrome'
+          exclude:
+          - dementia
           index: F102
         - code: F10.3
           docs: Mental and behavioural disorders due to use of alcohol withdrawal state
+          exclude:
+          - dementia
           index: F103
         - code: F10.4
           docs: Mental and behavioural disorders due to use of alcohol withdrawal state with delirium
+          exclude:
+          - dementia
           index: F104
         - code: F10.5
           docs: 'Mental and behavioural disorders due to use of alcohol : psychotic disorder'
+          exclude:
+          - dementia
           index: F105
         - code: F10.6
           docs: 'Mental and behavioural disorders due to use of alcohol : amnesic syndrome'
           index: F106
         - code: F10.7
           docs: 'Mental and behavioural disorders due to use of alcohol : residual and late-onset psychotic disorder'
+          exclude:
+          - dementia
           index: F107
         - code: F10.8
           docs: 'Mental and behavioural disorders due to use of alcohol : other mental and behavioural disorders'
+          exclude:
+          - dementia
           index: F108
         - code: F10.9
           docs: 'Mental and behavioural disorders due to use of alcohol : unspecified mental and behavioural disorder'
+          exclude:
+          - dementia
           index: F109
         docs: Mental and behavioural disorders due to use of alcohol
         exclude:
@@ -10141,6 +10596,7 @@ child:
         docs: Mental and behavioural disorders due to use of opioids
         exclude:
         - smoking
+        - dementia
         index: F11
       - category: F12
         child:
@@ -10177,6 +10633,7 @@ child:
         docs: Mental and behavioural disorders due to use of cannabinoids
         exclude:
         - smoking
+        - dementia
         index: F12
       - category: F13
         child:
@@ -10213,6 +10670,7 @@ child:
         docs: Mental and behavioural disorders due to use of sedatives or hypnotics
         exclude:
         - smoking
+        - dementia
         index: F13
       - category: F14
         child:
@@ -10249,6 +10707,7 @@ child:
         docs: Mental and behavioural disorders due to use of cocaine
         exclude:
         - smoking
+        - dementia
         index: F14
       - category: F15
         child:
@@ -10285,6 +10744,7 @@ child:
         docs: Mental and behavioural disorders due to use of other stimulants, including catrial_fibfeine
         exclude:
         - smoking
+        - dementia
         index: F15
       - category: F16
         child:
@@ -10321,6 +10781,7 @@ child:
         docs: Mental and behavioural disorders due to use of hallucinogens
         exclude:
         - smoking
+        - dementia
         index: F16
       - category: F17
         child:
@@ -10371,6 +10832,8 @@ child:
           - smoking
           index: F179
         docs: Mental and behavioural disorders due to use of tobacco
+        exclude:
+        - dementia
         index: F17
       - category: F18
         child:
@@ -10407,6 +10870,7 @@ child:
         docs: Mental and behavioural disorders due to use of volatile solvents
         exclude:
         - smoking
+        - dementia
         index: F18
       - category: F19
         child:
@@ -10443,6 +10907,7 @@ child:
         docs: Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances
         exclude:
         - smoking
+        - dementia
         index: F19
       docs: Mental and behavioural disorders due to psychoactive substance use
       index:
@@ -10550,6 +11015,7 @@ child:
       docs: Schizophrenia, schizotypal and delusional disorders
       exclude:
       - smoking
+      - dementia
       index:
       - F20
       - F29
@@ -10690,6 +11156,7 @@ child:
       docs: Mood [atrial_fibfective] disorders
       exclude:
       - smoking
+      - dementia
       index:
       - F30
       - F39
@@ -10852,6 +11319,7 @@ child:
       docs: Neurotic, stress-related and somatoform disorders
       exclude:
       - smoking
+      - dementia
       index:
       - F40
       - F48
@@ -10975,6 +11443,7 @@ child:
       docs: Behavioural syndromes associated with physiological disturbances and physical factors
       exclude:
       - smoking
+      - dementia
       index:
       - F50
       - F59
@@ -11143,6 +11612,7 @@ child:
       docs: Disorders of adult personality and behaviour
       exclude:
       - smoking
+      - dementia
       index:
       - F60
       - F69
@@ -11247,6 +11717,7 @@ child:
       docs: Mental retardation
       exclude:
       - smoking
+      - dementia
       index:
       - F70
       - F79
@@ -11339,6 +11810,7 @@ child:
       docs: Disorders of psychological development
       exclude:
       - smoking
+      - dementia
       index:
       - F80
       - F89
@@ -11489,6 +11961,7 @@ child:
       docs: Behavioural and emotional disorders with onset usually occurring in childhood and adolescence
       exclude:
       - smoking
+      - dementia
       index:
       - F90
       - F98
@@ -11500,6 +11973,7 @@ child:
       docs: Unspecified mental disorder
       exclude:
       - smoking
+      - dementia
       index:
       - F99
       - F99
@@ -11528,6 +12002,18 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
     index:
     - F00
     - F99
@@ -11650,6 +12136,8 @@ child:
         docs: Sequelae of inflammatory diseases of central nervous system
         index: G09
       docs: Inflammatory diseases of the central nervous system
+      exclude:
+      - dementia
       index:
       - G00
       - G09
@@ -11722,6 +12210,8 @@ child:
         docs: Postpolio syndrome
         index: G14
       docs: Systemic atrophies primarily atrial_fibfecting the central nervous system
+      exclude:
+      - dementia
       index:
       - G10
       - G14
@@ -11843,6 +12333,8 @@ child:
         docs: Extrapyramidal and movement disorders in diseases classified elsewhere
         index: G26
       docs: Extrapyramidal and movement disorders
+      exclude:
+      - dementia
       index:
       - G20
       - G26
@@ -11874,12 +12366,16 @@ child:
           index: G311
         - code: G31.2
           docs: Degeneration of nervous system due to alcohol
+          exclude:
+          - dementia
           index: G312
         - code: G31.8
           docs: Other specified degenerative diseases of nervous system
           index: G318
         - code: G31.9
           docs: Degenerative disease of nervous system, unspecified
+          exclude:
+          - dementia
           index: G319
         docs: Other degenerative diseases of nervous system, not elsewhere classified
         index: G31
@@ -11892,6 +12388,8 @@ child:
           docs: Other specified degenerative disorders of nervous system in diseases classified elsewhere
           index: G328
         docs: Other degenerative disorders of nervous system in diseases classified elsewhere
+        exclude:
+        - dementia
         index: G32
       docs: Other degenerative diseases of the nervous system
       index:
@@ -11947,6 +12445,8 @@ child:
         docs: Other demyelinating diseases of central nervous system
         index: G37
       docs: Demyelinating diseases of the central nervous system
+      exclude:
+      - dementia
       index:
       - G35
       - G37
@@ -12131,6 +12631,8 @@ child:
         docs: Sleep disorders
         index: G47
       docs: Episodic and paroxysmal disorders
+      exclude:
+      - dementia
       index:
       - G40
       - G47
@@ -12357,6 +12859,8 @@ child:
         docs: Mononeuropathy in diseases classified elsewhere
         index: G59
       docs: Nerve, nerve root and plexus disorders
+      exclude:
+      - dementia
       index:
       - G50
       - G59
@@ -12451,6 +12955,8 @@ child:
         docs: Other disorders of peripheral nervous system
         index: G64
       docs: Polyneuropathies and other disorders of the peripheral nervous system
+      exclude:
+      - dementia
       index:
       - G60
       - G64
@@ -12551,6 +13057,8 @@ child:
         docs: Disorders of myoneural junction and muscle in diseases classified elsewhere
         index: G73
       docs: Diseases of myoneural junction and muscle
+      exclude:
+      - dementia
       index:
       - G70
       - G73
@@ -12645,6 +13153,8 @@ child:
         docs: Other paralytic syndromes
         index: G83
       docs: Cerebral palsy and other paralytic syndromes
+      exclude:
+      - dementia
       index:
       - G80
       - G83
@@ -12821,6 +13331,8 @@ child:
         docs: Other disorders of nervous system in diseases classified elsewhere
         index: G99
       docs: Other disorders of the nervous system
+      exclude:
+      - dementia
       index:
       - G90
       - G99
@@ -12850,6 +13362,18 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
     index:
     - G00
     - G99
@@ -14026,6 +14550,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - H00
     - H59
@@ -14527,6 +15064,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - H60
     - H95
@@ -15556,6 +16106,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - J00
     - J99
@@ -17507,6 +18070,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - K00
     - K93
@@ -18844,6 +19420,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - L00
     - L99
@@ -20979,6 +21568,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - M00
     - M99
@@ -22891,6 +23493,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - N00
     - N99
@@ -22930,6 +23545,7 @@ child:
         docs: Superficial injury of head
         exclude:
         - bleeding
+        - haem_stroke
         index: S00
       - category: S01
         child:
@@ -22963,6 +23579,7 @@ child:
         docs: Open wound of head
         exclude:
         - bleeding
+        - haem_stroke
         index: S01
       - category: S02
         child:
@@ -22999,6 +23616,7 @@ child:
         docs: Fracture of skull and facial bones
         exclude:
         - bleeding
+        - haem_stroke
         index: S02
       - category: S03
         child:
@@ -23023,6 +23641,7 @@ child:
         docs: Dislocation, sprain and strain of joints and ligaments of head
         exclude:
         - bleeding
+        - haem_stroke
         index: S03
       - category: S04
         child:
@@ -23059,6 +23678,7 @@ child:
         docs: Injury of cranial nerves
         exclude:
         - bleeding
+        - haem_stroke
         index: S04
       - category: S05
         child:
@@ -23095,6 +23715,7 @@ child:
         docs: Injury of eye and orbit
         exclude:
         - bleeding
+        - haem_stroke
         index: S05
       - category: S06
         child:
@@ -23102,22 +23723,27 @@ child:
           docs: Concussion
           exclude:
           - bleeding
+          - haem_stroke
           index: S060
         - code: S06.1
           docs: Traumatic cerebral oedema
           exclude:
           - bleeding
+          - haem_stroke
           index: S061
         - code: S06.2
           docs: Diffuse brain injury
           exclude:
           - bleeding
+          - haem_stroke
           index: S062
         - code: S06.3
           docs: Focal brain injury
           index: S063
         - code: S06.4
           docs: Epidural haemorrhage
+          exclude:
+          - haem_stroke
           index: S064
         - code: S06.5
           docs: Traumatic subdural haemorrhage
@@ -23129,16 +23755,19 @@ child:
           docs: Intracranial injury with prolonged coma
           exclude:
           - bleeding
+          - haem_stroke
           index: S067
         - code: S06.8
           docs: Other intracranial injuries
           exclude:
           - bleeding
+          - haem_stroke
           index: S068
         - code: S06.9
           docs: Intracranial injury, unspecified
           exclude:
           - bleeding
+          - haem_stroke
           index: S069
         docs: Intracranial injury
         index: S06
@@ -23159,6 +23788,7 @@ child:
         docs: Crushing injury of head
         exclude:
         - bleeding
+        - haem_stroke
         index: S07
       - category: S08
         child:
@@ -23177,6 +23807,7 @@ child:
         docs: Traumatic amputation of part of head
         exclude:
         - bleeding
+        - haem_stroke
         index: S08
       - category: S09
         child:
@@ -23201,6 +23832,7 @@ child:
         docs: Other and unspecified injuries of head
         exclude:
         - bleeding
+        - haem_stroke
         index: S09
       docs: Injuries to the head
       index:
@@ -23381,6 +24013,7 @@ child:
       docs: Injuries to the neck
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S10
       - S19
@@ -23651,6 +24284,8 @@ child:
         - bleeding
         index: S29
       docs: Injuries to the thorax
+      exclude:
+      - haem_stroke
       index:
       - S20
       - S29
@@ -23927,6 +24562,7 @@ child:
       docs: Injuries to the abdomen, lower back, lumbar spine and pelvis
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S30
       - S39
@@ -24133,6 +24769,7 @@ child:
       docs: Injuries to the shoulder and upper arm
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S40
       - S49
@@ -24343,6 +24980,7 @@ child:
       docs: Injuries to the elbow and forearm
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S50
       - S59
@@ -24592,6 +25230,7 @@ child:
       docs: Injuries to the wrist and hand
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S60
       - S69
@@ -24778,6 +25417,7 @@ child:
       docs: Injuries to the hip and thigh
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S70
       - S79
@@ -24997,6 +25637,7 @@ child:
       docs: Injuries to the knee and lower leg
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S80
       - S89
@@ -25216,6 +25857,7 @@ child:
       docs: Injuries to the ankle and foot
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - S90
       - S99
@@ -25420,6 +26062,7 @@ child:
       docs: Injuries involving multiple body regions
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T00
       - T07
@@ -25564,6 +26207,7 @@ child:
       docs: Injuries to unspecified part of trunk, limb or body region
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T08
       - T14
@@ -25669,6 +26313,7 @@ child:
       docs: Effects of foreign body entering through natural orifice
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T15
       - T19
@@ -26083,6 +26728,7 @@ child:
       docs: Burns and corrosions
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T20
       - T32
@@ -26187,6 +26833,7 @@ child:
       docs: Frostbite
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T33
       - T35
@@ -26666,6 +27313,7 @@ child:
       docs: Poisoning by drugs, medicaments and biological substances
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T36
       - T50
@@ -26995,6 +27643,7 @@ child:
       docs: Toxic effects of substances chiefly nonmedicinal as to source
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T51
       - T65
@@ -27178,6 +27827,7 @@ child:
       docs: Other and unspecified effects of external causes
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T66
       - T78
@@ -27220,6 +27870,7 @@ child:
       docs: Certain early complications of trauma
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T79
       - T79
@@ -27542,6 +28193,8 @@ child:
         - bleeding
         index: T88
       docs: Complications of surgical and medical care, not elsewhere classified
+      exclude:
+      - haem_stroke
       index:
       - T80
       - T88
@@ -27725,6 +28378,7 @@ child:
       docs: Sequelae of injuries, of poisoning and of other consequences of external causes
       exclude:
       - bleeding
+      - haem_stroke
       index:
       - T90
       - T98
@@ -27753,6 +28407,18 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - S00
     - T98
@@ -29402,6 +30068,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - O00
     - O99
@@ -30708,6 +31387,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - P00
     - P96
@@ -33033,6 +33725,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - Q00
     - Q99
@@ -33190,6 +33895,8 @@ child:
         - bleeding
         index: R09
       docs: Symptoms and signs involving the circulatory and respiratory systems
+      exclude:
+      - heart_failure
       index:
       - R00
       - R09
@@ -33279,6 +33986,7 @@ child:
       docs: Symptoms and signs involving the digestive system and abdomen
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R10
       - R19
@@ -33356,6 +34064,7 @@ child:
       docs: Symptoms and signs involving the skin and subcutaneous tissue
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R20
       - R23
@@ -33437,6 +34146,7 @@ child:
       docs: Symptoms and signs involving the nervous and musculoskeletal systems
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R25
       - R29
@@ -33504,6 +34214,8 @@ child:
         - bleeding
         index: R39
       docs: Symptoms and signs involving the urinary system
+      exclude:
+      - heart_failure
       index:
       - R30
       - R39
@@ -33644,6 +34356,7 @@ child:
       docs: Symptoms and signs involving cognition, perception, emotional state and behaviour
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R40
       - R46
@@ -33697,6 +34410,7 @@ child:
       docs: Symptoms and signs involving speech and voice
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R47
       - R49
@@ -33716,11 +34430,13 @@ child:
         docs: Fever of other and unknown origin
         exclude:
         - bleeding
+        - heart_failure
         index: R50
       - code: R51
         docs: Headache
         exclude:
         - bleeding
+        - heart_failure
         index: R51
       - category: R52
         child:
@@ -33739,21 +34455,25 @@ child:
         docs: Pain, not elsewhere classified
         exclude:
         - bleeding
+        - heart_failure
         index: R52
       - code: R53
         docs: Malaise and fatigue
         exclude:
         - bleeding
+        - heart_failure
         index: R53
       - code: R54
         docs: Senility
         exclude:
         - bleeding
+        - heart_failure
         index: R54
       - code: R55
         docs: Syncope and collapse
         exclude:
         - bleeding
+        - heart_failure
         index: R55
       - category: R56
         child:
@@ -33766,6 +34486,7 @@ child:
         docs: Convulsions, not elsewhere classified
         exclude:
         - bleeding
+        - heart_failure
         index: R56
       - category: R57
         child:
@@ -33774,15 +34495,23 @@ child:
           index: R570
         - code: R57.1
           docs: Hypovolaemic shock
+          exclude:
+          - heart_failure
           index: R571
         - code: R57.2
           docs: Septic shock
+          exclude:
+          - heart_failure
           index: R572
         - code: R57.8
           docs: Other shock
+          exclude:
+          - heart_failure
           index: R578
         - code: R57.9
           docs: Shock, unspecified
+          exclude:
+          - heart_failure
           index: R579
         docs: Shock, not elsewhere classified
         exclude:
@@ -33790,6 +34519,8 @@ child:
         index: R57
       - code: R58
         docs: Haemorrhage, not elsewhere classified
+        exclude:
+        - heart_failure
         index: R58
       - category: R59
         child:
@@ -33805,6 +34536,7 @@ child:
         docs: Enlarged lymph nodes
         exclude:
         - bleeding
+        - heart_failure
         index: R59
       - category: R60
         child:
@@ -33820,6 +34552,7 @@ child:
         docs: Oedema, not elsewhere classified
         exclude:
         - bleeding
+        - heart_failure
         index: R60
       - category: R61
         child:
@@ -33835,6 +34568,7 @@ child:
         docs: Hyperhidrosis
         exclude:
         - bleeding
+        - heart_failure
         index: R61
       - category: R62
         child:
@@ -33850,6 +34584,7 @@ child:
         docs: Lack of expected normal physiological development
         exclude:
         - bleeding
+        - heart_failure
         index: R62
       - category: R63
         child:
@@ -33880,11 +34615,13 @@ child:
         docs: Symptoms and signs concerning food and fluid intake
         exclude:
         - bleeding
+        - heart_failure
         index: R63
       - code: R64
         docs: Cachexia
         exclude:
         - bleeding
+        - heart_failure
         index: R64
       - category: R65
         child:
@@ -33906,6 +34643,7 @@ child:
         docs: Systemic Inflammatory Response Syndrome [SIRS]
         exclude:
         - bleeding
+        - heart_failure
         index: R65
       - category: R68
         child:
@@ -33927,11 +34665,13 @@ child:
         docs: Other general symptoms and signs
         exclude:
         - bleeding
+        - heart_failure
         index: R68
       - code: R69
         docs: Unknown and unspecified causes of morbidity
         exclude:
         - bleeding
+        - heart_failure
         index: R69
       docs: General symptoms and signs
       index:
@@ -34069,6 +34809,7 @@ child:
       docs: Abnormal findings on examination of blood, without diagnosis
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R70
       - R79
@@ -34117,6 +34858,7 @@ child:
       docs: Abnormal findings on examination of urine, without diagnosis
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R80
       - R82
@@ -34329,6 +35071,7 @@ child:
       docs: Abnormal findings on examination of other body fluids, substances and tissues, without diagnosis
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R83
       - R89
@@ -34415,6 +35158,7 @@ child:
       docs: Abnormal findings on diagnostic imaging and in function studies, without diagnosis
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R90
       - R94
@@ -34449,6 +35193,7 @@ child:
       docs: Ill-defined and unknown causes of mortality
       exclude:
       - bleeding
+      - heart_failure
       index:
       - R95
       - R99
@@ -34477,6 +35222,18 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - R00
     - R99
@@ -39454,6 +40211,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - V01
     - Y98
@@ -41848,6 +42618,19 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - Z00
     - Z99
@@ -42035,10 +42818,25 @@ child:
     - type_2_diabetes
     - diabetes_unspecified
     - ischaemic_stroke
+    - periph_vasc_disease
+    - obesity
+    - cardiac_arrest
+    - lipid_disorder
+    - haem_stroke
+    - hypertension
+    - nonisch_cardiomyopathy
+    - isch_cardiomyopathy
+    - heart_failure
+    - ventricular_arrhy
+    - atrial_arrhy
+    - conduction_disease
+    - dementia
     index:
     - U00
     - U85
   docs: ICD-10 codes, 2016 release
+  exclude:
+  - cardiac_arrhy_any
   index:
   - A00
   - Z99
@@ -42068,7 +42866,8 @@ groups:
 - diabetes_unspecified
 - ischaemic_stroke
 - ventricular_arrhy
-- cardiac_arrhy_any
+- atrial_arrhy
+- conduction_disease
 - cardiac_arrest
 - heart_failure
 - isch_cardiomyopathy
@@ -42078,3 +42877,4 @@ groups:
 - haem_stroke
 - obesity
 - periph_vasc_disease
+- dementia

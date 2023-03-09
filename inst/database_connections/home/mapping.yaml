@@ -48,6 +48,7 @@
       source: "test_lookup_test"
       # Raw is used to import all the columns as-is. This overrides the columns key. Mapping the columns properly is preferred.
       raw: yes
+
     - table: "nhais"
       docs: "NHAIS Deaths table...."
       source: "test_lookup_test"
@@ -59,6 +60,7 @@
   tables:
     ## This will paste a list at the current level. (If there were a leading dash, the list would be nested)
     - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/swd.yaml"
+
     - table: "attr_h"
       docs: "The SWD attributes-history table contains every monthly snapshot of patient attributes going back to inception of the swd attributes table in 201X(?when, look this up)."
       source:
@@ -73,4 +75,12 @@
         catalog: "MODELLING_SQL_AREA"
         # schema: "dbo"
         table: "swd_LSOA_descriptions"
+      raw: yes
+
+    - table: "cambridge"
+      docs: "The New_Cambridge_Score table contains details about `segment` within which the patient sits. This is based on comorbidities and is calculated from the electronic records. It is a measure of frailty."
+      source:
+        catalog: "MODELLING_SQL_AREA"
+        # schema: "dbo"
+        table: "New_Cambridge_Score"
       raw: yes

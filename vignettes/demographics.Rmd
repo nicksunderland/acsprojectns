@@ -25,9 +25,9 @@ index_acs <- msrv$sus$apc_spells |>
   icdb::run() |>
   # Recode the ICD10 codes
   dplyr::mutate(primary_diagnosis = icdb::icd10(primary_diagnosis_icd, 
-                                                system.file("extdata", "icd10/icd10_example.yaml", package="icdb"))) %>% 
+                                                system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
-  {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1")} |>
+  {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
   # Only ACS events TODO: change this to filter
   dplyr::mutate(filter_test = primary_diagnosis %in_group% c("acs_stemi", "acs_nstemi", "acs_unstable_angina")) |>
   # Only the first ACS event
@@ -53,72 +53,296 @@ stopifnot(nrow(index_acs)==length(cohort_ids),
 kbl(index_acs |> dplyr::slice_head(n=5), longtable = T, booktabs = T, caption = "Index ACS event")
 ```
 
+## Age
+Get the age of the patient at the index ACS event
+```{r demographics_age, results="markup"}
+dat_age <- index_acs |> dplyr::select(nhs_number, age = age_on_admission)
+```
 
-## Static patient factors
-Analyse the non-time varying patient factors.
+## Sex
+```{r demographics_sex}
+# read in the code mappnigs for sex
+sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
+
+# get the sex data from the SUS data, then add in that from the SWD attribute history data
+dat_sex <- msrv$sus$apc_spells |>
+  # only nhs number and sex
+  dplyr::select(nhs_number, sex_sus = sex) |>
+  # combine with the sex data from the SWD attribute history
+  dplyr::left_join(msrv$swd$attr_h |> dplyr::select(nhs_number, sex_swd = sex), by="nhs_number") |>
+  # collect to local
+  run() |>
+  # ensure all characters
+  dplyr::mutate(dplyr::across(dplyr::starts_with("sex"), ~as.character(.x))) |>
+  # combine into one column
+  tidyr::pivot_longer(dplyr::starts_with("sex"), names_to="source", values_to="sex_code") |>
+  # recode according to the mappings
+  dplyr::left_join(sex_codes, by="sex_code") |>
+  # group by each patient 
+  dplyr::group_by(nhs_number) |>
+  # take the mode within each patient, ignoring NAs
+  dplyr::summarise(sex = acsprojectns::mode(sex)) |>
+  # ensure all nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
+```
+
+## Ethnicity
 ```{r demographics_ethnicity, results="markup"}
 # read in the ethnicity mappings
 ethnicity_codes <- read.csv(system.file("ethnicity_codes/ethnicity_codes.csv", package = "acsprojectns"))
 
-# extract the SUS ACP Spell data for the index event
+# get the ethnicity data from the SUS data, then add in that from the SWD attribute history data
 dat_ethnicity <- msrv$sus$apc_spells |>
   # Just ethnicity
-  dplyr::select(nhs_number, ethnic_group) |>
+  dplyr::select(nhs_number, ethnicity_sus = ethnic_group) |>
   # just the cohort IDs
   dplyr::filter(nhs_number %in% cohort_ids) |>
   # Add SWD attribute data
-  dplyr::left_join(msrv$swd$swd_attribute |> dplyr::select(nhs_number, ethnicity), by="nhs_number") |>
+  dplyr::left_join(msrv$swd$attr_h |> dplyr::select(nhs_number, ethnicity_swd = ethnicity), by="nhs_number") |>
   # collect to local
   icdb::run() |>
-  # coalesce the sources from different tables
-  dplyr::mutate(ethnic_group = dplyr::coalesce(as.character(ethnic_group),
-                                               as.character(ethnicity))) |>
-  # keep the modal value
+  # ensure all characters
+  dplyr::mutate(dplyr::across(dplyr::starts_with("ethnicity"), ~as.character(.x))) |>
+  # combine into one column
+  tidyr::pivot_longer(dplyr::starts_with("ethnicity"), names_to="source", values_to="ethnicity_code") |>
+  # recode according to the mappings
+  dplyr::left_join(ethnicity_codes, by="ethnicity_code") |>
+  # group by each patient 
   dplyr::group_by(nhs_number) |>
-  dplyr::summarise(ethnic_group = acsprojectns::mode(ethnic_group))
-
+  # take the mode within each patient, ignoring NAs; n.b. use 'ethnicity' rather than
+  # 'ethnicity_group' for more detailed breakdown
+  dplyr::summarise(ethnicity = acsprojectns::mode(ethnicity_group)) |>
+  # ensure all nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
+  
 # View 
 kbl(dplyr::slice_head(dat_ethnicity, n=5), longtable = T, booktabs = T, caption = "Ethnicity data")
 ```
 
-```{r demographics_sex}
-#sex_codes       <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
-# extract the SUS ACP Spell data for the index event
-# dat_ethnicity <- msrv$sus$apc_spells |>
-#   # Cohort IDs
-#   dplyr::filter(nhs_number %in% cohort_ids) |>
-#   # Add SWD attribute data
-#   dplyr::left_join(msrv$swd$swd_attribute |> dplyr::select(nhs_number, ethnicity), by="nhs_number") |>
-#   # collect to local
-#   icdb::run() |>
-#   # combine static variables
-#   dplyr::group_by(nhs_number) |>
-#   # 
-#   dplyr::mutate(ethnicity = )
-#   
-#   # Time window
-#   dplyr::filter(spell_start > acs_date_min & spell_end < acs_date_max) |>
-#   # Emergency admission
-#   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
-#   # Acute coronary syndrome primary diagnosis
-#   icdb::codes_from(system.file("icd10_codes", "acs.yaml", package="acsprojectns"), primary_diagnosis_icd) |>
-# 
-#   # remove duplicates
-#   dplyr::distinct(nhs_number) |> 
-#   dplyr::pull()
+## Index of Multiple Deprivation
+```{r demographics_imd, results="markup"}
+# extract the IMD data from the swd_attributes table
+dat_imd <- msrv$swd$swd_attribute |>
+  # just the cohort IDs
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # just the IMD
+  dplyr::select(nhs_number, wd_imd_decile_19) |>
+  # collect to local 
+  icdb::run()  |>
+  # group by each patient 
+  dplyr::group_by(nhs_number) |>
+  # take the most recent
+  dplyr::slice_head(n=1) |>
+  # ensure all nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
-
-
-
-
-
-# <!-- index_of_multiple_deprivation_decile -->
-# <!-- income_decile -->
-# <!-- employment_decile -->
-# <!-- urban_rural_classification -->
+# View 
+kbl(dplyr::slice_head(dat_imd, n=5), longtable = T, booktabs = T, caption = "IMD data")
 ```
 
+## Employment decile
+```{r demographics_employment, results="markup"}
+# extract the employment decile data from the swd_attributes table
+dat_employment_decile <- msrv$swd$swd_attribute |>
+  # just the cohort IDs
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # just the employment decile
+  dplyr::select(nhs_number, wd_employment_decile) |>
+  # collect to local 
+  icdb::run() |>
+  # group by each patient 
+  dplyr::group_by(nhs_number) |>
+  # take the most recent
+  dplyr::slice_head(n=1) |>
+  # ensure all nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
+# View 
+kbl(dplyr::slice_head(dat_employment_decile, n=5), longtable = T, booktabs = T, caption = "Employment decile data")
+```
 
+## Income decile
+```{r demographics_income, results="markup"}
+# extract the income decile data from the swd_attributes table
+dat_income_decile <- msrv$swd$swd_attribute |>
+  # just the cohort IDs
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # just the income decile
+  dplyr::select(nhs_number, wd_income_decile) |>
+  # collect to local 
+  icdb::run() |>
+  # group by each patient 
+  dplyr::group_by(nhs_number) |>
+  # take the most recent
+  dplyr::slice_head(n=1) |>
+  # ensure all nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
+
+# View 
+kbl(dplyr::slice_head(dat_income_decile, n=5), longtable = T, booktabs = T, caption = "Income decile data")
+```
+
+## Frailty
+```{r demographics_frailty, results="markup"}
+# extract the electronic frailty index data from the swd attributes history table
+dat_frailty <- msrv$swd$attr_h |>
+  # just the cohort IDs
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # just the efi decile
+  dplyr::select(nhs_number, attribute_period, score = efi_category) |>
+  # label the score
+  dplyr::mutate(frailty_score = "efi") |>
+  # collect to local 
+  icdb::run() |>
+  # add the Cambridge score data
+  dplyr::bind_rows(msrv$swd$cambridge |> 
+                     dplyr::select(nhs_number, attribute_period, score = segment) |>
+                     dplyr::mutate(frailty_score = "cambridge") |> icdb::run()) |>
+  # join with the index ACS event date, so that we can filter for data existing prior to the ACS event
+  dplyr::left_join(index_acs |> dplyr::select(nhs_number, spell_start), by="nhs_number") |>
+  # only look at data prior to the ACS event
+  dplyr::filter(attribute_period < spell_start) |>
+  # NAs aren't useful
+  dplyr::filter(!is.na(score)) |>
+  # take the most recent of each score
+  dplyr::group_by(nhs_number, frailty_score) |>
+  dplyr::slice_max(attribute_period, with_ties=FALSE) |>
+  # select only those we need
+  dplyr::select(nhs_number, frailty_score, score) |>
+  # separate efi and Cambridge
+  tidyr::pivot_wider(names_from=frailty_score, values_from=score) |>
+  # ensure all nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
+
+# View 
+kbl(dplyr::slice_head(dat_frailty, n=5), longtable = T, booktabs = T, caption = "Frailty score data")
+```
+
+## Comorbidities
+```{r demographics_comorbidities, results="markup"}
+# extract all of the hospital admission for the cohort (use episodes for finer details - not sure if
+# this makes a difference)
+dat_comorbs <- msrv$sus$apc_episodes |>
+  # Only cohort NHS numbers
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # collect to local
+  icdb::run() |>
+  # ensure all columns characters
+  dplyr::mutate(dplyr::across(dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"),
+                              ~ as.character(.x))) |>
+  # pivot diagnoses to long format
+  tidyr::pivot_longer(dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"),
+                      names_to="diag_pos",
+                      values_to="diagnosis", 
+                      values_drop_na=TRUE) |>
+  # don't need to know where the diagnosis appeared in the list, deselect/clean up
+  dplyr::select(-diag_pos) |>
+  # make sure dates are dates
+  dplyr::mutate(dplyr::across(c(episode_start, episode_end), ~as.Date(.x))) |>
+  # add the cormorbidities from the SWD
+  dplyr::bind_rows(
+   foo= msrv$swd$attr_h |>
+      dplyr::filter(nhs_number %in% cohort_ids) |>
+      dplyr::select(nhs_number, 
+                    episode_start=attribute_period, 
+                    episode_end=attribute_period,
+                    dplyr::matches(c("smoking", "^obesity", "^ht$", "^ckd$", "anaemia",
+                                      "^stroke$", "^liver", "^af$", "arrhythmia", "ihd", "^hf$", 
+                                      "vasc", "diabetes"))) |>
+     icdb::run() |>
+     # pivot diagnosis flags to long format
+     tidyr::pivot_longer(!c(nhs_number, episode_start, episode_end),
+                         names_to="diagnosis",
+                         values_to="flag",
+                         values_transform = list(flag=as.logical),
+                         values_drop_na=TRUE) |>
+     # filter out the '0' flags as these mean that the patient doesn't have that diagnosis
+     dplyr::filter(flag) |> dplyr::select(-flag) |>
+     # recode the SWD diagnoses as appropriate ICD-10 codes
+     dplyr::mutate(diagnosis = dplyr::case_when(
+       diagnosis=="ckd"              ~ "N190", # N19,Unspecified kidney failure
+       diagnosis=="liver_alcohol"    ~ "K704", # K704,Alcoholic hepatic failure
+       diagnosis=="liver_nafl"       ~ "K760", # K760 'Fatty (change of) liver, not elsewhere classified'
+       diagnosis=="liver_other"      ~ "K729", # K729,"Hepatic failure, unspecified"
+       diagnosis=="hf"               ~ "I500", # I50,All heart failure,Heart failure
+       diagnosis=="ht"               ~ "I100", # I10,Essential Hypertension
+       diagnosis=="diabetes_1"       ~ "E100", # E10,All type 1 diabetes mellitus
+       diagnosis=="diabetes_2"       ~ "E110", # E11,All type 2 diabetes mellitus
+       diagnosis=="pre_diabetes"     ~ "R739", # ICD-10 code for prediabetes is R73. 09.
+       diagnosis=="obesity"          ~ "E660", # E660,Obesity due to excess calories
+       diagnosis=="anaemia_iron"     ~ "D509", # D509,"Iron deficiency anaemia, unspecified
+       diagnosis=="anaemia_other"    ~ "D649", # D649,"Anaemia, unspecified"
+       diagnosis=="vasc_dis"         ~ "I739", # I739,PVD unspecified
+       diagnosis=="liver_nafl"       ~ "K760", # K760 'Fatty (change of) liver, not elsewhere classified'
+       diagnosis=="smoking"          ~ "F171", 
+       diagnosis=="af"               ~ "I480", # I48,All AF and flutter
+       diagnosis=="arrhythmia_other" ~ "I499", # I499,"Cardiac arrhythmia, unspecified
+       diagnosis=="ihd_mi"           ~ "I249", # I249,Unspecified acute ischaemic heart disease
+       diagnosis=="ihd_nonmi"        ~ "I259", # I259,"Chronic ischaemic heart disease, unspecified
+       diagnosis=="stroke"           ~ "I639") # I639,"Cerebral infarction, unspecified"
+     )
+   ) |>
+  # keep the daignosis string, then parse the ICD10 codes
+  dplyr::mutate(diagnosis = icdb::icd10(diagnosis, system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns")), 
+                diagnosis_str = icdb::group_string(diagnosis)) %>% 
+  # separate the groups if there are multiple
+  tidyr::separate_longer_delim(diagnosis_str, delim=",") |>
+  # Make sure ICD10 codes are all valid
+  # {if(all(icdb::is_valid(.$diagnosis))) . else stop("error2 - couldn't parse all the ICD codes")}
+  # extract the group string 
+  # Filter out diagnoses that aren't defined by my groups (defined in icd10.yaml, created with JS'
+  # `map-editor` application available on the icdb github under the releases section)
+  dplyr::filter(icdb::group_string(diagnosis)!="") |>
+  # Add the index ACS dates
+  dplyr::left_join(index_acs |> dplyr::select(nhs_number, spell_start, spell_end), by="nhs_number") |>
+  # Filter out events after the index event spell start, as these cannot be confidently listed as
+  # comorbidities that existed prior to the index ACS event.
+  dplyr::filter(episode_end < spell_start) |>
+  # group by the patient and the diagnosis groupings
+  dplyr::group_by(nhs_number, diagnosis_str) |>
+  # take one one of each
+  dplyr::slice_head(n=1) |>
+  # always ungoup
+  dplur::ungroup() |>
+  # to wide format 
+  dplyr::mutate(value=TRUE) |>
+  tidyr::pivot_wider(id_cols=nhs_number, 
+                     names_from="diagnosis_str", 
+                     values_from=value, 
+                     values_fill=FALSE) |>
+  # ensure all nhs_numbers are presented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number") |>
+  # replace any injected NAs with FALSE
+  dplyr::mutate(dplyr::across(dplyr::everything(), ~tidyr::replace_na(.x, FALSE)))
+
+```
+
+## Combined demographics
+```{r demographics_combined, results="markup"}
+dat_lst <- list(dat_age, dat_sex, dat_ethnicity, dat_employment_decile, dat_income_decile, dat_imd,
+                dat_frailty, dat_comorbs)
+dat_demographics <- purrr::reduce(dat_lst, dplyr::left_join, by='nhs_number')
+
+dat_demographics |>
+  dplyr::ungroup() |>
+  dplyr::summarise(male= sum(sex=="male", na.rm=T),
+                   dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
+                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
+  t()
+
+```
+
+## Demographics by frailty
+```{r demographics_by_frailty, results="markup"}
+dat_demographics |>
+  dplyr::group_by(cambridge) |>
+  dplyr::summarise(age = mean(age, na.rm=T),
+                   male= sum(sex=="male", na.rm=T),
+                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n()))
+# Plan 
+# demographics at index ACS
+#     age, sex, ethnicity, 
+#     split by frailty, age, type of ACS
+```
 
 

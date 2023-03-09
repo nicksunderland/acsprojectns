@@ -497,7 +497,7 @@
     docs: Electronic Frailty Index Category
     source: efi_category
     strategy: coalesce
-    use: no
+    use: yes
   - column: egfr
     docs: latest eGFR score
     source: egfr
@@ -1020,7 +1020,7 @@
     docs: Patient sex at birth
     source: sex
     strategy: coalesce
-    use: no
+    use: yes
   - column: sexual_orient
     docs: Sexual Orientation
     source: sexual_orient
@@ -1145,7 +1145,7 @@
     docs: relative deprivation of LSOA
     source: wd_imd_decile_19
     strategy: coalesce
-    use: no
+    use: yes
   - column: wd_health_deprivation_and_disability_decile
     docs: measures the risk of premature death and the impairment of quality of life
       through poor physical or mental health within LSOA
@@ -1221,7 +1221,7 @@
     docs: employment deprivation within LSOA
     source: wd_employment_decile
     strategy: coalesce
-    use: no
+    use: yes
   - column: wd_geographical_barriers_sub_domain_decile
     docs: physical proximity of local services within LSOA
     source: wd_geographical_barriers_sub_domain_decile
@@ -1315,7 +1315,7 @@
     docs: income deprivation within LSOA
     source: wd_income_decile
     strategy: coalesce
-    use: no
+    use: yes
   - column: wd_housing_in_poor_condition_indicator
     docs: a modelled estimate of the proportion of social and private homes that fail
       to meet the decent homes standard within LSOA

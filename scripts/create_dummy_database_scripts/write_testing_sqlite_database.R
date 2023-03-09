@@ -31,7 +31,8 @@ data_tables = list(
   list("catalog"="MODELLING_SQL_AREA", "name"="swd_attribute",           "data"="swd_attributes_dummy_database.csv"),
   list("catalog"="MODELLING_SQL_AREA", "name"="swd_activity",            "data"="swd_activity_dummy_database.csv"),
   list("catalog"="MODELLING_SQL_AREA", "name"="swd_LSOA_descriptions",   "data"="swd_lsoa_dummy_database.csv"),
-  list("catalog"="MODELLING_SQL_AREA", "name"="swd_measurement",         "data"="swd_measurement_dummy_database.csv")
+  list("catalog"="MODELLING_SQL_AREA", "name"="swd_measurement",         "data"="swd_measurement_dummy_database.csv"),
+  list("catalog"="MODELLING_SQL_AREA", "name"="New_Cambridge_Score",     "data"="New_Cambridge_Score_dummy_database.csv")
 )
 
 for(table in data_tables){

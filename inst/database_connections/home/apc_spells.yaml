@@ -1898,7 +1898,12 @@
     - "EthnicGroup"
     strategy: "coalesce"
     use: yes
-
+  - column: "sex"
+    docs: "Listed as "
+    source:
+    - "Sex"
+    strategy: "coalesce"
+    use: yes
 
 
   - column: secondary_diagnosis_1_icd
