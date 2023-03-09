@@ -12,7 +12,7 @@ library(kableExtra)
 
 ## Index ACS event
 Get the index ACS event
-```{r index_acs, results="markup"}
+```{r demog_index_acs, results="markup"}
 # The index event
 index_acs <- msrv$sus$apc_spells |>
   # Time window
@@ -24,24 +24,16 @@ index_acs <- msrv$sus$apc_spells |>
   # Collect to local
   icdb::run() |>
   # Recode the ICD10 codes
-  dplyr::mutate(primary_diagnosis = icdb::icd10(primary_diagnosis_icd, 
+  dplyr::mutate(nhs_number = as.character(nhs_number), 
+                primary_diagnosis = icdb::icd10(primary_diagnosis_icd, 
                                                 system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
   {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
   # Only ACS events TODO: change this to filter
-  dplyr::mutate(filter_test = primary_diagnosis %in_group% c("acs_stemi", "acs_nstemi", "acs_unstable_angina")) |>
+  dplyr::filter(primary_diagnosis %in_group% c("acs_stemi", "acs_nstemi", "acs_unstable_angina")) |>
   # Only the first ACS event
   dplyr::group_by(nhs_number) |>
   dplyr::slice_min(spell_start, with_ties=F) |>
-  # select the final columns 
-  dplyr::select(
-    nhs_number, 
-    spell_start, 
-    spell_end, 
-    age_on_admission,
-    primary_diagnosis,
-    filter_test
-  ) |>
   # always ungroup stuff
   dplyr::ungroup()
 

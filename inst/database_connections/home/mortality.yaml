@@ -1,0 +1,211 @@
+- table: civil_reg
+  docs: "The Civil Registry Mortality table contains information about when a person died and what they died of, listed as ICD10 diagnosis codes. It also has lots of other information, such as where they died."
+  source:
+    catalog: ABI
+    # schema: dbo
+    table: Mortality
+
+  columns:
+  - column: nhs_number
+    docs: "The pseudo NHS number"
+    source: Derived_Pseudo_NHS
+    strategy: coalesce
+    use: yes
+
+  - column: date_of_death
+    docs: "date of death"
+    source: REG_DATE_OF_DEATH
+    strategy: coalesce
+    use: yes
+
+  - column: place_of_death
+    docs: "The place of death"
+    source: POD_NHS_ESTABLISHMENT_DESC
+    strategy: coalesce
+    use: yes
+
+  - column: place_of_death_ccg_code
+    docs: "The place of death CCG code"
+    source: PLACE_OF_DEATH_CCG_CODE
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_1_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_1
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_1_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_1
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_2_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_2
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_2_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_2
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_3_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_3
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_3_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_3
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_4_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_4
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_4_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_4
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_5_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_5
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_5_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_5
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_6_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_6
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_6_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_6
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_7_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_7
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_7_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_7
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_8_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_8
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_8_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_8
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_9_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_9
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_9_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_9
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_10_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_10
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_10_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_10
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_11_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_11
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_11_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_11
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_12_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_12
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_12_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_12
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_13_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_13
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_13_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_13
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_14_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_14
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_14_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_14
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_15_code
+    docs: "ICD code listed on the death certificate"
+    source: S_COD_CODE_15
+    strategy: coalesce
+    use: yes
+
+  - column: death_icd_15_line
+    docs: "The line of the death certificate that the ICD code appears on; e.g. 1c,1b,1c,2"
+    source: S_COD_LINE_15
+    strategy: coalesce
+    use: yes

@@ -1,0 +1,13 @@
+opcs_codes,description,group
+K631,Angiocardiography of combination of right and left side of heart,angiogram
+K632,Angiocardiography of right side of heart NEC,angiogram
+K633,Angiocardiography of left side of heart NEC,angiogram
+K634,Coronary arteriography using two catheters,angiogram
+K635,Coronary arteriography using single catheter,angiogram
+K636,Coronary arteriography NEC,angiogram
+K651,Catheterisation of combination of right and left side of heart NEC,angiogram
+K652,Catheterisation of right side of heart NEC,angiogram
+K653,Catheterisation of left side of heart NEC,angiogram
+K658,Catheterisation of left side of heart via atrial transeptal puncture,angiogram
+K658,Other specified catheterisation of heart,angiogram
+K659,Unspecified catheterisation of heart,angiogram

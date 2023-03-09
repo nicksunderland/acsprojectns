@@ -1,3 +1,50 @@
 # Survival
 
-Lorem...
+## Installation
+```{r installation_survival}
+library(acsprojectns)
+library(devtools)
+load_all()
+library(icdb)
+library(modeest)
+library(kableExtra)
+```
+
+## Subsequent events - deaths
+```{r deaths, results="markup"}
+# get all of the subsequent diagnoses after the start point of the index ACS event
+death_events <- msrv$mort$civil_reg |> 
+  # Only cohort NHS numbers
+  dplyr::filter(nhs_number %in% cohort_ids, 
+                !is.na(date_of_death)) |>
+  # # collect to local
+  icdb::run() |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
+  # pivot longer
+  dplyr::mutate(dplyr::across(-c(nhs_number, date_of_death, place_of_death_ccg_code, place_of_death), as.character)) |>
+  tidyr::pivot_longer(-c(nhs_number, date_of_death, place_of_death_ccg_code, place_of_death), 
+                      names_to=c("icd_code", ".value"), 
+                      names_pattern="(.*)_(\\w+)", 
+                      values_drop_na=TRUE) |>
+  # recode the ICD10 codes
+  dplyr::mutate(diagnosis = icdb::icd10(code, 
+                                        system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
+  # Make sure ICD10 codes are all valid
+  {if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  # clean up 
+  dplyr::select(nhs_number, date_of_death, diagnosis, line)
+  
+```
+
+```{r subsequent_events, results="markup"}
+# get all of the subsequent diagnoses after the start point of the index ACS event
+subsequent_events <- msrv$sus$apc_episodes |>
+  # Only cohort NHS numbers
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Time window
+  dplyr::filter(episode_start > acs_date_min)
+
+
+
+```

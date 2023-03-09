@@ -43,11 +43,8 @@
   docs: "There are two main tables containing death information....."
   source: "ABI"
   tables:
-    - table: "civ-reg"
-      docs: "The Civil Registry Mortality table contains information about when a person died and what they died of, listed as ICD10 diagnosis codes. It also has lots of other information, such as where they died."
-      source: "test_lookup_test"
-      # Raw is used to import all the columns as-is. This overrides the columns key. Mapping the columns properly is preferred.
-      raw: yes
+    # custom mortality column mappings
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/mortality.yaml"
 
     - table: "nhais"
       docs: "NHAIS Deaths table...."
