@@ -32,19 +32,92 @@ death_events <- msrv$mort$civil_reg |>
                                         system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
   {if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  # filter out line "d", which I think corresponds to line "2" on the death certification - i.e.
+  # conditions contributing but not causing the death; keep a, b, and c 
+  dplyr::filter(line=="a"|line=="b"|line=="c") |>
   # clean up 
   dplyr::select(nhs_number, date_of_death, diagnosis, line)
-  
 ```
 
-```{r subsequent_events, results="markup"}
+```{r subsequent_diagnoses, results="markup"}
 # get all of the subsequent diagnoses after the start point of the index ACS event
-subsequent_events <- msrv$sus$apc_episodes |>
+subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   # Only cohort NHS numbers
   dplyr::filter(nhs_number %in% cohort_ids) |>
-  # Time window
-  dplyr::filter(episode_start > acs_date_min)
-
+  # Time window - start of the cohort window to present
+  dplyr::filter(spell_start >= acs_date_min) |>
+  # select the needed columns - start and end now refer to the spell the diagnosis was made; whereas
+  # spell_start and spell_end still refer to the index ACS spell
+  dplyr::select(nhs_number, event_start=spell_start, event_end=spell_end, 
+                dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd")) |>
+  # collect to local
+  icdb::run() |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
+  # join the index spell data
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), by="nhs_number") |>
+  # make sure that the spell comes after (or at the same time as) the start of the index ACS spell
+  dplyr::filter(event_start >= index_start) |>
+  # ensure all columns characters
+  dplyr::mutate(dplyr::across(dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"),
+                              ~ as.character(.x))) |>
+  # pivot diagnoses to long format
+  tidyr::pivot_longer(dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"),
+                      names_to="diag_pos",
+                      values_to="diagnosis", 
+                      values_drop_na=TRUE) |>
+  # only take id, spell dates and diagnoses
+  dplyr::select(nhs_number, index_start, index_end, event_start, event_end, diagnosis) |>
+  # Recode the ICD10 codes
+  dplyr::mutate(diagnosis = icdb::icd10(diagnosis, 
+                                        system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
+  # Make sure ICD10 codes are all valid
+  {if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  # pivot wider, one column per diagnosis
+  dplyr::mutate(diagnosis_str = dplyr::if_else(icdb::group_string(diagnosis)!="",
+                                               icdb::group_string(diagnosis), 
+                                               as.character(diagnosis))) |>
+  # separate the groups if there are multiple
+  tidyr::separate_longer_delim(diagnosis_str, delim=",") |>
+  # filter out diagnoses that cannot be subsequent events - e.g. we cannot have an ACS subsequent
+  # event happening within the index ACS spell (this is the index ACS event)
+  dplyr::filter(!(diagnosis_str %in% c("acs_stemi", "acs_nstemi", "acs_unstable_angina") & 
+                    # is an ACS and is within the index spell
+                  lubridate::`%within%`(a=lubridate::interval(event_start,event_end), 
+                                        b=lubridate::interval(index_start,index_end)))) |>
+  # I think we need this to keep all the nhs numbers represented
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), 
+                    by=c("nhs_number", "index_start", "index_end")) |>
+  # complete the data.frame so each nhs_number has at least one of each event
+  tidyr::complete(diagnosis_str, tidyr::nesting(nhs_number, index_start, index_end)) |>
+  # tidy up 
+  dplyr::select(nhs_number, index_start, event_start, diagnosis_str) |>
+  # set up the start and stop times and event status for survival
+  
+  
+  #TODO
+  dplyr::group_by(nhs_number, diagnosis_str)
+  dplyr::mutate(status = !is.na(event_start),
+                tstart = dplyr::if_else(status) lubridate::time_length(lubridate::interval(index_start, ), unit="days")
 
 
 ```
+
+
+## Survival - all-cause death
+
+## Table - cause of death (in first 12 months)
+
+## Survival - all-cause admission back to hospital
+
+## Table - re-admission diagnosis (in first 12 months)
+
+## Survival - MACCE
+
+## Table - MACCE diagnoses (in first 12 months)
+
+## Cox PH model of factors affecting death and re-admission
+Is frailty the main driver? If so...
+
+## Survival by frailty score
+

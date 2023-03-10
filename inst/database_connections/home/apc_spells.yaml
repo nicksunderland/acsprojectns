@@ -1916,451 +1916,450 @@
   - column: secondary_diagnosis_1_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis1stSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_2_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis2ndSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_3_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis3rdSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_4_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis4thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_5_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis5thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_6_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis6thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_7_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis7thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_8_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis8thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_9_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis9thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_10_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis10thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_11_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis11thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_12_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis12thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_13_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis13thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_14_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis14thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_15_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis15thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_16_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis16thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_17_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis17thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_18_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis18thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_19_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis19thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_20_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis20thSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_21_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis21stSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_22_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis22ndSecondary_ICD
     strategy: coalesce
   - column: secondary_diagnosis_23_icd
     docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
       (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
-    use: no
+    use: yes
     source:
     - Diagnosis23rdSecondary_ICD
     strategy: coalesce
 
-
-  - column: procedure_1_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - PrimaryProcedure_OPCS
-    strategy: coalesce
-  - column: procedure_1_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - PrimaryProcedureDate_OPCS
-    strategy: coalesce
-  - column: procedure_2_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure2nd_OPCS
-    strategy: coalesce
-  - column: procedure_2_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure2ndDate_OPCS
-    strategy: coalesce
-  - column: procedure_3_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure3rd_OPCS
-    strategy: coalesce
-  - column: procedure_3_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure3rdDate_OPCS
-    strategy: coalesce
-  - column: procedure_4_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure4th_OPCS
-    strategy: coalesce
-  - column: procedure_4_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure4thDate_OPCS
-    strategy: coalesce
-  - column: procedure_5_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure5th_OPCS
-    strategy: coalesce
-  - column: procedure_5_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure5thDate_OPCS
-    strategy: coalesce
-  - column: procedure_6_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure6th_OPCS
-    strategy: coalesce
-  - column: procedure_6_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure6thDate_OPCS
-    strategy: coalesce
-  - column: procedure_7_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure7th_OPCS
-    strategy: coalesce
-  - column: procedure_7_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure7thDate_OPCS
-    strategy: coalesce
-  - column: procedure_8_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure8th_OPCS
-    strategy: coalesce
-  - column: procedure_8_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure8thDate_OPCS
-    strategy: coalesce
-  - column: procedure_9_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure9th_OPCS
-    strategy: coalesce
-  - column: procedure_9_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure9thDate_OPCS
-    strategy: coalesce
-  - column: procedure_10_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure10th_OPCS
-    strategy: coalesce
-  - column: procedure_10_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure10thDate_OPCS
-    strategy: coalesce
-  - column: procedure_11_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure11th_OPCS
-    strategy: coalesce
-  - column: procedure_11_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure11thDate_OPCS
-    strategy: coalesce
-  - column: procedure_12_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure12th_OPCS
-    strategy: coalesce
-  - column: procedure_12_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure12thDate_OPCS
-    strategy: coalesce
-  - column: procedure_13_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure13th_OPCS
-    strategy: coalesce
-  - column: procedure_13_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure13thDate_OPCS
-    strategy: coalesce
-  - column: procedure_14_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure14th_OPCS
-    strategy: coalesce
-  - column: procedure_14_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure14thDate_OPCS
-    strategy: coalesce
-  - column: procedure_15_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure15th_OPCS
-    strategy: coalesce
-  - column: procedure_15_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure15thDate_OPCS
-    strategy: coalesce
-  - column: procedure_16_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure16th_OPCS
-    strategy: coalesce
-  - column: procedure_16_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure16thDate_OPCS
-    strategy: coalesce
-  - column: procedure_17_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure17th_OPCS
-    strategy: coalesce
-  - column: procedure_17_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure17thDate_OPCS
-    strategy: coalesce
-  - column: procedure_18_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure18th_OPCS
-    strategy: coalesce
-  - column: procedure_18_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure18thDate_OPCS
-    strategy: coalesce
-  - column: procedure_19_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure19th_OPCS
-    strategy: coalesce
-  - column: procedure_19_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure19thDate_OPCS
-    strategy: coalesce
-  - column: procedure_20_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure20th_OPCS
-    strategy: coalesce
-  - column: procedure_20_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure20thDate_OPCS
-    strategy: coalesce
-  - column: procedure_21_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure21st_OPCS
-    strategy: coalesce
-  - column: procedure_21_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure21stDate_OPCS
-    strategy: coalesce
-  - column: procedure_22_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure22nd_OPCS
-    strategy: coalesce
-  - column: procedure_22_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure22ndDate_OPCS
-    strategy: coalesce
-  - column: procedure_23_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure23rd_OPCS
-    strategy: coalesce
-  - column: procedure_23_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure23rdDate_OPCS
-    strategy: coalesce
-  - column: procedure_24_opcs
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure24th_OPCS
-    strategy: coalesce
-  - column: procedure_24_date
-    docs: OPCS codes for the inpatient procedures that the patient underwent
-    use: yes
-    source:
-    - Procedure24thDate_OPCS
-    strategy: coalesce
+#   - column: procedure_1_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - PrimaryProcedure_OPCS
+#     strategy: coalesce
+#   - column: procedure_1_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - PrimaryProcedureDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_2_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure2nd_OPCS
+#     strategy: coalesce
+#   - column: procedure_2_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure2ndDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_3_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure3rd_OPCS
+#     strategy: coalesce
+#   - column: procedure_3_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure3rdDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_4_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure4th_OPCS
+#     strategy: coalesce
+#   - column: procedure_4_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure4thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_5_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure5th_OPCS
+#     strategy: coalesce
+#   - column: procedure_5_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure5thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_6_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure6th_OPCS
+#     strategy: coalesce
+#   - column: procedure_6_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure6thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_7_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure7th_OPCS
+#     strategy: coalesce
+#   - column: procedure_7_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure7thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_8_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure8th_OPCS
+#     strategy: coalesce
+#   - column: procedure_8_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure8thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_9_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure9th_OPCS
+#     strategy: coalesce
+#   - column: procedure_9_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure9thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_10_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure10th_OPCS
+#     strategy: coalesce
+#   - column: procedure_10_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure10thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_11_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure11th_OPCS
+#     strategy: coalesce
+#   - column: procedure_11_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure11thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_12_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure12th_OPCS
+#     strategy: coalesce
+#   - column: procedure_12_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure12thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_13_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure13th_OPCS
+#     strategy: coalesce
+#   - column: procedure_13_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure13thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_14_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure14th_OPCS
+#     strategy: coalesce
+#   - column: procedure_14_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure14thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_15_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure15th_OPCS
+#     strategy: coalesce
+#   - column: procedure_15_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure15thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_16_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure16th_OPCS
+#     strategy: coalesce
+#   - column: procedure_16_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure16thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_17_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure17th_OPCS
+#     strategy: coalesce
+#   - column: procedure_17_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure17thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_18_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure18th_OPCS
+#     strategy: coalesce
+#   - column: procedure_18_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure18thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_19_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure19th_OPCS
+#     strategy: coalesce
+#   - column: procedure_19_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure19thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_20_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure20th_OPCS
+#     strategy: coalesce
+#   - column: procedure_20_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure20thDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_21_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure21st_OPCS
+#     strategy: coalesce
+#   - column: procedure_21_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure21stDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_22_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure22nd_OPCS
+#     strategy: coalesce
+#   - column: procedure_22_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure22ndDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_23_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure23rd_OPCS
+#     strategy: coalesce
+#   - column: procedure_23_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure23rdDate_OPCS
+#     strategy: coalesce
+#   - column: procedure_24_opcs
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure24th_OPCS
+#     strategy: coalesce
+#   - column: procedure_24_date
+#     docs: OPCS codes for the inpatient procedures that the patient underwent
+#     use: yes
+#     source:
+#     - Procedure24thDate_OPCS
+#     strategy: coalesce

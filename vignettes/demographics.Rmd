@@ -14,9 +14,9 @@ library(kableExtra)
 Get the index ACS event
 ```{r demog_index_acs, results="markup"}
 # The index event
-index_acs <- msrv$sus$apc_spells |>
+index_acs <- msrv$sus$apc_spells_diagnosis |>
   # Time window
-  dplyr::filter(spell_start > acs_date_min & spell_end < acs_date_max) |>
+  dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # Emergency admission
   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
   # Only cohort NHS numbers
@@ -57,7 +57,7 @@ dat_age <- index_acs |> dplyr::select(nhs_number, age = age_on_admission)
 sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
 
 # get the sex data from the SUS data, then add in that from the SWD attribute history data
-dat_sex <- msrv$sus$apc_spells |>
+dat_sex <- msrv$sus$apc_spells_diagnosis |>
   # only nhs number and sex
   dplyr::select(nhs_number, sex_sus = sex) |>
   # combine with the sex data from the SWD attribute history
@@ -74,6 +74,8 @@ dat_sex <- msrv$sus$apc_spells |>
   dplyr::group_by(nhs_number) |>
   # take the mode within each patient, ignoring NAs
   dplyr::summarise(sex = acsprojectns::mode(sex)) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 ```
@@ -84,7 +86,7 @@ dat_sex <- msrv$sus$apc_spells |>
 ethnicity_codes <- read.csv(system.file("ethnicity_codes/ethnicity_codes.csv", package = "acsprojectns"))
 
 # get the ethnicity data from the SUS data, then add in that from the SWD attribute history data
-dat_ethnicity <- msrv$sus$apc_spells |>
+dat_ethnicity <- msrv$sus$apc_spells_diagnosis |>
   # Just ethnicity
   dplyr::select(nhs_number, ethnicity_sus = ethnic_group) |>
   # just the cohort IDs
@@ -104,6 +106,8 @@ dat_ethnicity <- msrv$sus$apc_spells |>
   # take the mode within each patient, ignoring NAs; n.b. use 'ethnicity' rather than
   # 'ethnicity_group' for more detailed breakdown
   dplyr::summarise(ethnicity = acsprojectns::mode(ethnicity_group)) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
   
@@ -125,6 +129,8 @@ dat_imd <- msrv$swd$swd_attribute |>
   dplyr::group_by(nhs_number) |>
   # take the most recent
   dplyr::slice_head(n=1) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
@@ -145,7 +151,9 @@ dat_employment_decile <- msrv$swd$swd_attribute |>
   # group by each patient 
   dplyr::group_by(nhs_number) |>
   # take the most recent
-  dplyr::slice_head(n=1) |>
+  dplyr::slice_head(n=1) |> 
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
@@ -167,6 +175,8 @@ dat_income_decile <- msrv$swd$swd_attribute |>
   dplyr::group_by(nhs_number) |>
   # take the most recent
   dplyr::slice_head(n=1) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
@@ -190,6 +200,8 @@ dat_frailty <- msrv$swd$attr_h |>
   dplyr::bind_rows(msrv$swd$cambridge |> 
                      dplyr::select(nhs_number, attribute_period, score = segment) |>
                      dplyr::mutate(frailty_score = "cambridge") |> icdb::run()) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # join with the index ACS event date, so that we can filter for data existing prior to the ACS event
   dplyr::left_join(index_acs |> dplyr::select(nhs_number, spell_start), by="nhs_number") |>
   # only look at data prior to the ACS event
@@ -203,6 +215,8 @@ dat_frailty <- msrv$swd$attr_h |>
   dplyr::select(nhs_number, frailty_score, score) |>
   # separate efi and Cambridge
   tidyr::pivot_wider(names_from=frailty_score, values_from=score) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
@@ -285,6 +299,8 @@ dat_comorbs <- msrv$sus$apc_episodes |>
   # Filter out diagnoses that aren't defined by my groups (defined in icd10.yaml, created with JS'
   # `map-editor` application available on the icdb github under the releases section)
   dplyr::filter(icdb::group_string(diagnosis)!="") |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # Add the index ACS dates
   dplyr::left_join(index_acs |> dplyr::select(nhs_number, spell_start, spell_end), by="nhs_number") |>
   # Filter out events after the index event spell start, as these cannot be confidently listed as
@@ -295,13 +311,15 @@ dat_comorbs <- msrv$sus$apc_episodes |>
   # take one one of each
   dplyr::slice_head(n=1) |>
   # always ungoup
-  dplur::ungroup() |>
+  dplyr::ungroup() |>
   # to wide format 
   dplyr::mutate(value=TRUE) |>
   tidyr::pivot_wider(id_cols=nhs_number, 
                      names_from="diagnosis_str", 
                      values_from=value, 
                      values_fill=FALSE) |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # ensure all nhs_numbers are presented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number") |>
   # replace any injected NAs with FALSE

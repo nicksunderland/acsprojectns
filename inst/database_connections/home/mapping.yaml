@@ -37,7 +37,8 @@
   source: "ABI"
   tables:
     - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_episodes.yaml"
-    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells.yaml"
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells_diagnosis.yaml"
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells_procedures.yaml"
 
 - database: "mort"
   docs: "There are two main tables containing death information....."

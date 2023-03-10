@@ -1,0 +1,383 @@
+- table: apc_spells_procedures
+  docs: "The APC (admitted patient care) contains records from patients who have been admitted into the hospital. The rows in the table correspond to episodes: individual care activities performed by one consultant. Groups of rows are organised into spells, which represent the entirety of the patient's stay in hospital This table contains the spells."
+  source:
+    catalog: ABI
+    # schema: dbo
+    table: vw_APC_SEM_Spell_001
+  columns:
+  - column: nhs_number
+    docs: "The NHS NUMBER, the primary identifier of a PERSON, is a unique identifier
+      for a PATIENT within the NHS in England and Wales.\r\n\r\nThis will not vary
+      by any ORGANISATION of which a PERSON is a PATIENT.\r\n\r\nIt is mandatory to
+      record the NHS NUMBER. There are exceptions, such as Accident and Emergency
+      care, sexual health and major incidents, as defined in existing national policies.\r\n\r\nThe
+      NHS NUMBER is 10 numeric digits in length. The tenth digit is a check digit
+      used to confirm its validity. The check digit is validated using the Modulus
+      11 algorithm and the use of this algorithm is mandatory."
+    use: yes
+    source:
+    - AIMTC_Pseudo_NHS
+    - NHSnumber # This is what is in the database
+    #- NHSNumber
+    strategy: coalesce_exclude_null
+  - column: method_of_admission_hospital_provider_spell
+    docs: The method of admission to a Hospital Provider Spell.
+    use: yes
+    source:
+    - AdmissionMethod_HospitalProviderSpell
+    strategy: coalesce
+  - column: age_on_admission
+    docs: "AGE ON ADMISSION is derived as the number of completed years between the
+      PERSON BIRTH DATE of the PATIENT and the START DATE (HOSPITAL PROVIDER SPELL).
+
+      Note: using a derived age for this column -- need to check what AIMTC_Age is
+      actually derived from. There are a few different age columns in CDS 130 that
+      this column might map to."
+    use: yes
+    source:
+    - AIMTC_Age
+    #- AgeOnAdmission
+    strategy: coalesce
+
+  - column: critical_care_start_date
+    docs: Start date of a CRITICAL CARE activity.
+    use: yes
+    source:
+    - CriticalCareStartDate
+    strategy: coalesce
+  - column: critical_care_discharge_date
+    docs: "The end date of a CRITICAL CARE PERIOD. This may be the date the PATIENT
+      is discharged from the critical care unit, the date the PATIENT died or the
+      date of declaration of brainstem death.\r\nThis is the same as attribute ACTIVITY
+      DATE where the ACTIVITY DATE TIME TYPE is National Code 11 'End Date' for the
+      CRITICAL CARE PERIOD."
+    use: yes
+    source:
+    - CriticalCareDischargeDate
+    strategy: coalesce
+
+  ## Columns added below here do not directly correspond to an entry in CDS 130
+  ## They combine several datetime columns into one
+  - column: "spell_start"
+    docs: "A datetime field that is the time when the associated spell for this episode began."
+    source:
+    - "AIMTC_ProviderSpell_Start_Date"
+    - "StartDate_HospitalProviderSpell"
+    - "StartTime_HospitalProviderSpell"
+    strategy: "coalesce"
+    use: yes
+  - column: "spell_end"
+    docs: "A datetime field that is the time when the associated spell for this episode ended."
+    source:
+    - "AIMTC_ProviderSpell_End_Date"
+    - "DischargeDate_FromHospitalProviderSpell"
+    - "DischargeTime_HospitalProviderSpell"
+    strategy: "coalesce"
+    use: yes
+  - column: "ethnic_group"
+    docs: "Listed as "
+    source:
+    - "EthnicGroup"
+    strategy: "coalesce"
+    use: yes
+  - column: "sex"
+    docs: "Listed as "
+    source:
+    - "Sex"
+    strategy: "coalesce"
+    use: yes
+  - column: "critical_care_days"
+    docs: "?the number of ICU days"
+    source:
+    - "AIMTC_CriticalCareDays"
+    strategy: "coalesce"
+    use: yes
+
+  - column: procedure_1_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - PrimaryProcedure_OPCS
+    strategy: coalesce
+  - column: procedure_1_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - PrimaryProcedureDate_OPCS
+    strategy: coalesce
+  - column: procedure_2_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure2nd_OPCS
+    strategy: coalesce
+  - column: procedure_2_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure2ndDate_OPCS
+    strategy: coalesce
+  - column: procedure_3_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure3rd_OPCS
+    strategy: coalesce
+  - column: procedure_3_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure3rdDate_OPCS
+    strategy: coalesce
+  - column: procedure_4_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure4th_OPCS
+    strategy: coalesce
+  - column: procedure_4_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure4thDate_OPCS
+    strategy: coalesce
+  - column: procedure_5_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure5th_OPCS
+    strategy: coalesce
+  - column: procedure_5_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure5thDate_OPCS
+    strategy: coalesce
+  - column: procedure_6_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure6th_OPCS
+    strategy: coalesce
+  - column: procedure_6_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure6thDate_OPCS
+    strategy: coalesce
+  - column: procedure_7_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure7th_OPCS
+    strategy: coalesce
+  - column: procedure_7_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure7thDate_OPCS
+    strategy: coalesce
+  - column: procedure_8_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure8th_OPCS
+    strategy: coalesce
+  - column: procedure_8_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure8thDate_OPCS
+    strategy: coalesce
+  - column: procedure_9_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure9th_OPCS
+    strategy: coalesce
+  - column: procedure_9_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure9thDate_OPCS
+    strategy: coalesce
+  - column: procedure_10_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure10th_OPCS
+    strategy: coalesce
+  - column: procedure_10_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure10thDate_OPCS
+    strategy: coalesce
+  - column: procedure_11_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure11th_OPCS
+    strategy: coalesce
+  - column: procedure_11_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure11thDate_OPCS
+    strategy: coalesce
+  - column: procedure_12_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure12th_OPCS
+    strategy: coalesce
+  - column: procedure_12_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure12thDate_OPCS
+    strategy: coalesce
+  - column: procedure_13_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure13th_OPCS
+    strategy: coalesce
+  - column: procedure_13_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure13thDate_OPCS
+    strategy: coalesce
+  - column: procedure_14_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure14th_OPCS
+    strategy: coalesce
+  - column: procedure_14_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure14thDate_OPCS
+    strategy: coalesce
+  - column: procedure_15_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure15th_OPCS
+    strategy: coalesce
+  - column: procedure_15_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure15thDate_OPCS
+    strategy: coalesce
+  - column: procedure_16_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure16th_OPCS
+    strategy: coalesce
+  - column: procedure_16_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure16thDate_OPCS
+    strategy: coalesce
+  - column: procedure_17_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure17th_OPCS
+    strategy: coalesce
+  - column: procedure_17_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure17thDate_OPCS
+    strategy: coalesce
+  - column: procedure_18_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure18th_OPCS
+    strategy: coalesce
+  - column: procedure_18_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure18thDate_OPCS
+    strategy: coalesce
+  - column: procedure_19_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure19th_OPCS
+    strategy: coalesce
+  - column: procedure_19_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure19thDate_OPCS
+    strategy: coalesce
+  - column: procedure_20_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure20th_OPCS
+    strategy: coalesce
+  - column: procedure_20_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure20thDate_OPCS
+    strategy: coalesce
+  - column: procedure_21_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure21st_OPCS
+    strategy: coalesce
+  - column: procedure_21_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure21stDate_OPCS
+    strategy: coalesce
+  - column: procedure_22_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure22nd_OPCS
+    strategy: coalesce
+  - column: procedure_22_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure22ndDate_OPCS
+    strategy: coalesce
+  - column: procedure_23_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure23rd_OPCS
+    strategy: coalesce
+  - column: procedure_23_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure23rdDate_OPCS
+    strategy: coalesce
+  - column: procedure_24_opcs
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure24th_OPCS
+    strategy: coalesce
+  - column: procedure_24_date
+    docs: OPCS codes for the inpatient procedures that the patient underwent
+    use: yes
+    source:
+    - Procedure24thDate_OPCS
+    strategy: coalesce

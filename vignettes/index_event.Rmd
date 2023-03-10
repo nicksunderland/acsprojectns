@@ -12,19 +12,22 @@ library(kableExtra)
 ## Index ACS event
 ```{r index_acs_diagnoses, results="markup"}
 # all the diagnosis codes from the episodes within the index spell
-index_acs_diagnoses <- msrv$sus$apc_episodes |>
+index_acs_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   # Only cohort NHS numbers
   dplyr::filter(nhs_number %in% cohort_ids) |>
   # Time window
-  dplyr::filter(episode_start > acs_date_min & episode_end < acs_date_max) |>
+  dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
+  # select the needed columns
+  dplyr::select(nhs_number, start=spell_start, end=spell_end, 
+                dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd")) |>
   # collect to local
   icdb::run() |>
   # shouldnt need to do this at work 
   dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # join the index spell data
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, spell_start, spell_end), by="nhs_number") |>
-  # make sure that the episode overlaps the spell 
-  dplyr::filter(lubridate::int_overlaps(int1 = lubridate::interval(episode_start, episode_end),
+  # make sure that the spell overlaps the index spell 
+  dplyr::filter(lubridate::int_overlaps(int1 = lubridate::interval(start, end),
                                         int2 = lubridate::interval(spell_start, spell_end))) |>
   # ensure all columns characters
   dplyr::mutate(dplyr::across(dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"),
@@ -66,7 +69,22 @@ opcs_pci_codes   <- read.csv(system.file("opcs_codes/pci_procedure_codes.csv", p
 opcs_cabg_codes  <- read.csv(system.file("opcs_codes/cabg_procedure_codes.csv", package = "acsprojectns"))
 opcs_codes       <- rbind(opcs_angio_codes, opcs_pci_codes, opcs_cabg_codes)
 
-index_acs_procedures <- index_acs |>
+index_acs_procedures <- msrv$sus$apc_spells_procedures |>
+  # Only cohort NHS numbers
+  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Time window
+  dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
+  # select the needed columns
+  dplyr::select(nhs_number, start=spell_start, end=spell_end, dplyr::contains("procedure")) |>
+  # collect to local
+  icdb::run() |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
+  # join the index spell data
+  dplyr::right_join(index_acs |> dplyr::select(nhs_number, spell_start, spell_end), by="nhs_number") |>
+  # make sure that the spell overlaps the index spell 
+  dplyr::filter(lubridate::int_overlaps(int1 = lubridate::interval(start, end),
+                                        int2 = lubridate::interval(spell_start, spell_end))) |>
   dplyr::select(nhs_number, dplyr::contains("procedure")) |>
   dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
   tidyr::pivot_longer(-nhs_number, names_to=c("procedure", ".value"), names_pattern="(.*)_(\\w+)") |>
@@ -77,7 +95,6 @@ index_acs_procedures <- index_acs |>
   dplyr::slice_min(date, with_ties=FALSE) |>
   tidyr::pivot_wider(names_from=group, values_from=date) |>
   dplyr::right_join(data.frame("nhs_number"=cohort_ids), by="nhs_number")
-  
 ```
 
 ## Index ACS admission
@@ -86,7 +103,8 @@ index_acs_main <- index_acs |>
   dplyr::select(nhs_number, spell_start, spell_end, primary_diagnosis, critical_care_days) |>
   dplyr::mutate(length_of_stay = lubridate::time_length(lubridate::interval(spell_start, spell_end), unit="days")) |>
   dplyr::left_join(index_acs_diagnoses, by="nhs_number") |>
-  dplyr::left_join(index_acs_procedures, by="nhs_number")
+  dplyr::left_join(index_acs_procedures, by="nhs_number") |>
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, cambridge), by="nhs_number")
 ```
 
 ## ACS type
@@ -100,6 +118,13 @@ index_acs_main |>
 # By ACS diagnosis
 index_acs_main |>
   dplyr::group_by(icdb::group_string(primary_diagnosis)) |>
+  dplyr::summarise(dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
+                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
+  t()
+
+# By frailty score
+index_acs_main |>
+  dplyr::group_by(cambridge) |>
   dplyr::summarise(dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
                    dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
   t()

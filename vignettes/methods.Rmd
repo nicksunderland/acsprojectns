@@ -64,7 +64,7 @@ if(flag == "home"){
 # Define the unique cohort ids
 cohort_ids <- msrv$sus$apc_spells |>
   # Time window
-  dplyr::filter(spell_start > acs_date_min & spell_end < acs_date_max) |>
+  dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # Emergency admission
   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
   # Acute coronary syndrome primary diagnosis
