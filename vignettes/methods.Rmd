@@ -20,7 +20,7 @@ from October 2019 onward.
 
 ```{r acs_date_window_definition, results="markup"}
 acs_date_min <- as.POSIXct("2018-07-01", tz="GMT")
-acs_date_max <- as.POSIXct("2021-12-31", tz="GMT")
+acs_date_max <- as.POSIXct("2022-12-31", tz="GMT")
 kbl(data.frame("Variable" = c("Start date", "End date"), 
                "Value"    = c(acs_date_min, acs_date_max)), 
     longtable=T, booktabs=T, caption="Date window")
@@ -62,7 +62,7 @@ if(flag == "home"){
 ### Generate the cohort
 ```{r generate_cohort_ids, results="markup"}
 # Define the unique cohort ids
-cohort_ids <- msrv$sus$apc_spells |>
+cohort_ids <- msrv$sus$apc_spells_diagnosis |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # Emergency admission
