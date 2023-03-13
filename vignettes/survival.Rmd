@@ -8,6 +8,9 @@ load_all()
 library(icdb)
 library(modeest)
 library(kableExtra)
+library(survival)
+library(survminer)
+library(wesanderson)
 ```
 
 ## Subsequent events - deaths
@@ -35,8 +38,16 @@ death_events <- msrv$mort$civil_reg |>
   # filter out line "d", which I think corresponds to line "2" on the death certification - i.e.
   # conditions contributing but not causing the death; keep a, b, and c 
   dplyr::filter(line=="a"|line=="b"|line=="c") |>
+  # extract diagnosis group or ICD string (if not listed as a group)
+  dplyr::mutate(event_desc = dplyr::if_else(icdb::group_string(diagnosis)!="",
+                                            icdb::group_string(diagnosis), 
+                                            as.character(diagnosis))) |>
+  # separate the groups if there are multiple
+  tidyr::separate_longer_delim(event_desc, delim=",") |>
+  # code as a death rather than the straight ICD10 code or grouping 
+  dplyr::mutate(event_desc = paste0("death_", event_desc)) |>
   # clean up 
-  dplyr::select(nhs_number, date_of_death, diagnosis, line)
+  dplyr::select(nhs_number, event_desc, event_start=date_of_death, event_end=date_of_death)
 ```
 
 ```{r subsequent_diagnoses, results="markup"}
@@ -73,64 +84,85 @@ subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis |>
                                         system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
   {if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
-  # pivot wider, one column per diagnosis
-  dplyr::mutate(diagnosis_str = dplyr::if_else(icdb::group_string(diagnosis)!="",
-                                               icdb::group_string(diagnosis), 
-                                               as.character(diagnosis))) |>
+  # extract diagnosis group or ICD string (if not listed as a group)
+  dplyr::mutate(event_desc = dplyr::if_else(icdb::group_string(diagnosis)!="",
+                                            icdb::group_string(diagnosis), 
+                                            as.character(diagnosis))) |>
   # separate the groups if there are multiple
-  tidyr::separate_longer_delim(diagnosis_str, delim=",") |>
+  tidyr::separate_longer_delim(event_desc, delim=",") |>
   # filter out diagnoses that cannot be subsequent events - e.g. we cannot have an ACS subsequent
   # event happening within the index ACS spell (this is the index ACS event)
-  dplyr::filter(!(diagnosis_str %in% c("acs_stemi", "acs_nstemi", "acs_unstable_angina") & 
+  dplyr::filter(!(event_desc %in% c("acs_stemi", "acs_nstemi", "acs_unstable_angina") & 
                     #TODO: ?add cardiomyopathy diagnoses too?
                     # is an ACS and is within the index spell
                   lubridate::`%within%`(a=lubridate::interval(event_start,event_end), 
                                         b=lubridate::interval(index_start,index_end)))) |>
-  # I think we need this to keep all the nhs numbers represented
+  # clean up 
+  dplyr::select(nhs_number, event_desc, event_start, event_end)
+```
+
+```{r subsequent_events, results="markup"}
+# combined
+all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses, death_events) |>
+  # keep all the nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), 
-                    by=c("nhs_number", "index_start", "index_end")) |>
-  # complete the data.frame so each nhs_number has at least one of each event
-  tidyr::complete(diagnosis_str, tidyr::nesting(nhs_number, index_start, index_end)) |>
-  # complete will inject one diagnosis_str=NA row for each patient (given the right_join above); undo this
-  dplyr::filter(!is.na(diagnosis_str)) |>
-  # tidy up 
-  dplyr::select(nhs_number, index_start, event_start, event_end, diagnosis_str) |>
-  # event status
-  dplyr::mutate(status = !is.na(event_start)) %>% 
-  # add an extra row for the end interval, up until max follow up time
-  {
-    { . -> tmp } |>                                        #TODO: add in max follow up and death date
-    dplyr::filter(status) |>
-    dplyr::group_by(nhs_number, diagnosis_str) |>
-    dplyr::slice_max(event_start, with_ties=FALSE) |>
-    dplyr::mutate(event_start=event_end, 
-                  event_end=Sys.Date(),                   #TODO: change this to max follow up or death
-                  status=FALSE) |>
-    dplyr::bind_rows(tmp) 
-  } |>
-  # set up the start and stop times and event status for survival
-  # do the recurrent events within diagnosis event types
-  dplyr::group_by(nhs_number, diagnosis_str) |>
-  # earliest event first - needs to be event_end.
-  dplyr::arrange(event_end, .by_group=TRUE) |>
-  # the start time is 0 if at the beginning; or the time from index event to the end of the previous
-  # event. i.e. leaving a gap of time that the person is not at risk whilst they are an inpatient.
-  dplyr::mutate(tstart = lubridate::time_length(lubridate::interval(index_start, dplyr::lag(event_end, default=index_start[[1]])), unit="days"), 
-                tstop  = dplyr::if_else(status, 
-                                        lubridate::time_length(lubridate::interval(index_start, event_start), unit="days"),
-                                        lubridate::time_length(lubridate::interval(index_start, Sys.Date()), unit="days")), 
-                event  = 1:dplyr::n())
+                    by=c("nhs_number")) |>
+  # create the latest follow up
+  dplyr::left_join(death_events |> 
+                     dplyr::select(nhs_number, date_of_death=event_start) |>
+                     dplyr::group_by(nhs_number) |>
+                     dplyr::slice_min(date_of_death, with_ties=FALSE), by=c("nhs_number")) |>
+  #TODO: add in max follow up from SWD rather than just assuming today's date
+  dplyr::mutate(last_fu = dplyr::if_else(!is.na(date_of_death), date_of_death, Sys.Date())) |>
+  # clean up 
+  dplyr::select(nhs_number, event_desc, index_start, index_end, event_start, event_end, last_fu)
 
 ```
 
-
 ## Survival - all-cause death
-
 ## Table - cause of death (in first 12 months)
+```{r all_cause_death, results="markup"}
+
+outcome_groupings = list("any_death" = "^death", 
+                         "acs" = "^acs")
+
+foo <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings)
+
+
+```
 
 ## Survival - all-cause admission back to hospital
-
 ## Table - re-admission diagnosis (in first 12 months)
+```{r all_cause_readmission, results="markup"}
+
+outcome_groupings = list("any_admission" = "^(?!death).*$")
+
+any_readmission <- acsprojectns::create_survival_timings(all_subsequent_events |> 
+                                               dplyr::filter(event_end>index_end | is.na(event_end)), outcome_groupings)
+
+# Create the Survival object - for any readmission
+surv_tt_obj_any_read <- survival::Surv(any_readmission$tstart, any_readmission$tstop, any_readmission$status)
+# surv_gt_obj_any_read <- survival::Surv(rep(0, length(any_readmission$tstart)), any_readmission$tstop-any_readmission$tstart, any_readmission$status)
+
+# Survival table
+summary(survfit(surv_tt_obj_any_read ~ 1, data=any_readmission))
+
+# Plot 
+km_plot_any_readmission <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ 1, data=any_readmission),
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = wes_palette("Darjeeling1", 2),
+           censor.shape ="",
+           xlab = "Time from index ACS event",
+           ylab = "Freedom from hospital admission",
+           legend       = c(0.75,0.90),
+           legend.title = "",
+           legend.labs = c("Test"),
+           ggtheme      = theme_classic())
+```
 
 ## Survival - MACCE
 

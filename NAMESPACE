@@ -3,6 +3,7 @@
 export(create_data_table_variable_dictionary)
 export(create_list_of_code_column_names)
 export(create_medication_timeseries)
+export(create_survival_timings)
 export(gen_msoa_geo_data)
 export(get_codes)
 export(get_hospital_admissions)
