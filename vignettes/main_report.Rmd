@@ -84,15 +84,6 @@ flag <- "home" #bnssg
 ```{=tex}
 \newpage
 ```
-```{r child = 'cost.Rmd'}
-```
-```{=tex}
-\newpage
-```
-```{r child = 'discussion.Rmd'}
-```
-```{=tex}
-\newpage
-```
+
 
 
