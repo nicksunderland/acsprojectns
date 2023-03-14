@@ -6,10 +6,8 @@ library(acsprojectns)
 library(devtools)
 load_all()
 library(icdb)
-library(modeest)
 library(kableExtra)
 ```
-
 ## Index ACS event
 Get the index ACS event
 ```{r demog_index_acs, results="markup"}
@@ -17,10 +15,10 @@ Get the index ACS event
 index_acs <- msrv$sus$apc_spells_diagnosis |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
-  # Emergency admission
+  # # Emergency admission
   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) |>
   # Collect to local
   icdb::run() |>
   # Recode the ICD10 codes
@@ -28,7 +26,7 @@ index_acs <- msrv$sus$apc_spells_diagnosis |>
                 primary_diagnosis = icdb::icd10(primary_diagnosis_icd, 
                                                 system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
-  {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  # {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
   # Only ACS events TODO: change this to filter
   dplyr::filter(primary_diagnosis %in_group% c("acs_stemi", "acs_nstemi", "acs_unstable_angina")) |>
   # Only the first ACS event
@@ -57,11 +55,15 @@ dat_age <- index_acs |> dplyr::select(nhs_number, age = age_on_admission)
 sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
 
 # get the sex data from the SUS data, then add in that from the SWD attribute history data
-dat_sex <- msrv$sus$apc_spells_diagnosis |>
+dat_sex <- msrv$sus$apc_spells_primary_diagnosis |>
+  # Only cohort NHS numbers
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # only nhs number and sex
   dplyr::select(nhs_number, sex_sus = sex) |>
   # combine with the sex data from the SWD attribute history
-  dplyr::left_join(msrv$swd$attr_h |> dplyr::select(nhs_number, sex_swd = sex), by="nhs_number") |>
+  dplyr::full_join(msrv$swd$attr_h |>
+                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+                     dplyr::select(nhs_number, sex_swd = sex), by="nhs_number") |>
   # collect to local
   run() |>
   # ensure all characters
@@ -86,13 +88,15 @@ dat_sex <- msrv$sus$apc_spells_diagnosis |>
 ethnicity_codes <- read.csv(system.file("ethnicity_codes/ethnicity_codes.csv", package = "acsprojectns"))
 
 # get the ethnicity data from the SUS data, then add in that from the SWD attribute history data
-dat_ethnicity <- msrv$sus$apc_spells_diagnosis |>
+dat_ethnicity <- msrv$sus$apc_spells_primary_diagnosis |>
+  # Only cohort NHS numbers
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # Just ethnicity
   dplyr::select(nhs_number, ethnicity_sus = ethnic_group) |>
-  # just the cohort IDs
-  dplyr::filter(nhs_number %in% cohort_ids) |>
   # Add SWD attribute data
-  dplyr::left_join(msrv$swd$attr_h |> dplyr::select(nhs_number, ethnicity_swd = ethnicity), by="nhs_number") |>
+  dplyr::left_join(msrv$swd$attr_h |>
+                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+                     dplyr::select(nhs_number, ethnicity_swd = ethnicity), by="nhs_number") |>
   # collect to local
   icdb::run() |>
   # ensure all characters
@@ -119,8 +123,8 @@ kbl(dplyr::slice_head(dat_ethnicity, n=5), longtable = T, booktabs = T, caption 
 ```{r demographics_imd, results="markup"}
 # extract the IMD data from the swd_attributes table
 dat_imd <- msrv$swd$swd_attribute |>
-  # just the cohort IDs
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Only cohort NHS numbers
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # just the IMD
   dplyr::select(nhs_number, wd_imd_decile_19) |>
   # collect to local 
@@ -142,8 +146,8 @@ kbl(dplyr::slice_head(dat_imd, n=5), longtable = T, booktabs = T, caption = "IMD
 ```{r demographics_employment, results="markup"}
 # extract the employment decile data from the swd_attributes table
 dat_employment_decile <- msrv$swd$swd_attribute |>
-  # just the cohort IDs
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Only cohort NHS numbers
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # just the employment decile
   dplyr::select(nhs_number, wd_employment_decile) |>
   # collect to local 
@@ -165,8 +169,8 @@ kbl(dplyr::slice_head(dat_employment_decile, n=5), longtable = T, booktabs = T, 
 ```{r demographics_income, results="markup"}
 # extract the income decile data from the swd_attributes table
 dat_income_decile <- msrv$swd$swd_attribute |>
-  # just the cohort IDs
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Only cohort NHS numbers
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # just the income decile
   dplyr::select(nhs_number, wd_income_decile) |>
   # collect to local 
@@ -188,18 +192,26 @@ kbl(dplyr::slice_head(dat_income_decile, n=5), longtable = T, booktabs = T, capt
 ```{r demographics_frailty, results="markup"}
 # extract the electronic frailty index data from the swd attributes history table
 dat_frailty <- msrv$swd$attr_h |>
-  # just the cohort IDs
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  # Only cohort NHS numbers
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # just the efi decile
   dplyr::select(nhs_number, attribute_period, score = efi_category) |>
   # label the score
   dplyr::mutate(frailty_score = "efi") |>
   # collect to local 
   icdb::run() |>
-  # add the Cambridge score data
-  dplyr::bind_rows(msrv$swd$cambridge |> 
+  # add the Cambridge segment data
+  dplyr::bind_rows(msrv$swd$cambridge |>
+                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
                      dplyr::select(nhs_number, attribute_period, score = segment) |>
-                     dplyr::mutate(frailty_score = "cambridge") |> icdb::run()) |>
+                     dplyr::mutate(frailty_score = "cambridge_segment") |> 
+                     icdb::run()) |>
+  # add the Cambridge score data
+  dplyr::bind_rows(msrv$swd$cambridge |>
+                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+                     dplyr::select(nhs_number, attribute_period, score = cambridge_score) |>
+                     dplyr::mutate(frailty_score = "cambridge_score") |> 
+                     icdb::run()) |>
   # shouldnt need to do this at work 
   dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # join with the index ACS event date, so that we can filter for data existing prior to the ACS event
@@ -220,6 +232,28 @@ dat_frailty <- msrv$swd$attr_h |>
   # ensure all nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number), by="nhs_number")
 
+
+# due to ACS events before the start of data collection regarding the Cambridge
+# score, there is 40% missingness. Therefore have a look at what the recorded
+# score is at either: just before the ACS, or if missing, the monthly extract in
+# closest proximity to the ACS (this will be after their ACS event, but should
+# give us a good idea of the cormorbidity)
+dat_fudge_cambridge <- msrv$swd$cambridge |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  dplyr::select(nhs_number, attribute_period, cambridge_score_coal=cambridge_score, 
+                                              cambridge_segment_coal=segment) |>
+  icdb::run() |>
+  # take the oldest recent of each score
+  dplyr::group_by(nhs_number) |>
+  dplyr::slice_min(attribute_period, with_ties=FALSE) |>
+  # add in the scores from just before the ACS event (from above)
+  dplyr::right_join(dat_frailty |> dplyr::select(nhs_number, cambridge_score, cambridge_segment), by="nhs_number") |>
+  dplyr::mutate(fudge_cambridge_score   = dplyr::coalesce(cambridge_score, cambridge_score_coal), 
+                fudge_cambridge_segment = dplyr::coalesce(cambridge_segment, cambridge_segment_coal)) |>
+  # select only those we need
+  dplyr::select(nhs_number, fudge_cambridge_score, fudge_cambridge_segment)
+
+
 # View 
 kbl(dplyr::slice_head(dat_frailty, n=5), longtable = T, booktabs = T, caption = "Frailty score data")
 ```
@@ -230,7 +264,7 @@ kbl(dplyr::slice_head(dat_frailty, n=5), longtable = T, booktabs = T, caption = 
 # this makes a difference)
 dat_comorbs <- msrv$sus$apc_episodes |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # collect to local
   icdb::run() |>
   # ensure all columns characters
@@ -247,8 +281,8 @@ dat_comorbs <- msrv$sus$apc_episodes |>
   dplyr::mutate(dplyr::across(c(episode_start, episode_end), ~as.Date(.x))) |>
   # add the cormorbidities from the SWD
   dplyr::bind_rows(
-   foo= msrv$swd$attr_h |>
-      dplyr::filter(nhs_number %in% cohort_ids) |>
+    msrv$swd$attr_h |>
+      dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
       dplyr::select(nhs_number, 
                     episode_start=attribute_period, 
                     episode_end=attribute_period,
@@ -330,25 +364,50 @@ dat_comorbs <- msrv$sus$apc_episodes |>
 ## Combined demographics
 ```{r demographics_combined, results="markup"}
 dat_lst <- list(dat_age, dat_sex, dat_ethnicity, dat_employment_decile, dat_income_decile, dat_imd,
-                dat_frailty, dat_comorbs)
+                dat_frailty, dat_fudge_cambridge, dat_comorbs)
 dat_demographics <- purrr::reduce(dat_lst, dplyr::left_join, by='nhs_number')
 
+kbl(
 dat_demographics |>
   dplyr::ungroup() |>
-  dplyr::summarise(male= sum(sex=="male", na.rm=T),
-                   dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
-                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
-  t()
-
+  
+  dplyr::summarise(male = sum(sex=="male", na.rm=T)/dplyr::n(),
+                   dplyr::across(dplyr::where(is.numeric), list(missing     = ~sum(is.na(.x)),
+                                                                missing_pct = ~sum(is.na(.x))/dplyr::n(),
+                                                                mean        = ~mean(.x, na.rm=T),
+                                                                sd          = ~sd(.x, na.rm=T))),
+                   dplyr::across(dplyr::where(is.logical), list(n           = ~sum(.x, na.rm=T),
+                                                                pct         = ~sum(.x, na.rm=T)/sum(!is.na(.x))))) |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+  t(),
+longtable = T, booktabs = T, caption = "Demographics summary data")
 ```
 
 ## Demographics by frailty
+The fudged split uses the best available Cambridge score/segment. This will be from data calculated `after` the ACS event in ~40% people. 
 ```{r demographics_by_frailty, results="markup"}
+kbl(
 dat_demographics |>
-  dplyr::group_by(cambridge) |>
-  dplyr::summarise(age = mean(age, na.rm=T),
+  dplyr::group_by(cambridge_segment) |>
+  dplyr::summarise(n_in_segment = dplyr::n(),
+                   age = mean(age, na.rm=T),
                    male= sum(sex=="male", na.rm=T),
-                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n()))
+                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+  t(),
+longtable = T, booktabs = T, caption = "Demographics by Cambridge segment summary data")
+
+kbl(
+dat_demographics |>
+  dplyr::group_by(fudge_cambridge_segment) |>
+  dplyr::summarise(n_in_segment = dplyr::n(),
+                   age = mean(age, na.rm=T),
+                   male= sum(sex=="male", na.rm=T),
+                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+  t(),
+longtable = T, booktabs = T, caption = "Demographics by (fudged) Cambridge segment summary data")
+
 # Plan 
 # demographics at index ACS
 #     age, sex, ethnicity, 

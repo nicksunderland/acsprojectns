@@ -3041,7 +3041,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -3061,6 +3060,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - A00
     - B99
@@ -5947,7 +5970,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -5967,6 +5989,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - C00
     - D48
@@ -6701,7 +6747,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -6721,6 +6766,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - D50
     - D89
@@ -6743,6 +6812,8 @@ child:
           docs: Congenital iodine-deficiency syndrome, unspecified
           index: E009
         docs: Congenital iodine-deficiency syndrome
+        exclude:
+        - hypothyroidism
         index: E00
       - category: E01
         child:
@@ -6759,9 +6830,13 @@ child:
           docs: Other iodine-deficiency-related thyroid disorders and allied conditions
           index: E018
         docs: Iodine-deficiency-related thyroid disorders and allied conditions
+        exclude:
+        - hypothyroidism
         index: E01
       - code: E02
         docs: Subclinical iodine-deficiency hypothyroidism
+        exclude:
+        - hypothyroidism
         index: E02
       - category: E03
         child:
@@ -6809,6 +6884,8 @@ child:
           docs: Nontoxic goitre, unspecified
           index: E049
         docs: Other nontoxic goitre
+        exclude:
+        - hypothyroidism
         index: E04
       - category: E05
         child:
@@ -6837,6 +6914,8 @@ child:
           docs: Thyrotoxicosis, unspecified
           index: E059
         docs: Thyrotoxicosis [hyperthyroidism]
+        exclude:
+        - hypothyroidism
         index: E05
       - category: E06
         child:
@@ -6862,6 +6941,8 @@ child:
           docs: Thyroiditis, unspecified
           index: E069
         docs: Thyroiditis
+        exclude:
+        - hypothyroidism
         index: E06
       - category: E07
         child:
@@ -6878,6 +6959,8 @@ child:
           docs: Disorder of thyroid, unspecified
           index: E079
         docs: Other disorders of thyroid
+        exclude:
+        - hypothyroidism
         index: E07
       docs: Disorders of thyroid gland
       exclude:
@@ -7082,6 +7165,7 @@ child:
       exclude:
       - obesity
       - lipid_disorder
+      - hypothyroidism
       index:
       - E10
       - E14
@@ -7122,6 +7206,7 @@ child:
       - diabetes_unspecified
       - obesity
       - lipid_disorder
+      - hypothyroidism
       index:
       - E15
       - E16
@@ -7422,6 +7507,7 @@ child:
       - diabetes_unspecified
       - obesity
       - lipid_disorder
+      - hypothyroidism
       index:
       - E20
       - E35
@@ -7462,6 +7548,7 @@ child:
       - diabetes_unspecified
       - obesity
       - lipid_disorder
+      - hypothyroidism
       index:
       - E40
       - E46
@@ -7653,6 +7740,7 @@ child:
       - diabetes_unspecified
       - obesity
       - lipid_disorder
+      - hypothyroidism
       index:
       - E50
       - E64
@@ -7714,6 +7802,7 @@ child:
       - type_2_diabetes
       - diabetes_unspecified
       - lipid_disorder
+      - hypothyroidism
       index:
       - E65
       - E68
@@ -8165,6 +8254,7 @@ child:
       - type_2_diabetes
       - diabetes_unspecified
       - obesity
+      - hypothyroidism
       index:
       - E70
       - E90
@@ -8187,7 +8277,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - ischaemic_stroke
@@ -8202,6 +8291,29 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - E00
     - E90
@@ -8247,7 +8359,6 @@ child:
       - ckd.other
       - atrial_fib
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -8262,6 +8373,18 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I00
       - I02
@@ -8371,7 +8494,6 @@ child:
       - ckd.other
       - atrial_fib
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -8386,6 +8508,18 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I05
       - I09
@@ -8395,6 +8529,7 @@ child:
         docs: Essential (primary) hypertension
         exclude:
         - ckd.other
+        - ckd_other
         index: I10
       - category: I11
         child:
@@ -8407,6 +8542,7 @@ child:
         docs: Hypertensive heart disease
         exclude:
         - ckd.other
+        - ckd_other
         index: I11
       - category: I12
         child:
@@ -8454,13 +8590,13 @@ child:
         docs: Secondary hypertension
         exclude:
         - ckd.other
+        - ckd_other
         index: I15
       docs: Hypertensive diseases
       exclude:
       - bleeding
       - atrial_fib
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -8474,6 +8610,17 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
       index:
       - I10
       - I15
@@ -8483,16 +8630,20 @@ child:
         child:
         - code: I20.0
           docs: Unstable angina
+          exclude:
+          - angina
           index: I200
         - code: I20.1
           docs: Angina pectoris with documented spasm
           exclude:
           - acs_unstable_angina
+          - angina
           index: I201
         - code: I20.8
           docs: Other forms of angina pectoris
           exclude:
           - acs_unstable_angina
+          - angina
           index: I208
         - code: I20.9
           docs: Angina pectoris, unspecified
@@ -8502,9 +8653,9 @@ child:
         docs: Angina pectoris
         exclude:
         - bleeding
-        - acs_stemi
         - acs_nstemi
         - isch_cardiomyopathy
+        - acs_stemi
         index: I20
       - category: I21
         child:
@@ -8543,6 +8694,7 @@ child:
         - bleeding
         - acs_unstable_angina
         - isch_cardiomyopathy
+        - angina
         index: I21
       - category: I22
         child:
@@ -8571,6 +8723,7 @@ child:
         - bleeding
         - acs_unstable_angina
         - isch_cardiomyopathy
+        - angina
         index: I22
       - category: I23
         child:
@@ -8614,10 +8767,11 @@ child:
           index: I238
         docs: Certain current complications following acute myocardial infarction
         exclude:
-        - acs_stemi
         - acs_nstemi
         - acs_unstable_angina
         - isch_cardiomyopathy
+        - angina
+        - acs_stemi
         index: I23
       - category: I24
         child:
@@ -8636,10 +8790,11 @@ child:
         docs: Other acute ischaemic heart diseases
         exclude:
         - bleeding
-        - acs_stemi
         - acs_nstemi
         - acs_unstable_angina
         - isch_cardiomyopathy
+        - angina
+        - acs_stemi
         index: I24
       - category: I25
         child:
@@ -8673,9 +8828,10 @@ child:
         docs: Chronic ischaemic heart disease
         exclude:
         - bleeding
-        - acs_stemi
         - acs_nstemi
         - acs_unstable_angina
+        - angina
+        - acs_stemi
         index: I25
       docs: Ischaemic heart diseases
       exclude:
@@ -8693,6 +8849,16 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - cardiomegaly
+      - ckd_other
       index:
       - I20
       - I25
@@ -8749,7 +8915,6 @@ child:
       - ckd.other
       - atrial_fib
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -8764,6 +8929,18 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I26
       - I28
@@ -8793,6 +8970,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I30
       - category: I31
         child:
@@ -8833,6 +9019,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I31
       - category: I32
         child:
@@ -8855,6 +9050,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I32
       - category: I33
         child:
@@ -8874,23 +9078,45 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I33
       - category: I34
         child:
         - code: I34.0
           docs: Mitral (valve) insufficiency
+          exclude:
+          - mitral_valve_stenosis
           index: I340
         - code: I34.1
           docs: Mitral (valve) prolapse
+          exclude:
+          - mitral_valve_regurgitation
+          - mitral_valve_stenosis
           index: I341
         - code: I34.2
           docs: Nonrheumatic mitral (valve) stenosis
+          exclude:
+          - mitral_valve_regurgitation
           index: I342
         - code: I34.8
           docs: Other nonrheumatic mitral valve disorders
+          exclude:
+          - mitral_valve_regurgitation
+          - mitral_valve_stenosis
           index: I348
         - code: I34.9
           docs: Nonrheumatic mitral valve disorder, unspecified
+          exclude:
+          - mitral_valve_regurgitation
+          - mitral_valve_stenosis
           index: I349
         docs: Nonrheumatic mitral valve disorders
         exclude:
@@ -8902,23 +9128,40 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I34
       - category: I35
         child:
         - code: I35.0
           docs: Aortic (valve) stenosis
+          exclude:
+          - aortic_valve_regurgitation
           index: I350
         - code: I35.1
           docs: Aortic (valve) insufficiency
+          exclude:
+          - aortic_valve_stenosis
           index: I351
         - code: I35.2
           docs: Aortic (valve) stenosis with insufficiency
           index: I352
         - code: I35.8
           docs: Other aortic valve disorders
+          exclude:
+          - aortic_valve_regurgitation
+          - aortic_valve_stenosis
           index: I358
         - code: I35.9
           docs: Aortic valve disorder, unspecified
+          exclude:
+          - aortic_valve_regurgitation
+          - aortic_valve_stenosis
           index: I359
         docs: Nonrheumatic aortic valve disorders
         exclude:
@@ -8930,23 +9173,40 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - cardiomegaly
         index: I35
       - category: I36
         child:
         - code: I36.0
           docs: Nonrheumatic tricuspid (valve) stenosis
+          exclude:
+          - tricuspid_valve_regurgitation
           index: I360
         - code: I36.1
           docs: Nonrheumatic tricuspid (valve) insufficiency
+          exclude:
+          - tricuspid_valve_stenosis
           index: I361
         - code: I36.2
           docs: Nonrheumatic tricuspid (valve) stenosis with insufficiency
           index: I362
         - code: I36.8
           docs: Other nonrheumatic tricuspid valve disorders
+          exclude:
+          - tricuspid_valve_regurgitation
+          - tricuspid_valve_stenosis
           index: I368
         - code: I36.9
           docs: Nonrheumatic tricuspid valve disorder, unspecified
+          exclude:
+          - tricuspid_valve_regurgitation
+          - tricuspid_valve_stenosis
           index: I369
         docs: Nonrheumatic tricuspid valve disorders
         exclude:
@@ -8958,23 +9218,40 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I36
       - category: I37
         child:
         - code: I37.0
           docs: Pulmonary valve stenosis
+          exclude:
+          - pulmonary_valve_regurgitation
           index: I370
         - code: I37.1
           docs: Pulmonary valve insufficiency
+          exclude:
+          - pulmonary_valve_stenosis
           index: I371
         - code: I37.2
           docs: Pulmonary valve stenosis with insufficiency
           index: I372
         - code: I37.8
           docs: Other pulmonary valve disorders
+          exclude:
+          - pulmonary_valve_regurgitation
+          - pulmonary_valve_stenosis
           index: I378
         - code: I37.9
           docs: Pulmonary valve disorder, unspecified
+          exclude:
+          - pulmonary_valve_regurgitation
+          - pulmonary_valve_stenosis
           index: I379
         docs: Pulmonary valve disorders
         exclude:
@@ -8986,6 +9263,13 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I37
       - code: I38
         docs: Endocarditis, valve unspecified
@@ -8998,6 +9282,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I38
       - category: I39
         child:
@@ -9029,6 +9322,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I39
       - category: I40
         child:
@@ -9054,6 +9356,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I40
       - category: I41
         child:
@@ -9079,6 +9390,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I41
       - category: I42
         child:
@@ -9121,6 +9441,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I42
       - category: I43
         child:
@@ -9145,6 +9474,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I43
       - category: I44
         child:
@@ -9181,6 +9519,15 @@ child:
         - heart_failure
         - ventricular_arrhy
         - atrial_arrhy
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I44
       - category: I45
         child:
@@ -9220,6 +9567,15 @@ child:
         - heart_failure
         - ventricular_arrhy
         - atrial_arrhy
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I45
       - category: I46
         child:
@@ -9241,6 +9597,15 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I46
       - category: I47
         child:
@@ -9274,6 +9639,15 @@ child:
         - nonisch_cardiomyopathy
         - heart_failure
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I47
       - category: I48
         child:
@@ -9303,6 +9677,15 @@ child:
         - heart_failure
         - ventricular_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I48
       - category: I49
         child:
@@ -9363,6 +9746,15 @@ child:
         - cardiac_arrest
         - nonisch_cardiomyopathy
         - heart_failure
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I49
       - category: I50
         child:
@@ -9384,38 +9776,65 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I50
       - category: I51
         child:
         - code: I51.0
           docs: Cardiac septal defect, acquired
+          exclude:
+          - cardiomegaly
           index: I510
         - code: I51.1
           docs: Rupture of chordae tendineae, not elsewhere classified
+          exclude:
+          - cardiomegaly
           index: I511
         - code: I51.2
           docs: Rupture of papillary muscle, not elsewhere classified
+          exclude:
+          - cardiomegaly
           index: I512
         - code: I51.3
           docs: Intracardiac thrombosis, not elsewhere classified
+          exclude:
+          - cardiomegaly
           index: I513
         - code: I51.4
           docs: Myocarditis, unspecified
+          exclude:
+          - cardiomegaly
           index: I514
         - code: I51.5
           docs: Myocardial degeneration
+          exclude:
+          - cardiomegaly
           index: I515
         - code: I51.6
           docs: Cardiovascular disease, unspecified
+          exclude:
+          - cardiomegaly
           index: I516
         - code: I51.7
           docs: Cardiomegaly
           index: I517
         - code: I51.8
           docs: Other ill-defined heart diseases
+          exclude:
+          - cardiomegaly
           index: I518
         - code: I51.9
           docs: Heart disease, unspecified
+          exclude:
+          - cardiomegaly
           index: I519
         docs: Complications and ill-defined descriptions of heart disease
         exclude:
@@ -9427,6 +9846,14 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
         index: I51
       - category: I52
         child:
@@ -9449,12 +9876,20 @@ child:
         - ventricular_arrhy
         - atrial_arrhy
         - conduction_disease
+        - mitral_valve_regurgitation
+        - mitral_valve_stenosis
+        - tricuspid_valve_regurgitation
+        - tricuspid_valve_stenosis
+        - pulmonary_valve_regurgitation
+        - pulmonary_valve_stenosis
+        - aortic_valve_regurgitation
+        - aortic_valve_stenosis
+        - cardiomegaly
         index: I52
       docs: Other forms of heart disease
       exclude:
       - ckd.other
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -9463,6 +9898,9 @@ child:
       - hypertension
       - isch_cardiomyopathy
       - dementia
+      - angina
+      - acs_stemi
+      - ckd_other
       index:
       - I30
       - I52
@@ -9771,7 +10209,6 @@ child:
       - ckd.other
       - atrial_fib
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - periph_vasc_disease
@@ -9783,6 +10220,18 @@ child:
       - ventricular_arrhy
       - atrial_arrhy
       - conduction_disease
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I60
       - I69
@@ -9994,7 +10443,6 @@ child:
       - ckd.other
       - atrial_fib
       - portal_hypertension
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -10008,6 +10456,18 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I70
       - I79
@@ -10198,7 +10658,6 @@ child:
       exclude:
       - ckd.other
       - atrial_fib
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -10213,6 +10672,18 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I80
       - I89
@@ -10302,7 +10773,6 @@ child:
       exclude:
       - ckd.other
       - atrial_fib
-      - acs_stemi
       - acs_nstemi
       - acs_unstable_angina
       - ischaemic_stroke
@@ -10317,6 +10787,18 @@ child:
       - atrial_arrhy
       - conduction_disease
       - dementia
+      - mitral_valve_regurgitation
+      - mitral_valve_stenosis
+      - tricuspid_valve_regurgitation
+      - tricuspid_valve_stenosis
+      - pulmonary_valve_regurgitation
+      - pulmonary_valve_stenosis
+      - aortic_valve_regurgitation
+      - aortic_valve_stenosis
+      - angina
+      - acs_stemi
+      - cardiomegaly
+      - ckd_other
       index:
       - I95
       - I99
@@ -10340,6 +10822,18 @@ child:
     - diabetes_unspecified
     - obesity
     - lipid_disorder
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - family_history_ihd
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - anxiety
     index:
     - I00
     - I99
@@ -10502,6 +10996,8 @@ child:
       docs: Organic, including symptomatic, mental disorders
       exclude:
       - smoking
+      - depression
+      - anxiety
       index:
       - F00
       - F09
@@ -10910,6 +11406,9 @@ child:
         - dementia
         index: F19
       docs: Mental and behavioural disorders due to psychoactive substance use
+      exclude:
+      - depression
+      - anxiety
       index:
       - F10
       - F19
@@ -11016,6 +11515,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F20
       - F29
@@ -11039,6 +11540,8 @@ child:
           docs: Manic episode, unspecified
           index: F309
         docs: Manic episode
+        exclude:
+        - depression
         index: F30
       - category: F31
         child:
@@ -11073,6 +11576,8 @@ child:
           docs: Bipolar atrial_fibfective disorder, unspecified
           index: F319
         docs: Bipolar atrial_fibfective disorder
+        exclude:
+        - depression
         index: F31
       - category: F32
         child:
@@ -11120,6 +11625,8 @@ child:
           docs: Recurrent depressive disorder, unspecified
           index: F339
         docs: Recurrent depressive disorder
+        exclude:
+        - depression
         index: F33
       - category: F34
         child:
@@ -11136,6 +11643,8 @@ child:
           docs: Persistent mood [atrial_fibfective] disorder, unspecified
           index: F349
         docs: Persistent mood [atrial_fibfective] disorders
+        exclude:
+        - depression
         index: F34
       - category: F38
         child:
@@ -11149,14 +11658,19 @@ child:
           docs: Other specified mood [atrial_fibfective] disorders
           index: F388
         docs: Other mood [atrial_fibfective] disorders
+        exclude:
+        - depression
         index: F38
       - code: F39
         docs: Unspecified mood [atrial_fibfective] disorder
+        exclude:
+        - depression
         index: F39
       docs: Mood [atrial_fibfective] disorders
       exclude:
       - smoking
       - dementia
+      - anxiety
       index:
       - F30
       - F39
@@ -11180,6 +11694,8 @@ child:
           docs: Phobic anxiety disorder, unspecified
           index: F409
         docs: Phobic anxiety disorders
+        exclude:
+        - anxiety
         index: F40
       - category: F41
         child:
@@ -11221,6 +11737,8 @@ child:
           docs: Obsessive-compulsive disorder, unspecified
           index: F429
         docs: Obsessive-compulsive disorder
+        exclude:
+        - anxiety
         index: F42
       - category: F43
         child:
@@ -11240,6 +11758,8 @@ child:
           docs: Reaction to severe stress, unspecified
           index: F439
         docs: Reaction to severe stress, and adjustment disorders
+        exclude:
+        - anxiety
         index: F43
       - category: F44
         child:
@@ -11274,6 +11794,8 @@ child:
           docs: Dissociative [conversion] disorder, unspecified
           index: F449
         docs: Dissociative [conversion] disorders
+        exclude:
+        - anxiety
         index: F44
       - category: F45
         child:
@@ -11299,6 +11821,8 @@ child:
           docs: Somatoform disorder, unspecified
           index: F459
         docs: Somatoform disorders
+        exclude:
+        - anxiety
         index: F45
       - category: F48
         child:
@@ -11315,11 +11839,14 @@ child:
           docs: Neurotic disorder, unspecified
           index: F489
         docs: Other neurotic disorders
+        exclude:
+        - anxiety
         index: F48
       docs: Neurotic, stress-related and somatoform disorders
       exclude:
       - smoking
       - dementia
+      - depression
       index:
       - F40
       - F48
@@ -11444,6 +11971,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F50
       - F59
@@ -11613,6 +12142,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F60
       - F69
@@ -11718,6 +12249,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F70
       - F79
@@ -11811,6 +12344,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F80
       - F89
@@ -11962,6 +12497,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F90
       - F98
@@ -11974,6 +12511,8 @@ child:
       exclude:
       - smoking
       - dementia
+      - depression
+      - anxiety
       index:
       - F99
       - F99
@@ -11995,7 +12534,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -12014,6 +12552,28 @@ child:
     - ventricular_arrhy
     - atrial_arrhy
     - conduction_disease
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - cardiomegaly
+    - ckd_other
     index:
     - F00
     - F99
@@ -13355,7 +13915,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -13374,6 +13933,30 @@ child:
     - ventricular_arrhy
     - atrial_arrhy
     - conduction_disease
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - G00
     - G99
@@ -14543,7 +15126,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -14563,6 +15145,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - H00
     - H59
@@ -15057,7 +15663,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -15077,6 +15682,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - H60
     - H95
@@ -15178,6 +15807,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J00
       - J06
@@ -15326,6 +15957,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J09
       - J18
@@ -15388,6 +16021,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J20
       - J22
@@ -15574,6 +16209,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J30
       - J39
@@ -15583,6 +16220,7 @@ child:
         docs: Bronchitis, not specified as acute or chronic
         exclude:
         - copd
+        - asthma
         index: J40
       - category: J41
         child:
@@ -15598,11 +16236,13 @@ child:
         docs: Simple and mucopurulent chronic bronchitis
         exclude:
         - copd
+        - asthma
         index: J41
       - code: J42
         docs: Unspecified chronic bronchitis
         exclude:
         - copd
+        - asthma
         index: J42
       - category: J43
         child:
@@ -15624,6 +16264,7 @@ child:
         docs: Emphysema
         exclude:
         - copd
+        - asthma
         index: J43
       - category: J44
         child:
@@ -15640,6 +16281,8 @@ child:
           docs: Chronic obstructive pulmonary disease, unspecified
           index: J449
         docs: Other chronic obstructive pulmonary disease
+        exclude:
+        - asthma
         index: J44
       - category: J45
         child:
@@ -15663,15 +16306,18 @@ child:
         docs: Status asthmaticus
         exclude:
         - copd
+        - asthma
         index: J46
       - code: J47
         docs: Bronchiectasis
         exclude:
         - copd
+        - asthma
         index: J47
       docs: Chronic lower respiratory diseases
       exclude:
       - bleeding
+      - pleural_effusion
       index:
       - J40
       - J47
@@ -15841,6 +16487,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J60
       - J70
@@ -15875,6 +16523,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J80
       - J84
@@ -15910,6 +16560,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J85
       - J86
@@ -15936,6 +16588,7 @@ child:
         docs: Pleural plaque
         exclude:
         - bleeding
+        - pleural_effusion
         index: J92
       - category: J93
         child:
@@ -15954,6 +16607,7 @@ child:
         docs: Pneumothorax
         exclude:
         - bleeding
+        - pleural_effusion
         index: J93
       - category: J94
         child:
@@ -15981,10 +16635,13 @@ child:
           - bleeding
           index: J949
         docs: Other pleural conditions
+        exclude:
+        - pleural_effusion
         index: J94
       docs: Other diseases of pleura
       exclude:
       - copd
+      - asthma
       index:
       - J90
       - J94
@@ -16079,6 +16736,8 @@ child:
       exclude:
       - bleeding
       - copd
+      - asthma
+      - pleural_effusion
       index:
       - J95
       - J99
@@ -16099,7 +16758,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -16119,6 +16777,28 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - depression
+    - gord
+    - hypothyroidism
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - J00
     - J99
@@ -16519,6 +17199,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K00
       - K14
@@ -16528,6 +17209,7 @@ child:
         docs: Oesophagitis
         exclude:
         - bleeding
+        - gord
         index: K20
       - category: K21
         child:
@@ -16592,6 +17274,8 @@ child:
           - bleeding
           index: K229
         docs: Other diseases of oesophagus
+        exclude:
+        - gord
         index: K22
       - category: K23
         child:
@@ -16607,6 +17291,7 @@ child:
         docs: Disorders of oesophagus in diseases classified elsewhere
         exclude:
         - bleeding
+        - gord
         index: K23
       - category: K25
         child:
@@ -16648,6 +17333,8 @@ child:
           - bleeding
           index: K259
         docs: Gastric ulcer
+        exclude:
+        - gord
         index: K25
       - category: K26
         child:
@@ -16689,6 +17376,8 @@ child:
           - bleeding
           index: K269
         docs: Duodenal ulcer
+        exclude:
+        - gord
         index: K26
       - category: K27
         child:
@@ -16730,6 +17419,8 @@ child:
           - bleeding
           index: K279
         docs: Peptic ulcer, site unspecified
+        exclude:
+        - gord
         index: K27
       - category: K28
         child:
@@ -16771,6 +17462,8 @@ child:
           - bleeding
           index: K289
         docs: Gastrojejunal ulcer
+        exclude:
+        - gord
         index: K28
       - category: K29
         child:
@@ -16807,11 +17500,14 @@ child:
           docs: Gastroduodenitis, unspecified
           index: K299
         docs: Gastritis and duodenitis
+        exclude:
+        - gord
         index: K29
       - code: K30
         docs: Functional dyspepsia
         exclude:
         - bleeding
+        - gord
         index: K30
       - category: K31
         child:
@@ -16848,6 +17544,7 @@ child:
         docs: Other diseases of stomach and duodenum
         exclude:
         - bleeding
+        - gord
         index: K31
       docs: Diseases of oesophagus, stomach and duodenum
       exclude:
@@ -16906,6 +17603,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K35
       - K38
@@ -17044,6 +17742,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K40
       - K46
@@ -17118,6 +17817,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K50
       - K52
@@ -17405,6 +18105,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K55
       - K64
@@ -17473,6 +18174,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K65
       - K67
@@ -17781,6 +18483,8 @@ child:
         - portal_hypertension
         index: K77
       docs: Diseases of liver
+      exclude:
+      - gord
       index:
       - K70
       - K77
@@ -17940,6 +18644,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K80
       - K87
@@ -18045,6 +18750,7 @@ child:
       - cirrhosis
       - hepatic_failure
       - portal_hypertension
+      - gord
       index:
       - K90
       - K93
@@ -18063,7 +18769,6 @@ child:
     - smoking
     - copd
     - cancer
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -18083,6 +18788,29 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - K00
     - K93
@@ -19413,7 +20141,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -19433,6 +20160,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - L00
     - L99
@@ -21561,7 +22312,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -21581,6 +22331,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - M00
     - M99
@@ -21624,6 +22398,7 @@ child:
         exclude:
         - bleeding
         - ckd.other
+        - ckd_other
         index: N00
       - category: N01
         child:
@@ -21910,6 +22685,7 @@ child:
       - ckd4
       - ckd5
       - ckd
+      - acute_renal_failure
       index:
       - N00
       - N08
@@ -22044,6 +22820,7 @@ child:
       - ckd4
       - ckd5
       - ckd
+      - acute_renal_failure
       index:
       - N10
       - N16
@@ -22132,6 +22909,8 @@ child:
           - ckd5
           index: N189
         docs: Chronic kidney disease
+        exclude:
+        - acute_renal_failure
         index: N18
       - code: N19
         docs: Unspecified kidney failure
@@ -22141,6 +22920,7 @@ child:
         - ckd3
         - ckd4
         - ckd5
+        - acute_renal_failure
         index: N19
       docs: Renal failure
       exclude:
@@ -22206,6 +22986,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N20
       - N23
@@ -22260,6 +23042,7 @@ child:
         docs: Other disorders of kidney and ureter, not elsewhere classified
         exclude:
         - ckd.other
+        - ckd_other
         index: N28
       - category: N29
         child:
@@ -22275,6 +23058,7 @@ child:
         docs: Other disorders of kidney and ureter in diseases classified elsewhere
         exclude:
         - ckd.other
+        - ckd_other
         index: N29
       docs: Other disorders of kidney and ureter
       exclude:
@@ -22285,6 +23069,7 @@ child:
       - ckd4
       - ckd5
       - ckd
+      - acute_renal_failure
       index:
       - N25
       - N29
@@ -22468,6 +23253,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N30
       - N39
@@ -22681,6 +23468,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N40
       - N51
@@ -22758,6 +23547,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N60
       - N64
@@ -22912,6 +23703,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N70
       - N77
@@ -23429,6 +24222,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N80
       - N98
@@ -23472,6 +24267,8 @@ child:
       - ckd5
       - ckd
       - ckd.other
+      - acute_renal_failure
+      - ckd_other
       index:
       - N99
       - N99
@@ -23486,7 +24283,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -23506,6 +24302,28 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
     index:
     - N00
     - N99
@@ -28400,7 +29218,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -28419,6 +29236,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - S00
     - T98
@@ -30061,7 +30902,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -30081,6 +30921,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - O00
     - O99
@@ -31380,7 +32244,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -31400,6 +32263,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - P00
     - P96
@@ -31564,6 +32451,7 @@ child:
       docs: Congenital malformations of the nervous system
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q00
       - Q07
@@ -31791,6 +32679,7 @@ child:
       docs: Congenital malformations of eye, ear, face and neck
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q10
       - Q18
@@ -32054,6 +32943,7 @@ child:
       docs: Congenital malformations of the circulatory system
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q20
       - Q28
@@ -32175,6 +33065,7 @@ child:
       docs: Congenital malformations of the respiratory system
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q30
       - Q34
@@ -32243,6 +33134,7 @@ child:
       docs: Cleft lip and cleft palate
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q35
       - Q37
@@ -32460,6 +33352,7 @@ child:
       docs: Other congenital malformations of the digestive system
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q38
       - Q45
@@ -32652,6 +33545,7 @@ child:
       docs: Congenital malformations of genital organs
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q50
       - Q56
@@ -32683,11 +33577,14 @@ child:
         docs: Renal agenesis and other reduction defects of kidney
         exclude:
         - ckd.other
+        - ckd_other
         index: Q60
       - category: Q61
         child:
         - code: Q61.0
           docs: Congenital single renal cyst
+          exclude:
+          - ckd_other
           index: Q610
         - code: Q61.1
           docs: Polycystic kidney, autosomal recessive
@@ -32744,6 +33641,7 @@ child:
         docs: Congenital obstructive defects of renal pelvis and congenital malformations of ureter
         exclude:
         - ckd.other
+        - ckd_other
         index: Q62
       - category: Q63
         child:
@@ -32768,6 +33666,7 @@ child:
         docs: Other congenital malformations of kidney
         exclude:
         - ckd.other
+        - ckd_other
         index: Q63
       - category: Q64
         child:
@@ -32804,6 +33703,7 @@ child:
         docs: Other congenital malformations of urinary system
         exclude:
         - ckd.other
+        - ckd_other
         index: Q64
       docs: Congenital malformations of the urinary system
       index:
@@ -33231,6 +34131,7 @@ child:
       docs: Congenital malformations and deformations of the musculoskeletal system
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q65
       - Q79
@@ -33449,6 +34350,7 @@ child:
       docs: Other congenital malformations
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q80
       - Q89
@@ -33697,6 +34599,7 @@ child:
       docs: Chromosomal abnormalities, not elsewhere classified
       exclude:
       - ckd.other
+      - ckd_other
       index:
       - Q90
       - Q99
@@ -33718,7 +34621,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -33738,6 +34640,29 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
     index:
     - Q00
     - Q99
@@ -35215,7 +36140,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -35234,6 +36158,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - R00
     - R99
@@ -40204,7 +41152,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -40224,6 +41171,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - V01
     - Y98
@@ -40557,6 +41528,11 @@ child:
       docs: Persons encountering health services for examination and investigation
       exclude:
       - ckd
+      - presence_of_coronary_stent
+      - presence_of_prosthetic_heart_valve
+      - presence_of_cabg
+      - presence_of_cied
+      - family_history_ihd
       index:
       - Z00
       - Z13
@@ -40775,6 +41751,11 @@ child:
       docs: Persons with potential health hazards related to communicable diseases
       exclude:
       - ckd
+      - presence_of_coronary_stent
+      - presence_of_prosthetic_heart_valve
+      - presence_of_cabg
+      - presence_of_cied
+      - family_history_ihd
       index:
       - Z20
       - Z29
@@ -41005,6 +41986,11 @@ child:
       docs: Persons encountering health services in circumstances related to reproduction
       exclude:
       - ckd
+      - presence_of_coronary_stent
+      - presence_of_prosthetic_heart_valve
+      - presence_of_cabg
+      - presence_of_cied
+      - family_history_ihd
       index:
       - Z30
       - Z39
@@ -41396,6 +42382,12 @@ child:
         - ckd
         index: Z54
       docs: Persons encountering health services for specific procedures and health care
+      exclude:
+      - presence_of_coronary_stent
+      - presence_of_prosthetic_heart_valve
+      - presence_of_cabg
+      - presence_of_cied
+      - family_history_ihd
       index:
       - Z40
       - Z54
@@ -41733,6 +42725,11 @@ child:
       docs: Persons with potential health hazards related to socioeconomic and psychosocial circumstances
       exclude:
       - ckd
+      - presence_of_coronary_stent
+      - presence_of_prosthetic_heart_valve
+      - presence_of_cabg
+      - presence_of_cied
+      - family_history_ihd
       index:
       - Z55
       - Z65
@@ -41937,6 +42934,11 @@ child:
       docs: Persons encountering health services in other circumstances
       exclude:
       - ckd
+      - presence_of_coronary_stent
+      - presence_of_prosthetic_heart_valve
+      - presence_of_cabg
+      - presence_of_cied
+      - family_history_ihd
       index:
       - Z70
       - Z76
@@ -41977,6 +42979,11 @@ child:
         docs: Family history of malignant neoplasm
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z80
       - category: Z81
         child:
@@ -42001,39 +43008,64 @@ child:
         docs: Family history of mental and behavioural disorders
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z81
       - category: Z82
         child:
         - code: Z82.0
           docs: Family history of epilepsy and other diseases of the nervous system
+          exclude:
+          - family_history_ihd
           index: Z820
         - code: Z82.1
           docs: Family history of blindness and visual loss
+          exclude:
+          - family_history_ihd
           index: Z821
         - code: Z82.2
           docs: Family history of deatrial_fibness and hearing loss
+          exclude:
+          - family_history_ihd
           index: Z822
         - code: Z82.3
           docs: Family history of stroke
+          exclude:
+          - family_history_ihd
           index: Z823
         - code: Z82.4
           docs: Family history of ischaemic heart disease and other diseases of the circulatory system
           index: Z824
         - code: Z82.5
           docs: Family history of asthma and other chronic lower respiratory diseases
+          exclude:
+          - family_history_ihd
           index: Z825
         - code: Z82.6
           docs: Family history of arthritis and other diseases of the musculoskeletal system and connective tissue
+          exclude:
+          - family_history_ihd
           index: Z826
         - code: Z82.7
           docs: Family history of congenital malformations, deformations and chromosomal abnormalities
+          exclude:
+          - family_history_ihd
           index: Z827
         - code: Z82.8
           docs: Family history of other disabilities and chronic diseases leading to disablement, not elsewhere classified
+          exclude:
+          - family_history_ihd
           index: Z828
         docs: Family history of certain disabilities and chronic diseases leading to disablement
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
         index: Z82
       - category: Z83
         child:
@@ -42064,6 +43096,11 @@ child:
         docs: Family history of other specific disorders
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z83
       - category: Z84
         child:
@@ -42085,6 +43122,11 @@ child:
         docs: Family history of other conditions
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z84
       - category: Z85
         child:
@@ -42121,6 +43163,11 @@ child:
         docs: Personal history of malignant neoplasm
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z85
       - category: Z86
         child:
@@ -42151,6 +43198,11 @@ child:
         docs: Personal history of certain other diseases
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z86
       - category: Z87
         child:
@@ -42184,6 +43236,11 @@ child:
         docs: Personal history of other diseases and conditions
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z87
       - category: Z88
         child:
@@ -42220,6 +43277,11 @@ child:
         docs: Personal history of allergy to drugs, medicaments and biological substances
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z88
       - category: Z89
         child:
@@ -42256,6 +43318,11 @@ child:
         docs: Acquired absence of limb
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z89
       - category: Z90
         child:
@@ -42289,6 +43356,11 @@ child:
         docs: Acquired absence of organs, not elsewhere classified
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z90
       - category: Z91
         child:
@@ -42322,6 +43394,11 @@ child:
         docs: Personal history of risk-factors, not elsewhere classified
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z91
       - category: Z92
         child:
@@ -42355,6 +43432,11 @@ child:
         docs: Personal history of medical treatment
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z92
       - category: Z93
         child:
@@ -42388,6 +43470,11 @@ child:
         docs: Artificial opening status
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z93
       - category: Z94
         child:
@@ -42440,36 +43527,78 @@ child:
           - ckd
           index: Z949
         docs: Transplanted organ and tissue status
+        exclude:
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z94
       - category: Z95
         child:
         - code: Z95.0
           docs: Presence of electronic cardiac devices
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_prosthetic_heart_valve
+          - presence_of_cabg
           index: Z950
         - code: Z95.1
           docs: Presence of aortocoronary bypass gratrial_fibt
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_prosthetic_heart_valve
+          - presence_of_cied
           index: Z951
         - code: Z95.2
           docs: Presence of prosthetic heart valve
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_cabg
+          - presence_of_cied
           index: Z952
         - code: Z95.3
           docs: Presence of xenogenic heart valve
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_cabg
+          - presence_of_cied
           index: Z953
         - code: Z95.4
           docs: Presence of other heart-valve replacement
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_prosthetic_heart_valve
+          - presence_of_cabg
+          - presence_of_cied
           index: Z954
         - code: Z95.5
           docs: Presence of coronary angioplasty implant and gratrial_fibt
+          exclude:
+          - presence_of_prosthetic_heart_valve
+          - presence_of_cabg
+          - presence_of_cied
           index: Z955
         - code: Z95.8
           docs: Presence of other cardiac and vascular implants and gratrial_fibts
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_prosthetic_heart_valve
+          - presence_of_cabg
+          - presence_of_cied
           index: Z958
         - code: Z95.9
           docs: Presence of cardiac and vascular implant and gratrial_fibt, unspecified
+          exclude:
+          - presence_of_coronary_stent
+          - presence_of_prosthetic_heart_valve
+          - presence_of_cabg
+          - presence_of_cied
           index: Z959
         docs: Presence of cardiac and vascular implants and gratrial_fibts
         exclude:
         - ckd
+        - family_history_ihd
         index: Z95
       - category: Z96
         child:
@@ -42506,6 +43635,11 @@ child:
         docs: Presence of other functional implants
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z96
       - category: Z97
         child:
@@ -42533,6 +43667,11 @@ child:
         docs: Presence of other devices
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z97
       - category: Z98
         child:
@@ -42551,6 +43690,11 @@ child:
         docs: Other postsurgical states
         exclude:
         - ckd
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z98
       - category: Z99
         child:
@@ -42588,6 +43732,12 @@ child:
           - ckd
           index: Z999
         docs: Dependence on enabling machines and devices, not elsewhere classified
+        exclude:
+        - presence_of_coronary_stent
+        - presence_of_prosthetic_heart_valve
+        - presence_of_cabg
+        - presence_of_cied
+        - family_history_ihd
         index: Z99
       docs: Persons with potential health hazards related to family and personal history and certain conditions influencing health status
       index:
@@ -42611,7 +43761,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -42631,6 +43780,25 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - Z00
     - Z99
@@ -42811,7 +43979,6 @@ child:
     - cirrhosis
     - hepatic_failure
     - portal_hypertension
-    - acs_stemi
     - acs_nstemi
     - acs_unstable_angina
     - type_1_diabetes
@@ -42831,6 +43998,30 @@ child:
     - atrial_arrhy
     - conduction_disease
     - dementia
+    - presence_of_coronary_stent
+    - presence_of_prosthetic_heart_valve
+    - presence_of_cabg
+    - presence_of_cied
+    - mitral_valve_regurgitation
+    - mitral_valve_stenosis
+    - tricuspid_valve_regurgitation
+    - tricuspid_valve_stenosis
+    - pulmonary_valve_regurgitation
+    - pulmonary_valve_stenosis
+    - aortic_valve_regurgitation
+    - aortic_valve_stenosis
+    - family_history_ihd
+    - angina
+    - acute_renal_failure
+    - asthma
+    - depression
+    - gord
+    - hypothyroidism
+    - pleural_effusion
+    - acs_stemi
+    - anxiety
+    - cardiomegaly
+    - ckd_other
     index:
     - U00
     - U85
@@ -42844,6 +44035,7 @@ groups:
 - acs_stemi
 - acs_nstemi
 - acs_unstable_angina
+- angina
 - bleeding
 - atrial_fib
 - ckd1
@@ -42852,11 +44044,13 @@ groups:
 - ckd4
 - ckd5
 - ckd
-- ckd.other
+- ckd_other
+- acute_renal_failure
 - anaemia
 - thrombocytopenia
 - smoking
 - copd
+- asthma
 - cancer
 - cirrhosis
 - hepatic_failure
@@ -42870,6 +44064,8 @@ groups:
 - conduction_disease
 - cardiac_arrest
 - heart_failure
+- pleural_effusion
+- cardiomegaly
 - isch_cardiomyopathy
 - nonisch_cardiomyopathy
 - lipid_disorder
@@ -42878,3 +44074,20 @@ groups:
 - obesity
 - periph_vasc_disease
 - dementia
+- family_history_ihd
+- presence_of_coronary_stent
+- presence_of_prosthetic_heart_valve
+- presence_of_cabg
+- presence_of_cied
+- mitral_valve_regurgitation
+- mitral_valve_stenosis
+- tricuspid_valve_regurgitation
+- tricuspid_valve_stenosis
+- pulmonary_valve_regurgitation
+- pulmonary_valve_stenosis
+- aortic_valve_regurgitation
+- aortic_valve_stenosis
+- depression
+- anxiety
+- gord
+- hypothyroidism

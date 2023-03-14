@@ -1,0 +1,2051 @@
+- table: apc_episodes
+  docs: "The APC (admitted patient care) contains records from patients who have been admitted into the hospital. The rows in the table correspond to episodes: individual care activities performed by one consultant. Groups of rows are organised into spells, which represent the entirety of the patient's stay in hospital."
+  source:
+    catalog: ABI
+    schema: dbo
+    table: vw_APC_SEM_001
+  columns:
+  - column: unique_booking_reference_number_converted
+    docs: "The unique booking reference number assigned by the Choose and Book system
+      when a PATIENT accepts an APPOINTMENT DATE OFFERED of an APPOINTMENT OFFER where
+      the offer was made via the Choose and Book system.\r\n\r\nWhen a PATIENT accepts
+      an APPOINTMENT DATE OFFERED, the unique booking reference number issued and
+      used during the booking process is considered to be 'converted' i.e. an APPOINTMENT
+      has been created and recorded; and the PATIENT has been placed on an Out-Patient
+      Waiting List even if subsequently the PATIENT does not attend or cancels the
+      APPOINTMENT."
+    use: no
+    source:
+    - UniqueBookingReferenceNumber_Converted
+    strategy: coalesce
+  - column: patient_pathway_identifier
+    docs: "An identifier, which together with the ORGANISATION CODE / ORGANISATION
+      IDENTIFIER of the issuer, uniquely identifies a PATIENT PATHWAY.\r\nThis is
+      a specific type of the attribute ACTIVITY IDENTIFIER.\r\n\r\nWhere a pathway
+      is initiated by a SERVICE REQUEST using the Choose and Book system, the PATIENT
+      PATHWAY will be uniquely identified by the Unique Booking Reference Number (UBRN)
+      of the first referral and the ORGANISATION CODE of Choose and Book which is
+      X09.\r\n\r\nWhere the pathway is initiated by some other method, the PATIENT
+      PATHWAY IDENTIFIER will be allocated by the ORGANISATION receiving the SERVICE
+      REQUEST which together with that ORGANISATION's ORGANISATION CODE / ORGANISATION
+      IDENTIFIER will uniquely identify the PATIENT PATHWAY."
+    use: no
+    source:
+    - PatientPathwayIdentifier
+    strategy: coalesce
+  - column: organisation_identifier_patient_pathway_identifier_issuer
+    docs: "This is the ORGANISATION IDENTIFIER of the ORGANISATION issuing the PATIENT
+      PATHWAY IDENTIFIER. \r\n\r\nWhere Choose and Book has been used, the ORGANISATION
+      IDENTIFIER X09 should be used."
+    use: no
+    source:
+    - OrganisationIdentifier_PatientPathwayIdentifierIssuer
+    strategy: coalesce
+  - column: referral_to_treatment_period_status
+    docs: The status of an ACTIVITY (or anticipated ACTIVITY) for the REFERRAL TO
+      TREATMENT PERIOD decided by the lead CARE PROFESSIONAL.
+    use: no
+    source:
+    - ReferralToTreatmentPeriod_Status
+    strategy: coalesce
+  - column: waiting_time_measurement_type_commissioning_data_set
+    docs: "The type of waiting time measurement methodology which may be applied during
+      a PATIENT PATHWAY.\r\nThe methodology applied may be for one part of a PATIENT
+      PATHWAY, such as the measurement of a REFERRAL TO TREATMENT PERIOD, or other
+      parts of the PATIENT PATHWAY according to Department of Health and Social Care
+      policy."
+    use: no
+    source:
+    - WaitingTimeMeasurementType_CommissioningDataSet
+    strategy: coalesce
+  - column: referral_to_treatment_period_start_date
+    docs: The start date of a REFERRAL TO TREATMENT PERIOD.
+    use: no
+    source:
+    - ReferralToTreatmentPeriod_StartDate
+    strategy: coalesce
+  - column: referral_to_treatment_period_end_date
+    docs: The end date of a REFERRAL TO TREATMENT PERIOD.
+    use: no
+    source:
+    - ReferralToTreatmentPeriod_EndDate
+    strategy: coalesce
+  - column: nhs_number_status_indicator_code
+    docs: NHS NUMBER STATUS INDICATOR CODE is the trace status of the NHS NUMBER.
+    use: no
+    source:
+    - NHSNumberStatusIndicatorCode
+    strategy: coalesce
+  - column: organisation_identifier_residence_responsibility
+    docs: "ORGANISATION IDENTIFIER (RESIDENCE RESPONSIBILITY) is the ORGANISATION
+      IDENTIFIER derived from the PATIENT's POSTCODE OF USUAL ADDRESS, where they
+      reside within the boundary of a:\r\n\r\n•Clinical Commissioning Group\r\n•Care
+      Trust\r\n•Local Health Board (Wales)\r\n•Scottish Health Board\r\n•Northern
+      Ireland Local Commissioning Group\r\n•Primary Healthcare Directorate (Isle of
+      Man)\r\n•Local Authority."
+    use: no
+    source:
+    - OrganisationIdentifier_ResidenceResponsibility
+    strategy: coalesce
+  - column: withheld_identity_reason
+    docs: A code allowing suppliers of Commissioning Data Set records to indicate
+      to recipients of the record (for example, the Commissioner of the ACTIVITY)
+      that the record has been purposely anonymised for a valid reason.
+    use: no
+    source:
+    - WithheldIdentityReason
+    strategy: coalesce
+  - column: local_patient_identifier_extended
+    docs: "This is a number used to identify a PATIENT uniquely within a Health Care
+      Provider. It may be different from the PATIENT's casenote number and may be
+      assigned automatically by the computer system.\r\n\r\nLOCAL PATIENT IDENTIFIER
+      (EXTENDED) is used where IT systems have a LOCAL PATIENT IDENTIFIER which is
+      longer than 10 characters and LOCAL PATIENT IDENTIFIER cannot be used for data
+      submission."
+    use: no
+    source:
+    - LocalPatientIdentifier_Extended
+    strategy: coalesce
+  - column: organisation_identifier_local_patient_identifier
+    docs: ORGANISATION IDENTIFIER (LOCAL PATIENT IDENTIFIER) is the ORGANISATION IDENTIFIER
+      of the Organisation that assigned the LOCAL PATIENT IDENTIFIER.
+    use: no
+    source:
+    - OrganisationIdentifier_LocalPatientIdentifier
+    strategy: coalesce
+  - column: nhs_number
+    docs: "The NHS NUMBER, the primary identifier of a PERSON, is a unique identifier
+      for a PATIENT within the NHS in England and Wales.\r\n\r\nThis will not vary
+      by any ORGANISATION of which a PERSON is a PATIENT.\r\n\r\nIt is mandatory to
+      record the NHS NUMBER. There are exceptions, such as Accident and Emergency
+      care, sexual health and major incidents, as defined in existing national policies.\r\n\r\nThe
+      NHS NUMBER is 10 numeric digits in length. The tenth digit is a check digit
+      used to confirm its validity. The check digit is validated using the Modulus
+      11 algorithm and the use of this algorithm is mandatory."
+    use: yes
+    source:
+    - AIMTC_Pseudo_NHS
+    - NHSnumber # This is what is in the database
+    #- NHSNumber
+    strategy: coalesce_exclude_null
+  - column: nhs_number_status_indicator_code_2
+    docs: NHS NUMBER STATUS INDICATOR CODE is the trace status of the NHS NUMBER.
+    use: no
+    source:
+    - NHSNumberStatusIndicatorCode
+    strategy: coalesce
+  - column: postcode_of_usual_address
+    docs: The POSTCODE of the ADDRESS nominated by the PATIENT with ADDRESS ASSOCIATION
+      TYPE 'Main Permanent Residence' or 'Other Permanent Residence'.
+    use: no
+    source:
+    - PostcodeOfUsualAddress
+    strategy: coalesce
+  - column: organisation_identifier_residence_responsibility_2
+    docs: "ORGANISATION IDENTIFIER (RESIDENCE RESPONSIBILITY) is the ORGANISATION
+      IDENTIFIER derived from the PATIENT's POSTCODE OF USUAL ADDRESS, where they
+      reside within the boundary of a:\r\n\r\n•Clinical Commissioning Group\r\n•Care
+      Trust\r\n•Local Health Board (Wales)\r\n•Scottish Health Board\r\n•Northern
+      Ireland Local Commissioning Group\r\n•Primary Healthcare Directorate (Isle of
+      Man)\r\n•Local Authority."
+    use: no
+    source:
+    - OrganisationIdentifier_ResidenceResponsibility
+    strategy: coalesce
+  - column: person_birth_date
+    docs: The date on which a PERSON was born or is officially deemed to have been
+      born.
+    use: no
+    source:
+    - PersonBirthDate
+    strategy: coalesce
+  - column: local_patient_identifier_extended_2
+    docs: "This is a number used to identify a PATIENT uniquely within a Health Care
+      Provider. It may be different from the PATIENT's casenote number and may be
+      assigned automatically by the computer system.\r\n\r\nLOCAL PATIENT IDENTIFIER
+      (EXTENDED) is used where IT systems have a LOCAL PATIENT IDENTIFIER which is
+      longer than 10 characters and LOCAL PATIENT IDENTIFIER cannot be used for data
+      submission."
+    use: no
+    source:
+    - LocalPatientIdentifier_Extended
+    strategy: coalesce
+  - column: organisation_identifier_local_patient_identifier_2
+    docs: ORGANISATION IDENTIFIER (LOCAL PATIENT IDENTIFIER) is the ORGANISATION IDENTIFIER
+      of the Organisation that assigned the LOCAL PATIENT IDENTIFIER.
+    use: no
+    source:
+    - OrganisationIdentifier_LocalPatientIdentifier
+    strategy: coalesce
+  - column: nhs_number_2
+    docs: "The NHS NUMBER, the primary identifier of a PERSON, is a unique identifier
+      for a PATIENT within the NHS in England and Wales.\r\n\r\nThis will not vary
+      by any ORGANISATION of which a PERSON is a PATIENT.\r\n\r\nIt is mandatory to
+      record the NHS NUMBER. There are exceptions, such as Accident and Emergency
+      care, sexual health and major incidents, as defined in existing national policies.\r\n\r\nThe
+      NHS NUMBER is 10 numeric digits in length. The tenth digit is a check digit
+      used to confirm its validity. The check digit is validated using the Modulus
+      11 algorithm and the use of this algorithm is mandatory."
+    use: no
+    source:
+    - NHSNumber
+    strategy: coalesce
+  - column: nhs_number_status_indicator_code_3
+    docs: NHS NUMBER STATUS INDICATOR CODE is the trace status of the NHS NUMBER.
+    use: no
+    source:
+    - NHSNumberStatusIndicatorCode
+    strategy: coalesce
+  - column: patient_full_name
+    docs: "PATIENT FULL NAME is the same as attribute PERSON NAME WORD TEXT.\r\nPATIENT
+      FULL NAME is the preferred PERSON FULL NAME of the PATIENT.\r\n\r\nPERSON FULL
+      NAME is an unstructured concatenation of some or all of the PERSON TITLE, PERSON
+      GIVEN NAME, PERSON FAMILY NAME and PERSON NAME SUFFIX elements, or other elements
+      that make up a PERSON's full name."
+    use: no
+    source:
+    - PatientFullName
+    strategy: coalesce
+  - column: patient_title
+    docs: PATIENT TITLE is the PERSON TITLE of the PATIENT.
+    use: no
+    source:
+    - PatientTitle
+    strategy: coalesce
+  - column: patient_given_name
+    docs: PATIENT GIVEN NAME is the PERSON GIVEN NAME of the PATIENT.
+    use: no
+    source:
+    - PatientGivenName
+    strategy: coalesce
+  - column: patient_family_name
+    docs: PATIENT FAMILY NAME is the PERSON FAMILY NAME of the PATIENT.
+    use: no
+    source:
+    - PatientFamilyName
+    strategy: coalesce
+  - column: patient_name_suffix
+    docs: PATIENT NAME SUFFIX is the PERSON NAME SUFFIX of the PATIENT.
+    use: no
+    source:
+    - PatientNameSuffix
+    strategy: coalesce
+  - column: patient_initials
+    docs: PATIENT INITIALS is the PERSON INITIALS of the PATIENT.
+    use: no
+    source:
+    - PatientInitials
+    strategy: coalesce
+  - column: unstructured_address
+    docs: "PATIENT USUAL ADDRESS (UNSTRUCTURED) is the usual ADDRESS nominated by
+      the PATIENT, where the ADDRESS ASSOCIATION TYPE is 'Main Permanent Residence' or 'Other
+      Permanent Residence'.\r\n\r\nTo denote an unstructured ADDRESS, i.e. an ADDRESS
+      consisting of up to five contiguous data elements of 35 characters representing
+      a 175 character string."
+    use: no
+    source:
+    - UnstructuredAddress
+    strategy: coalesce
+  - column: structured_address
+    docs: "PATIENT USUAL ADDRESS (STRUCTURED) consist of up to five address lines
+      of 35 characters where each line is left justified as a specific data element.\r\n\r\nThe
+      format of 5 lines of an35 conforms to ADDRESS FORMAT TYPE 'Unstructured Format'.
+      The format refers to the physical layout of the ADDRESS, not the logical layout,
+      and does not require intelligent intervention when splitting the text string
+      into lines."
+    use: no
+    source:
+    - StructuredAddress
+    strategy: coalesce
+  - column: postcode_of_usual_address_2
+    docs: The POSTCODE of the ADDRESS nominated by the PATIENT with ADDRESS ASSOCIATION
+      TYPE 'Main Permanent Residence' or 'Other Permanent Residence'.
+    use: no
+    source:
+    - PostcodeOfUsualAddress
+    strategy: coalesce
+  - column: organisation_identifier_residence_responsibility_3
+    docs: "ORGANISATION IDENTIFIER (RESIDENCE RESPONSIBILITY) is the ORGANISATION
+      IDENTIFIER derived from the PATIENT's POSTCODE OF USUAL ADDRESS, where they
+      reside within the boundary of a:\r\n\r\n•Clinical Commissioning Group\r\n•Care
+      Trust\r\n•Local Health Board (Wales)\r\n•Scottish Health Board\r\n•Northern
+      Ireland Local Commissioning Group\r\n•Primary Healthcare Directorate (Isle of
+      Man)\r\n•Local Authority."
+    use: no
+    source:
+    - OrganisationIdentifier_ResidenceResponsibility
+    strategy: coalesce
+  - column: person_birth_date_2
+    docs: The date on which a PERSON was born or is officially deemed to have been
+      born.
+    use: no
+    source:
+    - PersonBirthDate
+    strategy: coalesce
+  - column: person_stated_gender_code
+    docs: "The gender of a PERSON.\r\n\r\nPERSON STATED GENDER CODE is self declared
+      or inferred by observation for those unable to declare their PERSON STATED GENDER."
+    use: no
+    source:
+    - PersonStatedGenderCode
+    strategy: coalesce
+  - column: carer_support_indicator
+    docs: An indication of whether or not carer support is available to the PATIENT
+      at their normal residence. This does not include any paid support or support
+      from a voluntary organisation, unless the PATIENT is normally resident in a
+      Care Home.
+    use: no
+    source:
+    - CarerSupportIndicator
+    strategy: coalesce
+  - column: ethnic_category
+    docs: "The ethnicity of a PERSON, as specified by the PERSON.\r\n\r\nNote: ETHNIC
+      CATEGORY is the classification used for the 2001 census."
+    use: no
+    source:
+    - EthnicCategory
+    strategy: coalesce
+  - column: ethnic_category2021
+    docs: "The ethnicity of a PERSON, as specified by the PERSON.\r\n\r\nETHNIC CATEGORY
+      2021 is the classification used for the 2021 census.\r\n\r\nNote: This item
+      has not been approved by the Data Alliance Partnership Board. It has been introduced
+      to provide advance notice to data providers and system suppliers of the intention
+      to report this item at a later date. This item should not be submitted until
+      further development by NHS Digital has been undertaken."
+    use: no
+    source:
+    - EthnicCategory2021
+    strategy: coalesce
+  - column: person_marital_status
+    docs: An indicator to identify the legal marital status of a PERSON.
+    use: no
+    source:
+    - PersonMaritalStatus
+    strategy: coalesce
+  - column: mental_health_act_legal_status_classification_code_on_admission
+    docs: A code which identifies the MENTAL HEALTH ACT LEGAL STATUS CLASSIFICATION.
+    use: no
+    source:
+    - MentalHealthActLegalStatusClassificationCode_OnAdmission
+    strategy: coalesce
+  - column: soc_per_snomed_ct_expression
+    docs: SOCIAL AND PERSONAL CIRCUMSTANCE (SNOMED CT EXPRESSION) is a structured
+      combination of one or more SNOMED CT® concept identifiers which are used to
+      describe a social and personal circumstance for a PERSON.
+    use: no
+    source:
+    - SocPer_SnomedCtExpression
+    strategy: coalesce
+  - column: soc_per_recorded_timestamp
+    docs: SOCIAL AND PERSONAL CIRCUMSTANCE RECORDED TIMESTAMP is the date, time and
+      time zone when the SOCIAL AND PERSONAL CIRCUMSTANCE (SNOMED CT) was recorded.
+    use: no
+    source:
+    - SocPerRecordedTimestamp
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: hospital_provider_spell_identifier
+    docs: A unique identifier for each Hospital Provider Spell for a Health Care Provider.
+    use: no
+    source:
+    - HospitalProviderSpellIdentifier
+    strategy: coalesce
+  - column: administrative_category_code_on_admission
+    docs: ADMINISTRATIVE CATEGORY CODE (ON ADMISSION) is used to record the ADMINISTRATIVE
+      CATEGORY CODE at the start of the Hospital Provider Spell.
+    use: no
+    source:
+    - AdministrativeCategoryCodeOnAdmission
+    strategy: coalesce
+  - column: patient_classification_code
+    docs: A coded classification of PATIENTS who have been admitted to a Hospital
+      Provider Spell.
+    use: no
+    source:
+    - PatientClassificationCode
+    strategy: coalesce
+  - column: method_of_admission_hospital_provider_spell
+    docs: The method of admission to a Hospital Provider Spell.
+    use: no
+    source:
+    - MethodOfAdmission_HospitalProviderSpell
+    strategy: coalesce
+  - column: admission_source_hospital_provider_spell
+    docs: "The source of admission to a Hospital Provider Spell or a Nursing Episode
+      when the\r\nPATIENT is in a Hospital Site or a Care Home."
+    use: no
+    source:
+    - AdmissionSource_HospitalProviderSpell
+    strategy: coalesce
+  - column: start_date_hospital_provider_spell
+    docs: The start date of a Hospital Provider Spell.
+    use: no
+    source:
+    - StartDate_HospitalProviderSpell
+    strategy: coalesce
+  - column: start_time_hospital_provider_spell
+    docs: The start time of a Hospital Provider Spell.
+    use: no
+    source:
+    - StartTime_HospitalProviderSpell
+    strategy: coalesce
+  - column: age_on_admission
+    docs: AGE ON ADMISSION is derived as the number of completed years between the
+      PERSON BIRTH DATE of the PATIENT and the START DATE (HOSPITAL PROVIDER SPELL).
+    use: no
+    source:
+    - AgeOnAdmission
+    strategy: coalesce
+  - column: ambulance_call_identifier
+    docs: A unique identifier for each AMBULANCE CALL.
+    use: no
+    source:
+    - AmbulanceCallIdentifier
+    strategy: coalesce
+  - column: organisation_identifier_conveying_ambulance_trust
+    docs: ORGANISATION IDENTIFIER (CONVEYING AMBULANCE TRUST) is the ORGANISATION
+      IDENTIFIER of an Ambulance Service which conveys a PATIENT.
+    use: no
+    source:
+    - OrganisationIdentifier_ConveyingAmbulanceTrust
+    strategy: coalesce
+  - column: care_contact_identifier_ambulance_service
+    docs: "CARE CONTACT IDENTIFIER (AMBULANCE SERVICE) is an identifier allocated
+      to each Ambulance Incident for each PATIENT.\r\nCARE CONTACT IDENTIFIER (AMBULANCE
+      SERVICE) is the ACTIVITY IDENTIFIER for a CARE CONTACT allocated by the Ambulance
+      Service.\r\nThe PATIENT can have more than one CARE CONTACT IDENTIFIER (AMBULANCE
+      SERVICE) if the PATIENT is treated more than once in separate Ambulance Incidents."
+    use: no
+    source:
+    - CareContactIdentifier_AmbulanceService
+    strategy: coalesce
+  - column: destination_of_discharge_hospital_provider_spell
+    docs: "The destination of a PATIENT on completion of a Hospital Provider Spell.\r\nThis
+      includes a National Code to indicate a PATIENT death or a stillbirth."
+    use: no
+    source:
+    - DestinationOfDischarge_HospitalProviderSpell
+    strategy: coalesce
+  - column: method_of_discharge_hospital_provider_spell
+    docs: The method of discharge from a Hospital Provider Spell.
+    use: no
+    source:
+    - MethodOfDischarge_HospitalProviderSpell
+    strategy: coalesce
+  - column: discharge_ready_date_hospital_provider_spell
+    docs: Discharge Ready Date is the date that a PATIENT was medically ready for
+      discharge from a Hospital Bed but could not be discharged, thereby qualifying
+      for Delayed Discharge Payments under the provisions of the Community Care (Delayed
+      Discharges etc) Act 2003.
+    use: no
+    source:
+    - DischargeReadyDate_HospitalProviderSpell
+    strategy: coalesce
+  - column: discharge_date_hospital_provider_spell
+    docs: Discharge Date is the date of discharge from a Hospital Provider Spell.
+    use: no
+    source:
+    - DischargeDate_HospitalProviderSpell
+    strategy: coalesce
+  - column: discharge_time_hospital_provider_spell
+    docs: The time that a PATIENT was discharged from a Hospital Provider Spell.
+    use: no
+    source:
+    - DischargeTime_HospitalProviderSpell
+    strategy: coalesce
+  - column: discharged_to_nhs_at_home_service_indicator
+    docs: An indication of whether a PATIENT was discharged from a Hospital Provider
+      Spell to an NHS At Home Service.
+    use: no
+    source:
+    - DischargedToNHSAtHomeServiceIndicator
+    strategy: coalesce
+  - column: episode_number
+    docs: "EPISODE NUMBER is used to uniquely identify episodes, and is a sequence
+      number for each Consultant Episode (Hospital Provider) in a Hospital Provider
+      Spell.\r\n\r\nA known EPISODE NUMBER can be between 01 to 87."
+    use: no
+    source:
+    - EpisodeNumber
+    strategy: coalesce
+  - column: last_episode_in_spell_indicator_code
+    docs: An indication of whether the consultant episode is the final episode in
+      the Hospital Provider Spell.
+    use: no
+    source:
+    - LastEpisodeInSpellIndicatorCode
+    strategy: coalesce
+  - column: neonatal_level_of_care_code
+    docs: The level of care received by a Neonate during a Neonatal Level Of Care
+      Period.
+    use: no
+    source:
+    - NeonatalLevelOfCareCode
+    strategy: coalesce
+  - column: first_regular_day_or_night_admission_code
+    docs: The first admission in a series of regular day/night admissions for a course
+      of treatment.
+    use: no
+    source:
+    - FirstRegularDayOrNightAdmissionCode
+    strategy: coalesce
+  - column: psychiatric_patient_status_code
+    docs: An indication of whether the PATIENT has been admitted or transferred to
+      a CONSULTANT in one of the psychiatric specialties within a Hospital Provider
+      Spell.
+    use: no
+    source:
+    - PsychiatricPatientStatusCode
+    strategy: coalesce
+  - column: start_date_episode
+    docs: The start of an episode covered by a plan or other time period.
+    use: no
+    source:
+    - StartDate_Episode
+    strategy: coalesce
+  - column: start_time_episode
+    docs: "Start Time is the start time of episode covered by a plan, or other period
+      of time.\r\nThe time should be recorded using the 24 hour clock."
+    use: no
+    source:
+    - StartTime_Episode
+    strategy: coalesce
+  - column: end_date_episode
+    docs: The end of an episode covered by a plan or other time period.
+    use: no
+    source:
+    - EndDate_Episode
+    strategy: coalesce
+  - column: end_time_episode
+    docs: "End Time is the end time of episode covered by a plan, or other period
+      of time.\r\nThe time should be recorded using the 24 hour clock."
+    use: no
+    source:
+    - EndTime_Episode
+    strategy: coalesce
+  - column: age_at_cds_activity_date
+    docs: AGE AT CDS ACTIVITY DATE is derived as the number of completed years between
+      the PERSON BIRTH DATE of the PATIENT and the CDS ACTIVITY DATE.
+    use: no
+    source:
+    - AgeAtCdsActivityDate
+    strategy: coalesce
+  - column: rehabilitation_assessment_team_type
+    docs: An indication of whether the CARE PROFESSIONAL TEAM undertaking a Rehabilitation
+      Assessment, is specialised or non-specialised.
+    use: no
+    source:
+    - RehabilitationAssessmentTeamType
+    strategy: coalesce
+  - column: length_of_stay_adjustment_rehab
+    docs: "The total number of days within a Consultant Episode (Hospital Provider)
+      that a discrete period of Rehabilitation occurred, which requires an adjustment
+      to the total length of stay for Payment by Results purposes.\r\n\r\nThe LENGTH
+      OF STAY ADJUSTMENT should be calculated using the Payment by Results rules (i.e.
+      count of midnights). The LENGTH OF STAY ADJUSTMENT REASON should also be recorded.
+      \r\n\r\nWhere several discrete periods of applicable activity occur within one
+      Consultant Episode (Hospital Provider), the number of days should be totalled
+      and reported in a single LENGTH OF STAY ADJUSTMENT. Where several discrete periods
+      of applicable activity for the same LENGTH OF STAY ADJUSTMENT REASON occur within
+      one Consultant Episode (Hospital Provider), the number of days under the same
+      LENGTH OF STAY ADJUSTMENT REASON should be totalled and reported in a single
+      LENGTH OF STAY ADJUSTMENT."
+    use: no
+    source:
+    - LengthOfStayAdjustmentRehab
+    strategy: coalesce
+  - column: length_of_stay_adjustment_specialist_palliative_care
+    docs: "The total number of days within a Consultant Episode (Hospital Provider)
+      that a discrete period of Specialist Palliative Care occurred, which requires
+      an adjustment to the total length of stay for Payment by Results purposes.\r\n\r\nThe
+      LENGTH OF STAY ADJUSTMENT should be calculated using the Payment by Results
+      rules (i.e. count of midnights). The LENGTH OF STAY ADJUSTMENT REASON should
+      also be recorded. \r\n\r\nWhere several discrete periods of applicable activity
+      occur within one Consultant Episode (Hospital Provider), the number of days
+      should be totalled and reported in a single LENGTH OF STAY ADJUSTMENT. Where
+      several discrete periods of applicable activity for the same LENGTH OF STAY
+      ADJUSTMENT REASON occur within one Consultant Episode (Hospital Provider), the
+      number of days under the same LENGTH OF STAY ADJUSTMENT REASON should be totalled
+      and reported in a single LENGTH OF STAY ADJUSTMENT."
+    use: no
+    source:
+    - LengthOfStayAdjustmentSpecialistPalliativeCare
+    strategy: coalesce
+  - column: overseas_visitor_charging_category
+    docs: The charging category relating to an OVERSEAS VISITOR STATUS.
+    use: no
+    source:
+    - OverseasVisitorChargingCategory
+    strategy: coalesce
+  - column: overseas_visitor_charging_category_applicable_from_date
+    docs: OVERSEAS VISITOR CHARGING CATEGORY APPLICABLE FROM DATE is the date when
+      the OVERSEAS VISITOR CHARGING CATEGORY was applicable from.
+    use: no
+    source:
+    - OverseasVisitorChargingCategoryApplicableFromDate
+    strategy: coalesce
+  - column: overseas_visitor_charging_category_applicable_end_date
+    docs: OVERSEAS VISITOR CHARGING CATEGORY APPLICABLE END DATE is the date when
+      the OVERSEAS VISITOR CHARGING CATEGORY was applicable until.
+    use: no
+    source:
+    - OverseasVisitorChargingCategoryApplicableEndDate
+    strategy: coalesce
+  - column: organisation_identifier_code_of_provider
+    docs: ORGANISATION IDENTIFIER (CODE OF PROVIDER) is the ORGANISATION IDENTIFIER
+      of the Organisation acting as a Health Care Provider.
+    use: no
+    source:
+    - OrganisationIdentifier_CodeOfProvider
+    strategy: coalesce
+  - column: organisation_identifier_code_of_commissioner
+    docs: ORGANISATION IDENTIFIER (CODE OF COMMISSIONER) is the ORGANISATION IDENTIFIER
+      of the Organisation commissioning health care.
+    use: no
+    source:
+    - OrganisationIdentifier_CodeOfCommissioner
+    strategy: coalesce
+  - column: start_date_commissioner_assignment_period
+    docs: The Start Date of the Commissioner Assignment Period.
+    use: no
+    source:
+    - StartDate_CommissionerAssignmentPeriod
+    strategy: coalesce
+  - column: end_date_commissioner_assignment_period
+    docs: The End Date of the Commissioner Assignment Period.
+    use: no
+    source:
+    - EndDate_CommissionerAssignmentPeriod
+    strategy: coalesce
+  - column: nhs_service_agreement_identifier
+    docs: "The unique identifier of an NHS SERVICE AGREEMENT. \r\n\r\nThe NHS SERVICE
+      AGREEMENT IDENTIFIER is issued by the ORGANISATION acting as commissioner of
+      a SERVICE."
+    use: no
+    source:
+    - NHSServiceAgreementIdentifier
+    strategy: coalesce
+  - column: nhs_service_agreement_line_identifier
+    docs: A number (alphanumeric) to provide a unique identifier for a line within
+      a NHS SERVICE AGREEMENT.
+    use: no
+    source:
+    - NHSServiceAgreementLineIdentifier
+    strategy: coalesce
+  - column: provider_reference_identifier
+    docs: The reference identifier agreed locally between a Health Care Provider and
+      the Commissioner of a SERVICE PROVIDED UNDER AGREEMENT.
+    use: no
+    source:
+    - ProviderReferenceIdentifier
+    strategy: coalesce
+  - column: commissioner_reference_identifier
+    docs: The identifier of a SERVICE REQUEST allocated by the commissioner of a SERVICE.
+    use: no
+    source:
+    - CommissionerReferenceIdentifier
+    strategy: coalesce
+  - column: specialised_service_code
+    docs: "The type of Specialised Service provided in a SERVICE PROVIDED UNDER AGREEMENT.\r\n\r\nThe
+      SPECIALISED SERVICE CODE National Codes are published by NHS England and can
+      be accessed at Specialised Services Reporting Requirements."
+    use: no
+    source:
+    - SpecialisedServiceCode
+    strategy: coalesce
+  - column: professional_registration_issuer_code
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier
+    docs: PROFESSIONAL REGISTRATION ENTRY IDENTIFIER is the registration identifier
+      allocated by an ORGANISATION.
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: care_professional_main_specialty_code
+    docs: CARE PROFESSIONAL MAIN SPECIALTY CODE is the specialty in which the CONSULTANT
+      is contracted or recognised. MAIN SPECIALTY classifies clinical work divisions
+      more precisely for a limited number of specialties.
+    use: no
+    source:
+    - CareProfessionalMainSpecialtyCode
+    strategy: coalesce
+  - column: activity_treatment_function_code
+    docs: "ACTIVITY TREATMENT FUNCTION CODE is a unique identifier for a TREATMENT
+      FUNCTION.\r\nIt is recorded to report the specialised service within which the
+      PATIENT is treated."
+    use: no
+    source:
+    - ActivityTreatmentFunctionCode
+    strategy: coalesce
+  - column: local_sub_specialty_code
+    docs: A unique identifier for a LOCAL SUB-SPECIALTY.
+    use: no
+    source:
+    - LocalSubSpecialtyCode
+    strategy: coalesce
+  - column: responsible_care_professional_indicator
+    docs: An indication of whether a CARE PROFESSIONAL belonging to a CARE PROFESSIONAL
+      TEAM delivering a Consultant Led Service or Non-Consultant Led Service has overall
+      clinical responsibility for the care of the PATIENT during an ACTIVITY GROUP.
+    use: no
+    source:
+    - ResponsibleCareProfessionalIndicator
+    strategy: coalesce
+  - column: diagnosis_scheme_in_use_commissioning_data_set
+    docs: "DIAGNOSIS SCHEME IN USE (COMMISSIONING DATA SET) is the same as attribute
+      DIAGNOSIS SCHEME IN USE for the Commissioning Data Sets.\r\n\r\nDIAGNOSIS SCHEME
+      IN USE is used in the Clinical Information Group of the Commissioning Data Set
+      to denote the code scheme basis of the Diagnosis."
+    use: no
+    source:
+    - DiagnosisSchemeInUse_CommissioningDataSet
+    strategy: coalesce
+  - column: primary_diagnosis_icd
+    docs: PRIMARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the PRIMARY DIAGNOSIS.
+    use: yes
+    source:
+    - DiagnosisPrimary_ICD # This is the name in the database
+    #- PrimaryDiagnosis_ICD
+    strategy: coalesce
+  - column: present_on_admission_indicator
+    docs: An indication of whether a PATIENT DIAGNOSIS was already present when the
+      PATIENT started a Hospital Provider Spell.
+    use: no
+    source:
+    - PresentOnAdmissionIndicator
+    strategy: coalesce
+  - column: na
+    docs: .na.character
+    use: no
+    source:
+    - .na.character
+    strategy: coalesce
+  - column: na_2
+    docs: .na.character
+    use: no
+    source:
+    - .na.character
+    strategy: coalesce
+  - column: secondary_diagnosis_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: no
+    source:
+    - SecondaryDiagnosis_ICD
+    strategy: coalesce
+  - column: present_on_admission_indicator_2
+    docs: An indication of whether a PATIENT DIAGNOSIS was already present when the
+      PATIENT started a Hospital Provider Spell.
+    use: no
+    source:
+    - PresentOnAdmissionIndicator
+    strategy: coalesce
+  - column: na_3
+    docs: .na.character
+    use: no
+    source:
+    - .na.character
+    strategy: coalesce
+  - column: na_4
+    docs: .na.character
+    use: no
+    source:
+    - .na.character
+    strategy: coalesce
+  - column: diagnosis_snomed_ct_expression
+    docs: DIAGNOSIS (SNOMED CT EXPRESSION) is a structured combination of one or more
+      SNOMED CT® concept identifiers which are used to describe a PATIENT DIAGNOSIS.
+    use: no
+    source:
+    - Diagnosis_SnomedCtExpression
+    strategy: coalesce
+  - column: coded_clinical_entry_sequence_number
+    docs: The sequence number of a CODED CLINICAL ENTRY, recorded to enable correct
+      sequential processing of data.
+    use: no
+    source:
+    - CodedClinicalEntrySequenceNumber
+    strategy: coalesce
+  - column: coded_diagnosis_time_stamp
+    docs: CODED DIAGNOSIS TIMESTAMP is the date, time and time zone that the DIAGNOSIS
+      was recorded by a CARE PROFESSIONAL.
+    use: no
+    source:
+    - CodedDiagnosisTimeStamp
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4_2
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: comorbidity_snomed_ct_expression
+    docs: COMORBIDITY (SNOMED CT EXPRESSION) is a structured combination of one or
+      more SNOMED CT® concept identifiers which are used to describe a comorbid conditions
+      for a PERSON.
+    use: no
+    source:
+    - Comorbidity_SnomedCtExpression
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4_3
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: fit_note_assessment_date
+    docs: An eMED3 Fit Note Assessment Date is the date on which a PATIENT was assessed
+      as requiring an eMED3 Fit Note.
+    use: no
+    source:
+    - FitNoteAssessmentDate
+    strategy: coalesce
+  - column: fit_note_condition_snomed_ct_expression
+    docs: EMED3 FIT NOTE CONDITION (SNOMED CT EXPRESSION) is a structured combination
+      of one or more SNOMED CT® concept identifiers which are used to describe the
+      reason that a CARE PROFESSIONAL issued an eMED3 Fit Note for a PATIENT.
+    use: no
+    source:
+    - FitNoteCondition_SnomedCtExpression
+    strategy: coalesce
+  - column: fit_note_diagnosis_icd
+    docs: EMED3 FIT NOTE DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to describe the reason that a CARE PROFESSIONAL issued an eMED3
+      Fit Note for a PATIENT.
+    use: no
+    source:
+    - FitNoteDiagnosis_ICD
+    strategy: coalesce
+  - column: fit_note_start_date
+    docs: EMED3 FIT NOTE START DATE is the date that the eMED3 Fit Note Applicable
+      Period commenced.
+    use: no
+    source:
+    - FitNoteStartDate
+    strategy: coalesce
+  - column: fit_note_end_date
+    docs: EMED3 FIT NOTE END DATE is the date that the eMED3 Fit Note Applicable Period
+      ended.
+    use: no
+    source:
+    - FitNoteEndDate
+    strategy: coalesce
+  - column: fit_note_duration
+    docs: EMED3 FIT NOTE DURATION is the number of days duration of an eMED3 Fit Note
+      Applicable Period.
+    use: no
+    source:
+    - FitNoteDuration
+    strategy: coalesce
+  - column: fit_note_recorded_date
+    docs: An eMED3 Fit Note Recorded Date is the date on which a record of an eMED3
+      Fit Note issued to a PATIENT was recorded on the Health Care Provider's ELECTRONIC
+      HEALTH RECORD.
+    use: no
+    source:
+    - FitNoteRecordedDate
+    strategy: coalesce
+  - column: fit_note_follow_up_indicator
+    docs: An indication of whether a follow up CARE CONTACT is required at the end
+      of the eMED3 Fit Note Applicable Period.
+    use: no
+    source:
+    - FitNoteFollowUpIndicator
+    strategy: coalesce
+  - column: procedure_scheme_in_use_commissioning_data_set
+    docs: The type of CODED CLINICAL ENTRY used for the CLINICAL INTERVENTION.
+    use: no
+    source:
+    - ProcedureSchemeInUse_CommissioningDataSet
+    strategy: coalesce
+  - column: primary_procedure_opcs
+    docs: PRIMARY PROCEDURE (OPCS) is the OPCS Classification of Interventions and
+      Procedures code which is used to identify the primary Patient Procedure carried
+      out.
+    use: no
+    source:
+    - PrimaryProcedure_OPCS
+    strategy: coalesce
+  - column: procedure_date
+    docs: Procedure Date is the date of the Patient Procedure.
+    use: no
+    source:
+    - ProcedureDate
+    strategy: coalesce
+  - column: professional_registration_issuer_code_2
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier_2
+    docs: "PROFESSIONAL REGISTRATION ENTRY IDENTIFIER (MAIN OPERATING CARE PROFESSIONAL)
+      is the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of the CARE PROFESSIONAL carrying
+      out a Patient Procedure.\r\n\r\nWhere more than one CARE PROFESSIONAL is involved
+      in the Patient Procedure, the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of
+      the main/lead CARE PROFESSIONAL should be recorded."
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: professional_registration_issuer_code_3
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier_3
+    docs: PROFESSIONAL REGISTRATION ENTRY IDENTIFIER (RESPONSIBLE ANAESTHETIST) is
+      the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of the CARE PROFESSIONAL providing
+      anaesthesia during a Patient Procedure. Where more than one CARE PROFESSIONAL
+      is involved in providing anaesthesia during the Patient Procedure, the PROFESSIONAL
+      REGISTRATION ENTRY IDENTIFIER of the main/lead anaesthetist should be recorded.
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: secondary_procedure_opcs
+    docs: PROCEDURE (OPCS) is a Patient Procedure other than the PRIMARY PROCEDURE
+      (OPCS).
+    use: no
+    source:
+    - SecondaryProcedure_OPCS
+    strategy: coalesce
+  - column: procedure_date_2
+    docs: Procedure Date is the date of the Patient Procedure.
+    use: no
+    source:
+    - ProcedureDate
+    strategy: coalesce
+  - column: professional_registration_issuer_code_4
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier_4
+    docs: "PROFESSIONAL REGISTRATION ENTRY IDENTIFIER (MAIN OPERATING CARE PROFESSIONAL)
+      is the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of the CARE PROFESSIONAL carrying
+      out a Patient Procedure.\r\n\r\nWhere more than one CARE PROFESSIONAL is involved
+      in the Patient Procedure, the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of
+      the main/lead CARE PROFESSIONAL should be recorded."
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: professional_registration_issuer_code_5
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier_5
+    docs: PROFESSIONAL REGISTRATION ENTRY IDENTIFIER (RESPONSIBLE ANAESTHETIST) is
+      the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of the CARE PROFESSIONAL providing
+      anaesthesia during a Patient Procedure. Where more than one CARE PROFESSIONAL
+      is involved in providing anaesthesia during the Patient Procedure, the PROFESSIONAL
+      REGISTRATION ENTRY IDENTIFIER of the main/lead anaesthetist should be recorded.
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: procedure_snomed_ct_expression
+    docs: PROCEDURE (SNOMED CT EXPRESSION) is a structured combination of one or more
+      SNOMED CT® concept identifiers which are used to describe a Patient Procedure.
+    use: no
+    source:
+    - Procedure_SnomedCtExpression
+    strategy: coalesce
+  - column: coded_clinical_entry_sequence_number_2
+    docs: The sequence number of a CODED CLINICAL ENTRY, recorded to enable correct
+      sequential processing of data.
+    use: no
+    source:
+    - CodedClinicalEntrySequenceNumber
+    strategy: coalesce
+  - column: coded_procedure_timestamp
+    docs: CODED PROCEDURE TIMESTAMP is the date, time and time zone that the Patient
+      Procedure was performed by a CARE PROFESSIONAL.
+    use: no
+    source:
+    - CodedProcedureTimestamp
+    strategy: coalesce
+  - column: professional_registration_issuer_code_6
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier_6
+    docs: "PROFESSIONAL REGISTRATION ENTRY IDENTIFIER (MAIN OPERATING CARE PROFESSIONAL)
+      is the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of the CARE PROFESSIONAL carrying
+      out a Patient Procedure.\r\n\r\nWhere more than one CARE PROFESSIONAL is involved
+      in the Patient Procedure, the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of
+      the main/lead CARE PROFESSIONAL should be recorded."
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: professional_registration_issuer_code_7
+    docs: A code which identifies the PROFESSIONAL REGISTRATION BODY.
+    use: no
+    source:
+    - ProfessionalRegistrationIssuerCode
+    strategy: coalesce
+  - column: professional_registration_entry_identifier_7
+    docs: PROFESSIONAL REGISTRATION ENTRY IDENTIFIER (RESPONSIBLE ANAESTHETIST) is
+      the PROFESSIONAL REGISTRATION ENTRY IDENTIFIER of the CARE PROFESSIONAL providing
+      anaesthesia during a Patient Procedure. Where more than one CARE PROFESSIONAL
+      is involved in providing anaesthesia during the Patient Procedure, the PROFESSIONAL
+      REGISTRATION ENTRY IDENTIFIER of the main/lead anaesthetist should be recorded.
+    use: no
+    source:
+    - ProfessionalRegistrationEntryIdentifier
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4_4
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: observation_snomed_ct_expression
+    docs: OBSERVATION (SNOMED CT EXPRESSION) is a structured combination of one or
+      more SNOMED CT® concept identifiers which are used to describe an Observable
+      Entity.
+    use: no
+    source:
+    - Observation_SnomedCtExpression
+    strategy: coalesce
+  - column: obs_value
+    docs: The numeric value resulting from a clinical OBSERVATION.
+    use: no
+    source:
+    - ObsValue
+    strategy: coalesce
+  - column: ucum_unit
+    docs: The unit of measurement used to measure the result of a clinical OBSERVATION.
+      See http://unitsofmeasure.org/trac/.
+    use: no
+    source:
+    - UCUMUnit
+    strategy: coalesce
+  - column: coded_observation_time_stamp
+    docs: CODED OBSERVATION TIMESTAMP  is the date, time and time zone that the Observable
+      Entity was recorded by a CARE PROFESSIONAL.
+    use: no
+    source:
+    - CodedObservationTimeStamp
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4_5
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: finding_snomed_ct_expression
+    docs: FINDING (SNOMED CT EXPRESSION) is a structured combination of one or more
+      SNOMED CT® concept identifiers which are used to describe a Finding.
+    use: no
+    source:
+    - Finding_SnomedCtExpression
+    strategy: coalesce
+  - column: coded_finding_time_stamp
+    docs: CODED FINDING TIMESTAMP is the date, time and time zone that the Clinical
+      Finding was recorded by a CARE PROFESSIONAL.
+    use: no
+    source:
+    - CodedFindingTimeStamp
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4_6
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: assessment_tool_snomed_ct_expression
+    docs: ASSESSMENT TOOL (SNOMED CT EXPRESSION) is a structured combination of one
+      or more SNOMED CT® concept identifiers which are used to describe an Observable
+      Entity.
+    use: no
+    source:
+    - AssessmentTool_SnomedCtExpression
+    strategy: coalesce
+  - column: person_score
+    docs: The score taken from an ASSESSMENT TOOL.
+    use: no
+    source:
+    - PersonScore
+    strategy: coalesce
+  - column: assessment_tool_completion_timestamp
+    docs: The date, time and time zone on which the assessment took place.
+    use: no
+    source:
+    - AssessmentToolCompletionTimestamp
+    strategy: coalesce
+  - column: data_absent_reason_fhirr4_7
+    docs: DATA ABSENT REASON (FHIR R4) is the concept from the FHIR Release 4 Value
+      Set 'data-absent-reason' which identifies the reason that a CODED CLINICAL ENTRY
+      data item in an ELECTRONIC HEALTH RECORD is missing.
+    use: no
+    source:
+    - DataAbsentReason_FHIRR4
+    strategy: coalesce
+  - column: organisation_site_identifier_of_treatment
+    docs: ORGANISATION SITE IDENTIFIER (OF TREATMENT) is the ORGANISATION IDENTIFIER
+      of the Organisation Site where the PATIENT was treated, i.e. it should enable
+      the treating Organisation to be identified.
+    use: no
+    source:
+    - OrganisationSiteIdentifier_OfTreatment
+    strategy: coalesce
+  - column: activity_location_type
+    docs: "The type of LOCATION for an ACTIVITY:\r\n\r\n- where PATIENTS are seen\r\n-
+      where SERVICES are provided or\r\n- from which requests for SERVICES are sent"
+    use: no
+    source:
+    - ActivityLocationType
+    strategy: coalesce
+  - column: ward_intended_clinical_care_intensity
+    docs: The level of resources and intensity of care which is intended to be provided
+      in a WARD.
+    use: no
+    source:
+    - WardIntendedClinicalCareIntensity
+    strategy: coalesce
+  - column: ward_intended_age_group
+    docs: The age group of PATIENTS intended to use a WARD, as indicated in the WARD
+      OPERATIONAL PLAN.
+    use: no
+    source:
+    - WardIntendedAgeGroup
+    strategy: coalesce
+  - column: ward_intended_sex_of_patients
+    docs: The sex of PATIENTS intended to use a WARD, as indicated in the WARD OPERATIONAL
+      PLAN.
+    use: no
+    source:
+    - WardIntendedSexOfPatients
+    strategy: coalesce
+  - column: ward_intended_day_period_availability
+    docs: "The number of day periods in a week that it is intended that a WARD should
+      be available, as indicated in the WARD OPERATIONAL PLAN.\r\n\r\nWhere a WARD
+      is closed, the WARD INTENDED DAY PERIOD AVAILABILITY will be National Code 'Zero
+      days'."
+    use: no
+    source:
+    - WardIntendedDayPeriodAvailability
+    strategy: coalesce
+  - column: ward_intended_night_period_availability
+    docs: "The number of night periods in a week that it is intended that a WARD should
+      be available, as indicated in the WARD OPERATIONAL PLAN.\r\n\r\nWhere a WARD
+      is closed, the WARD INTENDED NIGHT PERIOD AVAILABILITY will be National Code
+      'Zero days'."
+    use: no
+    source:
+    - WardIntendedNightPeriodAvailability
+    strategy: coalesce
+  - column: ward_security_level
+    docs: The level of security for a ward.
+    use: no
+    source:
+    - WardSecurityLevel
+    strategy: coalesce
+  - column: ward_code
+    docs: A unique identification of a WARD within a Health Care Provider.
+    use: no
+    source:
+    - WardCode
+    strategy: coalesce
+  - column: organisation_site_identifier_of_treatment_2
+    docs: ORGANISATION SITE IDENTIFIER (OF TREATMENT) is the ORGANISATION IDENTIFIER
+      of the Organisation Site where the PATIENT was treated, i.e. it should enable
+      the treating Organisation to be identified.
+    use: no
+    source:
+    - OrganisationSiteIdentifier_OfTreatment
+    strategy: coalesce
+  - column: activity_location_type_2
+    docs: "The type of LOCATION for an ACTIVITY:\r\n\r\n- where PATIENTS are seen\r\n-
+      where SERVICES are provided or\r\n- from which requests for SERVICES are sent"
+    use: no
+    source:
+    - ActivityLocationType
+    strategy: coalesce
+  - column: ward_intended_clinical_care_intensity_2
+    docs: The level of resources and intensity of care which is intended to be provided
+      in a WARD.
+    use: no
+    source:
+    - WardIntendedClinicalCareIntensity
+    strategy: coalesce
+  - column: ward_intended_age_group_2
+    docs: The age group of PATIENTS intended to use a WARD, as indicated in the WARD
+      OPERATIONAL PLAN.
+    use: no
+    source:
+    - WardIntendedAgeGroup
+    strategy: coalesce
+  - column: ward_intended_sex_of_patients_2
+    docs: The sex of PATIENTS intended to use a WARD, as indicated in the WARD OPERATIONAL
+      PLAN.
+    use: no
+    source:
+    - WardIntendedSexOfPatients
+    strategy: coalesce
+  - column: ward_intended_day_period_availability_2
+    docs: "The number of day periods in a week that it is intended that a WARD should
+      be available, as indicated in the WARD OPERATIONAL PLAN.\r\n\r\nWhere a WARD
+      is closed, the WARD INTENDED DAY PERIOD AVAILABILITY will be National Code 'Zero
+      days'."
+    use: no
+    source:
+    - WardIntendedDayPeriodAvailability
+    strategy: coalesce
+  - column: ward_intended_night_period_availability_2
+    docs: "The number of night periods in a week that it is intended that a WARD should
+      be available, as indicated in the WARD OPERATIONAL PLAN.\r\n\r\nWhere a WARD
+      is closed, the WARD INTENDED NIGHT PERIOD AVAILABILITY will be National Code
+      'Zero days'."
+    use: no
+    source:
+    - WardIntendedNightPeriodAvailability
+    strategy: coalesce
+  - column: start_date_ward_stay
+    docs: The start date of a ward stay.
+    use: no
+    source:
+    - StartDate_WardStay
+    strategy: coalesce
+  - column: start_time_ward_stay
+    docs: The start time of a ward stay.
+    use: no
+    source:
+    - StartTime_WardStay
+    strategy: coalesce
+  - column: end_date_ward_stay
+    docs: The end date of a ward stay.
+    use: no
+    source:
+    - EndDate_WardStay
+    strategy: coalesce
+  - column: end_time_ward_stay
+    docs: The end time of a ward stay.
+    use: no
+    source:
+    - EndTime_WardStay
+    strategy: coalesce
+  - column: ward_security_level_2
+    docs: The level of security for a ward.
+    use: no
+    source:
+    - WardSecurityLevel
+    strategy: coalesce
+  - column: ward_code_2
+    docs: A unique identification of a WARD within a Health Care Provider.
+    use: no
+    source:
+    - WardCode
+    strategy: coalesce
+  - column: organisation_site_identifier_of_treatment_3
+    docs: ORGANISATION SITE IDENTIFIER (OF TREATMENT) is the ORGANISATION IDENTIFIER
+      of the Organisation Site where the PATIENT was treated, i.e. it should enable
+      the treating Organisation to be identified.
+    use: no
+    source:
+    - OrganisationSiteIdentifier_OfTreatment
+    strategy: coalesce
+  - column: activity_location_type_3
+    docs: "The type of LOCATION for an ACTIVITY:\r\n\r\n- where PATIENTS are seen\r\n-
+      where SERVICES are provided or\r\n- from which requests for SERVICES are sent"
+    use: no
+    source:
+    - ActivityLocationType
+    strategy: coalesce
+  - column: ward_intended_clinical_care_intensity_3
+    docs: The level of resources and intensity of care which is intended to be provided
+      in a WARD.
+    use: no
+    source:
+    - WardIntendedClinicalCareIntensity
+    strategy: coalesce
+  - column: ward_intended_age_group_3
+    docs: The age group of PATIENTS intended to use a WARD, as indicated in the WARD
+      OPERATIONAL PLAN.
+    use: no
+    source:
+    - WardIntendedAgeGroup
+    strategy: coalesce
+  - column: ward_intended_sex_of_patients_3
+    docs: The sex of PATIENTS intended to use a WARD, as indicated in the WARD OPERATIONAL
+      PLAN.
+    use: no
+    source:
+    - WardIntendedSexOfPatients
+    strategy: coalesce
+  - column: ward_intended_day_period_availability_3
+    docs: "The number of day periods in a week that it is intended that a WARD should
+      be available, as indicated in the WARD OPERATIONAL PLAN.\r\n\r\nWhere a WARD
+      is closed, the WARD INTENDED DAY PERIOD AVAILABILITY will be National Code 'Zero
+      days'."
+    use: no
+    source:
+    - WardIntendedDayPeriodAvailability
+    strategy: coalesce
+  - column: ward_intended_night_period_availability_3
+    docs: "The number of night periods in a week that it is intended that a WARD should
+      be available, as indicated in the WARD OPERATIONAL PLAN.\r\n\r\nWhere a WARD
+      is closed, the WARD INTENDED NIGHT PERIOD AVAILABILITY will be National Code
+      'Zero days'."
+    use: no
+    source:
+    - WardIntendedNightPeriodAvailability
+    strategy: coalesce
+  - column: ward_security_level_3
+    docs: The level of security for a ward.
+    use: no
+    source:
+    - WardSecurityLevel
+    strategy: coalesce
+  - column: ward_code_3
+    docs: A unique identification of a WARD within a Health Care Provider.
+    use: no
+    source:
+    - WardCode
+    strategy: coalesce
+  - column: start_date_home_leave
+    docs: The start date for a period of Home Leave for patients NOT liable for detention
+      under the Mental Health Act 1983.
+    use: no
+    source:
+    - StartDate_HomeLeave
+    strategy: coalesce
+  - column: start_time_home_leave
+    docs: The start time for a period of Home Leave for patients NOT liable for detention
+      under the Mental Health Act 1983.
+    use: no
+    source:
+    - StartTime_HomeLeave
+    strategy: coalesce
+  - column: end_date_home_leave
+    docs: The end date for a period of Home Leave for patients NOT liable for detention
+      under the Mental Health Act 1983.
+    use: no
+    source:
+    - EndDate_HomeLeave
+    strategy: coalesce
+  - column: end_time_home_leave
+    docs: The end time for a period of Home Leave for patients NOT liable for detention
+      under the Mental Health Act 1983.
+    use: no
+    source:
+    - EndTime_HomeLeave
+    strategy: coalesce
+  - column: critical_care_local_identifier
+    docs: "This is a unique local ACTIVITY IDENTIFIER used to identify the start of
+      CARE ACTIVITY within a CRITICAL CARE PERIOD.\r\nThis locally defined variable
+      should as a minimum include a sequential numerical component that can discriminate
+      two or more CRITICAL CARE PERIODS occurring on the same calendar day for the
+      same patient."
+    use: no
+    source:
+    - CriticalCareLocalIdentifier
+    strategy: coalesce
+  - column: critical_care_start_date
+    docs: Start date of a CRITICAL CARE activity.
+    use: no
+    source:
+    - CriticalCareStartDate
+    strategy: coalesce
+  - column: critical_care_start_time
+    docs: Start time of a CRITICAL CARE activity.
+    use: no
+    source:
+    - CriticalCareStartTime
+    strategy: coalesce
+  - column: critical_care_unit_function
+    docs: The type of area to which the PATIENT was admitted during a CRITICAL CARE
+      PERIOD. This is the principal clinical service provided within the WARD.
+    use: no
+    source:
+    - CriticalCareUnitFunction
+    strategy: coalesce
+  - column: gestation_length_at_delivery
+    docs: GESTATION LENGTH (AT DELIVERY) records a period of between 10 to 49 weeks
+      in completed weeks that is a clinical assessment of GESTATION LENGTH IN WEEKS.
+    use: no
+    source:
+    - GestationLength_AtDelivery
+    strategy: coalesce
+  - column: activity_date_critical_care
+    docs: "ACTIVITY DATE (CRITICAL CARE) is the date the PATIENT receives care which
+      is a CRITICAL CARE ACTIVITY.\r\nACTIVITY DATE (CRITICAL CARE) is the ACTIVITY
+      DATE where the CARE ACTIVITY is during a CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - ActivityDate_CriticalCare
+    strategy: coalesce
+  - column: person_weight
+    docs: PERSON WEIGHT is the result of the Clinical Investigation which measures
+      the PATIENT's Weight, where the UCUM UNIT OF MEASUREMENT is 'Kilograms (kg)'.
+    use: no
+    source:
+    - PersonWeight
+    strategy: coalesce
+  - column: critical_care_activity_code
+    docs: A type of CRITICAL CARE ACTIVITY provided to a PATIENT during a CRITICAL
+      CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareActivityCode
+    strategy: coalesce
+  - column: high_cost_drugs_opcs
+    docs: This is the use of high cost drugs as per OPCS-4 definitions provided as
+      a CARE ACTIVITY.
+    use: no
+    source:
+    - HighCostDrugs_OPCS
+    strategy: coalesce
+  - column: critical_care_discharge_date
+    docs: "The end date of a CRITICAL CARE PERIOD. This may be the date the PATIENT
+      is discharged from the critical care unit, the date the PATIENT died or the
+      date of declaration of brainstem death.\r\nThis is the same as attribute ACTIVITY
+      DATE where the ACTIVITY DATE TIME TYPE is National Code 11 'End Date' for the
+      CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - CriticalCareDischargeDate
+    strategy: coalesce
+  - column: critical_care_discharge_time
+    docs: CRITICAL CARE DISCHARGE TIME is CRITICAL CARE PERIOD end time.
+    use: no
+    source:
+    - CriticalCareDischargeTime
+    strategy: coalesce
+  - column: critical_care_local_identifier_2
+    docs: "This is a unique local ACTIVITY IDENTIFIER used to identify the start of
+      CARE ACTIVITY within a CRITICAL CARE PERIOD.\r\nThis locally defined variable
+      should as a minimum include a sequential numerical component that can discriminate
+      two or more CRITICAL CARE PERIODS occurring on the same calendar day for the
+      same patient."
+    use: no
+    source:
+    - CriticalCareLocalIdentifier
+    strategy: coalesce
+  - column: critical_care_start_date_2
+    docs: Start date of a CRITICAL CARE activity.
+    use: no
+    source:
+    - CriticalCareStartDate
+    strategy: coalesce
+  - column: critical_care_start_time_2
+    docs: Start time of a CRITICAL CARE activity.
+    use: no
+    source:
+    - CriticalCareStartTime
+    strategy: coalesce
+  - column: critical_care_unit_function_2
+    docs: The type of area to which the PATIENT was admitted during a CRITICAL CARE
+      PERIOD. This is the principal clinical service provided within the WARD.
+    use: no
+    source:
+    - CriticalCareUnitFunction
+    strategy: coalesce
+  - column: activity_date_critical_care_2
+    docs: "ACTIVITY DATE (CRITICAL CARE) is the date the PATIENT receives care which
+      is a CRITICAL CARE ACTIVITY.\r\nACTIVITY DATE (CRITICAL CARE) is the ACTIVITY
+      DATE where the CARE ACTIVITY is during a CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - ActivityDate_CriticalCare
+    strategy: coalesce
+  - column: critical_care_activity_code_2
+    docs: A type of CRITICAL CARE ACTIVITY provided to a PATIENT during a CRITICAL
+      CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareActivityCode
+    strategy: coalesce
+  - column: high_cost_drugs_opcs_2
+    docs: This is the use of high cost drugs as per OPCS-4 definitions provided as
+      a CARE ACTIVITY.
+    use: no
+    source:
+    - HighCostDrugs_OPCS
+    strategy: coalesce
+  - column: critical_care_discharge_date_2
+    docs: "The end date of a CRITICAL CARE PERIOD. This may be the date the PATIENT
+      is discharged from the critical care unit, the date the PATIENT died or the
+      date of declaration of brainstem death.\r\nThis is the same as attribute ACTIVITY
+      DATE where the ACTIVITY DATE TIME TYPE is National Code 11 'End Date' for the
+      CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - CriticalCareDischargeDate
+    strategy: coalesce
+  - column: critical_care_discharge_time_2
+    docs: CRITICAL CARE DISCHARGE TIME is CRITICAL CARE PERIOD end time.
+    use: no
+    source:
+    - CriticalCareDischargeTime
+    strategy: coalesce
+  - column: critical_care_local_identifier_3
+    docs: "This is a unique local ACTIVITY IDENTIFIER used to identify the start of
+      CARE ACTIVITY within a CRITICAL CARE PERIOD.\r\nThis locally defined variable
+      should as a minimum include a sequential numerical component that can discriminate
+      two or more CRITICAL CARE PERIODS occurring on the same calendar day for the
+      same patient."
+    use: no
+    source:
+    - CriticalCareLocalIdentifier
+    strategy: coalesce
+  - column: critical_care_start_date_3
+    docs: Start date of a CRITICAL CARE activity.
+    use: no
+    source:
+    - CriticalCareStartDate
+    strategy: coalesce
+  - column: critical_care_start_time_3
+    docs: Start time of a CRITICAL CARE activity.
+    use: no
+    source:
+    - CriticalCareStartTime
+    strategy: coalesce
+  - column: critical_care_unit_function_3
+    docs: The type of area to which the PATIENT was admitted during a CRITICAL CARE
+      PERIOD. This is the principal clinical service provided within the WARD.
+    use: no
+    source:
+    - CriticalCareUnitFunction
+    strategy: coalesce
+  - column: critical_care_unit_bed_configuration
+    docs: The main composition of critical care bed types for the WARD.
+    use: no
+    source:
+    - CriticalCareUnitBedConfiguration
+    strategy: coalesce
+  - column: critical_care_admission_source
+    docs: The primary Organisation type that the PATIENT has been admitted from prior
+      to the start of the CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareAdmissionSource
+    strategy: coalesce
+  - column: critical_care_source_location
+    docs: The type of LOCATION the PATIENT was in prior to the start of the CRITICAL
+      CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareSourceLocation
+    strategy: coalesce
+  - column: critical_care_admission_type
+    docs: An indication of whether a CRITICAL CARE PERIOD was initiated as a result
+      of a non-emergency treatment plan, for example, for elective major surgery.
+      This relates only to the period of critical care and not to the nature of the
+      hospital admission. For example, a planned hospital admission may unexpectedly
+      require an emergency intensive care unit admission, in which case the classification
+      will be National Code '01'.
+    use: no
+    source:
+    - CriticalCareAdmissionType
+    strategy: coalesce
+  - column: advanced_respiratory_support_days
+    docs: "The total number of days that the PATIENT received advanced respiratory
+      support during a CRITICAL CARE PERIOD, ranging from 000 to 997 days.\r\nThis
+      is derived from the difference between the ACTIVITY PROPERTY EFFECTIVE DATE
+      and the ACTIVITY PROPERTY END DATE for all ACTIVITY PROPERTIES where the ORGAN
+      SYSTEM SUPPORTED is National Code 02 'Advanced Respiratory Support' within the
+      CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - AdvancedRespiratorySupportDays
+    strategy: coalesce
+  - column: basic_respiratory_support_days
+    docs: "The total number of days that the PATIENT received basic respiratory support
+      during a CRITICAL CARE PERIOD, ranging from 000 to 997 days.\r\nThis is derived
+      from the difference between the ACTIVITY PROPERTY EFFECTIVE DATE and the ACTIVITY
+      PROPERTY END DATE for all ACTIVITY PROPERTIES where the ORGAN SYSTEM SUPPORTED
+      is National Code 01 'Basic Respiratory Support' within the CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - BasicRespiratorySupportDays
+    strategy: coalesce
+  - column: advanced_cardiovascular_support_days
+    docs: "The total number of days that the PATIENT received advanced cardiovascular
+      support during a CRITICAL CARE PERIOD, ranging from 000 to 997 days.\r\nThis
+      is derived from the difference between the ACTIVITY PROPERTY EFFECTIVE DATE
+      and the ACTIVITY PROPERTY END DATE for all ACTIVITY PROPERTIES where the ORGAN
+      SYSTEM SUPPORTED is National Code 04 'Advanced Cardiovascular Support' within
+      the CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - AdvancedCardiovascularSupportDays
+    strategy: coalesce
+  - column: basic_cardiovascular_support_days
+    docs: "The total number of days that the PATIENT received basic cardiovascular
+      support during a CRITICAL CARE PERIOD, ranging from 000 to 997 days.\r\nThis
+      is derived from the difference between the ACTIVITY PROPERTY EFFECTIVE DATE
+      and the ACTIVITY PROPERTY END DATE for all ACTIVITY PROPERTIES where the ORGAN
+      SYSTEM SUPPORTED is National Code 03 'Basic Cardiovascular Support' within the
+      CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - BasicCardiovascularSupportDays
+    strategy: coalesce
+  - column: renal_support_days
+    docs: RENAL SUPPORT DAYS is the total number of days that the PATIENT received
+      renal system support during a CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - RenalSupportDays
+    strategy: coalesce
+  - column: neurological_support_days
+    docs: NEUROLOGICAL SUPPORT DAYS is the total number of days that the PATIENT received
+      neurological system support during a CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - NeurologicalSupportDays
+    strategy: coalesce
+  - column: gastro_intestinal_support_days
+    docs: The total number of days that the PATIENT received gastro-intestinal system
+      support during a CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - GastroIntestinalSupportDays
+    strategy: coalesce
+  - column: dermatological_support_days
+    docs: The total number of days that the PATIENT received dermatological system
+      support during a CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - DermatologicalSupportDays
+    strategy: coalesce
+  - column: liver_support_days
+    docs: LIVER SUPPORT DAYS is the total number of days that the PATIENT received
+      liver support during a CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - LiverSupportDays
+    strategy: coalesce
+  - column: organ_support_maximum
+    docs: "The maximum number of ORGAN SYSTEMS SUPPORTED on any one day during a CRITICAL
+      CARE PERIOD.\r\n\r\nEach organ system can only be counted once on any calendar
+      day. Both basic and advanced categories cannot be counted at the same time.
+      The number of organ systems supported can be between 00 to 07, although for
+      the purposes of recording on the Commissioning Data Set messages Gastro-intestinal
+      support days are not recorded so the maximum is effectively 06."
+    use: no
+    source:
+    - OrganSupportMaximum
+    strategy: coalesce
+  - column: critical_care_level2days
+    docs: "The total number of days a PATIENT received level 2 care during a CRITICAL
+      CARE PERIOD. From 000 to 997 days can be recorded; if 998 or more days have
+      occurred the default code should be used.\r\nThis is derived from the difference
+      between the ACTIVITY PROPERTY EFFECTIVE DATE and the ACTIVITY PROPERTY END DATE
+      for all ACTIVITY PROPERTIES where the CRITICAL CARE LEVEL is National Code 02
+      'Level 2' within the CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - CriticalCareLevel2Days
+    strategy: coalesce
+  - column: critical_care_level3days
+    docs: "The total number of days a PATIENT received level 3 care during a CRITICAL
+      CARE PERIOD. From 000 to 997 days can be recorded; if 998 or more days have
+      occurred the default code should be used.\r\nThis is derived from the difference
+      between the ACTIVITY PROPERTY EFFECTIVE DATE and the ACTIVITY PROPERTY END DATE
+      for all ACTIVITY PROPERTIES where the CRITICAL CARE LEVEL is National Code 03
+      'Level 3' within the CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - CriticalCareLevel3Days
+    strategy: coalesce
+  - column: activity_date_critical_care_3
+    docs: "ACTIVITY DATE (CRITICAL CARE) is the date the PATIENT receives care which
+      is a CRITICAL CARE ACTIVITY.\r\nACTIVITY DATE (CRITICAL CARE) is the ACTIVITY
+      DATE where the CARE ACTIVITY is during a CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - ActivityDate_CriticalCare
+    strategy: coalesce
+  - column: organ_system_supported
+    docs: The type of organ system supported within a CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - OrganSystemSupported
+    strategy: coalesce
+  - column: critical_care_level
+    docs: The level of critical care provided during a Hospital Provider spell.
+    use: no
+    source:
+    - CriticalCareLevel
+    strategy: coalesce
+  - column: critical_care_discharge_date_3
+    docs: "The end date of a CRITICAL CARE PERIOD. This may be the date the PATIENT
+      is discharged from the critical care unit, the date the PATIENT died or the
+      date of declaration of brainstem death.\r\nThis is the same as attribute ACTIVITY
+      DATE where the ACTIVITY DATE TIME TYPE is National Code 11 'End Date' for the
+      CRITICAL CARE PERIOD."
+    use: no
+    source:
+    - CriticalCareDischargeDate
+    strategy: coalesce
+  - column: critical_care_discharge_time_3
+    docs: CRITICAL CARE DISCHARGE TIME is CRITICAL CARE PERIOD end time.
+    use: no
+    source:
+    - CriticalCareDischargeTime
+    strategy: coalesce
+  - column: critical_care_discharge_ready_date
+    docs: "The date on which the PATIENT has been declared clinically ready for discharge
+      or transfer from the CRITICAL CARE PERIOD and a formal request has been made
+      to the Hospital Bed management system (or appropriate staff with authority to
+      admit at the intended destination) and the date and time of this status is recorded
+      as such in the clinical record.\r\nCRITICAL CARE DISCHARGE READY DATE should
+      not be completed if it is deemed the PATIENT has been declared clinically ready
+      for discharge or transfer from the CRITICAL CARE PERIOD prematurely.\r\n\r\nCRITICAL
+      CARE DISCHARGE READY DATE and CRITICAL CARE DISCHARGE READY TIME are recorded
+      to identify and quantify significant problems in discharging PATIENTS from critical
+      care units."
+    use: no
+    source:
+    - CriticalCareDischargeReadyDate
+    strategy: coalesce
+  - column: critical_care_discharge_ready_time
+    docs: "The time at which the PATIENT has been declared clinically ready for discharge
+      or transfer from the CRITICAL CARE PERIOD and a formal request has been made
+      to the Hospital Bed management system (or appropriate staff with authority to
+      admit at the intended destination) and the date and time of this status is recorded
+      as such in the clinical record.\r\nCRITICAL CARE DISCHARGE READY DATE and CRITICAL
+      CARE DISCHARGE READY TIME are recorded to identify and quantify significant
+      problems in discharging PATIENTS from critical care units."
+    use: no
+    source:
+    - CriticalCareDischargeReadyTime
+    strategy: coalesce
+  - column: critical_care_discharge_status
+    docs: The discharge status of a PATIENT who is discharged from a Ward Stay where
+      they were receiving care as part of a CRITICAL CARE PERIOD and the discharge
+      ends the CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareDischargeStatus
+    strategy: coalesce
+  - column: critical_care_discharge_destination
+    docs: The primary Organisation type that the PATIENT has been discharged to at
+      the end of the CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareDischargeDestination
+    strategy: coalesce
+  - column: critical_care_discharge_location
+    docs: The principal LOCATION that the PATIENT is discharged to at the end of the
+      CRITICAL CARE PERIOD.
+    use: no
+    source:
+    - CriticalCareDischargeLocation
+    strategy: coalesce
+  - column: general_medical_practitioner_specified
+    docs: GENERAL MEDICAL PRACTITIONER (SPECIFIED) is the GENERAL MEDICAL PRACTITIONER
+      PPD CODE of the GENERAL MEDICAL PRACTITIONER specified by the PATIENT.
+    use: no
+    source:
+    - GeneralMedicalPractitioner_Specified
+    strategy: coalesce
+  - column: general_medical_practice_patient_registration
+    docs: GENERAL MEDICAL PRACTICE (PATIENT REGISTRATION) is the ORGANISATION CODE
+      of the GP Practice that the PATIENT is registered with.
+    use: no
+    source:
+    - GeneralMedicalPractice_PatientRegistration
+    strategy: coalesce
+  - column: referrer_code
+    docs: REFERRER CODE is the code of the PERSON making the REFERRAL REQUEST.
+    use: no
+    source:
+    - ReferrerCode
+    strategy: coalesce
+  - column: organisation_identifier_referring_organisation
+    docs: ORGANISATION IDENTIFIER (REFERRING) ORGANISATION is the ORGANISATION IDENTIFIER
+      of the Organisation from which the referral is made, such as a GP Practice,
+      NHS Trust or NHS Foundation Trust.
+    use: no
+    source:
+    - OrganisationIdentifier_ReferringOrganisation
+    strategy: coalesce
+  - column: direct_access_referral_indicator
+    docs: An indicator to identify that the patient has been referred into a Direct
+      Access Service for a diagnostic test only and that Outpatient Appointment is
+      not part of wider activity relating to the referral.
+    use: no
+    source:
+    - DirectAccessReferralIndicator
+    strategy: coalesce
+  - column: duration_of_elective_wait
+    docs: "DURATION OF ELECTIVE WAIT is a derived item that records the waiting time
+      in days from the ORIGINAL DECIDED TO ADMIT DATE to the admission date at the
+      provider where the treatment actually takes place, ranging from 0 to 8887 days.\r\n\r\nA
+      waiting time of 0 (zero) days is only to be entered after careful scrutiny."
+    use: no
+    source:
+    - DurationOfElectiveWait
+    strategy: coalesce
+  - column: intended_management_code
+    docs: This is the intended pattern of Hospital Bed use for a PATIENT, decided
+      when the decision is made to admit. This only applies to PATIENTS on the ELECTIVE
+      ADMISSION LIST.
+    use: no
+    source:
+    - IntendedManagementCode
+    strategy: coalesce
+  - column: decided_to_admit_date
+    docs: The date a DECISION TO ADMIT was made.
+    use: no
+    source:
+    - DecidedToAdmitDate
+    strategy: coalesce
+  - column: earliest_reasonable_offer_date
+    docs: "It is the date of the earliest of the Reasonable Offers made to a PATIENT
+      for an APPOINTMENT or Elective Admission. It should only be included on the
+      Commissioning Data Sets where the PATIENT has declined at least two Reasonable
+      Offers, and a Patient Pause is to be applied to the length of wait calculation
+      performed by the Secondary Uses Service.\r\n\r\nPatient Cancellations\r\n\r\nWhere,
+      for any reason, a PATIENT cancels or does not attend an APPOINTMENT or an OFFER
+      OF ADMISSION the EARLIEST REASONABLE OFFER DATE for the rearranged APPOINTMENT
+      or OFFER OF ADMISSION will be the EARLIEST REASONABLE OFFER DATE of the cancelled
+      APPOINTMENT or OFFER OF ADMISSION.\r\n\r\nProvider Cancellations\r\n\r\nWhere,
+      for any reason, any Health Care Provider cancels and re-arranges an APPOINTMENT
+      or an OFFER OF ADMISSION, the EARLIEST REASONABLE OFFER DATE for the re-arranged
+      APPOINTMENT or OFFER OF ADMISSION will be the date of the earliest Reasonable
+      Offer made following the cancellation.\r\n\r\nPatients who are unavailable\r\n\r\nWhere
+      a PATIENT makes themself unavailable for a longer period of time, for example
+      a PATIENT who is a teacher who wishes to delay their admission until the summer
+      holidays, making a Reasonable Offer may be inappropriate.\r\n\r\nIn these circumstances,
+      so long as the Health Care Provider could have made at least two Reasonable
+      Offers, the EARLIEST REASONABLE OFFER DATE will be the date of the earliest
+      Reasonable Offer that the provider could have offered the PATIENT. This must
+      be communicated to the PATIENT."
+    use: no
+    source:
+    - EarliestReasonableOfferDate
+    strategy: coalesce
+  - column: earliest_clinically_appropriate_date
+    docs: The earliest DATE that it was clinically appropriate for an ACTIVITY to
+      take place.
+    use: no
+    source:
+    - EarliestClinicallyAppropriateDate
+    strategy: coalesce
+  - column: latest_clinically_appropriate_date
+    docs: For the Commissioning Data Sets, LATEST CLINICALLY APPROPRIATE DATE is the
+      latest date by which the PATIENT should next be reviewed for the purposes of
+      follow up consultation, Clinical Investigation or further management, in order
+      to maintain a reasonable margin of clinical safety, as judged by the responsible
+      CARE PROFESSIONAL.
+    use: no
+    source:
+    - LatestClinicallyAppropriateDate
+    strategy: coalesce
+
+  ## The columns below have been added manually
+  - column: "episode_start"
+    docs: "A datetime field that is the time when the episode began."
+    source:
+    - "StartDate_ConsultantEpisode"
+    - "StartDate1"
+    - "StartTime_Episode"
+    strategy: "coalesce"
+    use: yes
+  - column: "episode_end"
+    docs: "A datetime field that is the time when the episode finished."
+    source:
+    - "EndDate_ConsultantEpisode"
+    - "EndDate1"
+    - "EndTime_Episode"
+    strategy: "coalesce"
+    use: yes
+
+
+  - column: secondary_diagnosis_1_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis1stSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_2_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis2ndSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_3_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis3rdSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_4_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis4thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_5_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis5thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_6_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis6thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_7_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis7thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_8_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis8thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_9_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis9thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_10_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis10thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_11_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis11thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_12_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis12thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_13_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis13thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_14_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis14thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_15_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis15thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_16_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis16thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_17_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis17thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_18_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis18thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_19_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis19thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_20_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis20thSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_21_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis21stSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_22_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis22ndSecondary_ICD
+    strategy: coalesce
+  - column: secondary_diagnosis_23_icd
+    docs: SECONDARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the secondary PATIENT DIAGNOSIS.
+    use: yes
+    source:
+    - Diagnosis23rdSecondary_ICD
+    strategy: coalesce

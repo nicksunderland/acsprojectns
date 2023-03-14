@@ -6,7 +6,6 @@ library(acsprojectns)
 library(devtools)
 load_all()
 library(icdb)
-library(modeest)
 library(kableExtra)
 library(survival)
 library(survminer)
@@ -18,8 +17,9 @@ library(wesanderson)
 # get all of the subsequent diagnoses after the start point of the index ACS event
 death_events <- msrv$mort$civil_reg |> 
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids, 
-                !is.na(date_of_death)) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  # Only cohort NHS numbers
+  dplyr::filter(!is.na(date_of_death)) |>
   # # collect to local
   icdb::run() |>
   # shouldnt need to do this at work 
@@ -51,24 +51,35 @@ death_events <- msrv$mort$civil_reg |>
 ```
 
 ```{r subsequent_diagnoses, results="markup"}
+admission_code_map <- acsprojectns::get_codes(system.file("admission_method_codes/admission_method_codes.csv", package="acsprojectns")) |>
+  dplyr::mutate(adm_method_str = dplyr::case_when(grepl("emergency", admission_method_description) ~ "emergency",
+                                                  grepl("elective", admission_method_description) ~ "elective",
+                                                  TRUE ~ "other")) |>
+  dplyr::select(admission_method_code, adm_method_str)
+
 # get all of the subsequent diagnoses after the start point of the index ACS event
 subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # Time window - start of the cohort window to present
   dplyr::filter(spell_start >= acs_date_min) |>
   # select the needed columns - start and end now refer to the spell the diagnosis was made; whereas
   # spell_start and spell_end still refer to the index ACS spell
-  dplyr::select(nhs_number, event_start=spell_start, event_end=spell_end, 
+  dplyr::select(nhs_number, event_start=spell_start, event_end=spell_end, method_of_admission_hospital_provider_spell,
                 dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd")) |>
   # collect to local
   icdb::run() |>
+  # recode admission method 
+  dplyr::left_join(admission_code_map, by=c("method_of_admission_hospital_provider_spell"="admission_method_code")) |>
   # shouldnt need to do this at work 
   dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # join the index spell data
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), by="nhs_number") |>
   # make sure that the spell comes after (or at the same time as) the start of the index ACS spell
-  dplyr::filter(event_start >= index_start) |>
+  
+  dplyr::filter(event_start > index_end) |>
+  
+  #dplyr::filter(event_start >= index_start) |>
   # ensure all columns characters
   dplyr::mutate(dplyr::across(dplyr::matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"),
                               ~ as.character(.x))) |>
@@ -78,25 +89,31 @@ subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis |>
                       values_to="diagnosis", 
                       values_drop_na=TRUE) |>
   # only take id, spell dates and diagnoses
-  dplyr::select(nhs_number, index_start, index_end, event_start, event_end, diagnosis) |>
+  dplyr::select(nhs_number, index_start, index_end, event_start, event_end, diagnosis, adm_method_str) |>
   # Recode the ICD10 codes
   dplyr::mutate(diagnosis = icdb::icd10(diagnosis, 
                                         system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
-  {if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  #{if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  # Make sure ICD10 codes are all valid
+  dplyr::filter(icdb::is_valid(diagnosis)) |>
   # extract diagnosis group or ICD string (if not listed as a group)
   dplyr::mutate(event_desc = dplyr::if_else(icdb::group_string(diagnosis)!="",
                                             icdb::group_string(diagnosis), 
                                             as.character(diagnosis))) |>
   # separate the groups if there are multiple
   tidyr::separate_longer_delim(event_desc, delim=",") |>
+  
+  dplyr::mutate(event_desc = paste0(event_desc, "_", adm_method_str)) |>
+  
   # filter out diagnoses that cannot be subsequent events - e.g. we cannot have an ACS subsequent
   # event happening within the index ACS spell (this is the index ACS event)
-  dplyr::filter(!(event_desc %in% c("acs_stemi", "acs_nstemi", "acs_unstable_angina") & 
-                    #TODO: ?add cardiomyopathy diagnoses too?
-                    # is an ACS and is within the index spell
-                  lubridate::`%within%`(a=lubridate::interval(event_start,event_end), 
-                                        b=lubridate::interval(index_start,index_end)))) |>
+  dplyr::filter(
+    # event is not in this list AND
+    !(grepl(paste0(c("acs_stemi", "acs_nstemi", "acs_unstable_angina", "isch_cardiomyopathy", "cardiac_arrest", "heart_failure", "nonisch_cardiomyopathy"), collapse = "|"), event_desc) & 
+    # is an ACS and is within the index spell
+    lubridate::`%within%`(a=lubridate::interval(event_start,event_end), 
+                          b=lubridate::interval(index_start,index_end)))) |>
   # clean up 
   dplyr::select(nhs_number, event_desc, event_start, event_end)
 ```
@@ -252,16 +269,27 @@ subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis |>
 ```{r subsequent_events, results="markup"}
 # combined
 all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses, death_events) |>
+  # keep only deaths and emergency admissions
+  dplyr::filter(grepl("emergency$|^death", event_desc)) |>
   # keep all the nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), 
                     by=c("nhs_number")) |>
-  # create the latest follow up
+  # create the latest follow up  # adds 'date_of_death'
   dplyr::left_join(death_events |> 
                      dplyr::select(nhs_number, date_of_death=event_start) |>
                      dplyr::group_by(nhs_number) |>
                      dplyr::slice_min(date_of_death, with_ties=FALSE), by=c("nhs_number")) |>
-  #TODO: add in max follow up from SWD rather than just assuming today's date
-  dplyr::mutate(last_fu = dplyr::if_else(!is.na(date_of_death), date_of_death, Sys.Date())) |>
+  # add in max follow up from SWD rather than just assuming today's date; adds 'attribute_period'
+  dplyr::left_join(msrv$swd$attr_h |>
+                     # Only cohort NHS numbers; group by patient and take maximum attribute period
+                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+                     dplyr::group_by(nhs_number) |>
+                     dplyr::slice_max(attribute_period) |>
+                     dplyr::select(nhs_number, attribute_period) |>
+                     icdb::run(), by="nhs_number") |>
+  dplyr::group_by(nhs_number) |>
+  dplyr::mutate(last_data = dplyr::if_else(attribute_period>max(event_end) | is.na(event_end), attribute_period, max(event_end)), 
+                last_fu   = dplyr::if_else(!is.na(date_of_death), date_of_death, last_data)) |>
   # clean up 
   dplyr::select(nhs_number, event_desc, index_start, index_end, event_start, event_end, last_fu)
 
@@ -270,50 +298,124 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses, death_events) |>
 ## Survival - all-cause death
 ## Table - cause of death (in first 12 months)
 ```{r all_cause_death, results="markup"}
+outcome_groupings = list("any_death" = "death")
+# ,
+#                          "macce_death" = c("death_acs_[a-z]+", 
+#                                            "death_[a-z]+_cardiomyopathy", 
+#                                            "death_heart_failure",
+#                                            "death_ischaemic_stroke",
+#                                            "death_ventricular_arrhy", 
+#                                            "death_cardiomegaly", 
+#                                            "death_presence_of_coronary_stent", 
+#                                            "death_presence_of_cabg", 
+#                                            "death_conduction_disease", 
+#                                            "death_[a-z]+_valve_regurgitation", 
+#                                            "death_[a-z]+_valve_stenosis", 
+#                                            "death_cardiac_arrest"))
 
-outcome_groupings = list("any_death" = "^death", 
-                         "acs" = "^acs")
+any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+  # wont need this next line after moving to the function
+  dplyr::mutate(tstop = dplyr::if_else(tstop==0|tstart==tstop, tstop+0.01, tstop))
 
-foo <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings)
+# Create the Survival object - for any readmission
+surv_tt_obj_any_read <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
 
+# Plot 
+km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_death),
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = colorRampPalette(c("black", "red"))(5),
+           censor.shape ="",
+           xlab = "Time from index ACS event (years)",
+           ylab = "Survival",
+           ylim = c(0.0, 1.0),
+           legend       = c(0.15,0.4),
+           legend.title = "",
+           legend.labs = paste0("Segment ", 1:5),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())
+km_plot_any_death
 
 ```
 
-## Survival - all-cause admission back to hospital
+## Survival - all-cause emergency admission back to hospital
 ## Table - re-admission diagnosis (in first 12 months)
-```{r all_cause_readmission, results="markup"}
+```{r all_cause_emergency_readmission, results="markup"}
 
-outcome_groupings = list("any_admission" = "^(?!death).*$")
+# outcome_groupings = list("any_emergency_admission" = "emergency$")
+# 
+# any_readmission <- acsprojectns::create_survival_timings(
+#   # only take events that happened after the end of the index spell OR patients with no events (as still need to represent these)
+#   all_subsequent_events |> dplyr::filter(event_end>index_end | is.na(event_desc)), outcome_groupings) |> 
+#   dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+#   dplyr::mutate(tstop = dplyr::if_else(tstop==0|tstart==tstop, tstop+0.01, tstop))
+# 
+# # Create the Survival object - for any readmission
+# surv_tt_obj_any_read <- survival::Surv(any_readmission$tstart, any_readmission$tstop, any_readmission$status)
+# # surv_gt_obj_any_read <- survival::Surv(rep(0, length(any_readmission$tstart)), any_readmission$tstop-any_readmission$tstart, any_readmission$status)
+# 
+# # Survival table
+# #summary(survfit(surv_tt_obj_any_read ~ 1, data=any_readmission))
+# 
+# # Plot 
+# km_plot_any_readmission <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_readmission),
+#            surv.scale   = "percent",
+#            xscale       = 365.25,
+#            break.time.by= 365.25,
+#            conf.int      = TRUE,
+#            conf.int.alpha=0.25,
+#            palette      = colorRampPalette(c("black", "red"))(5),
+#            censor.shape ="",
+#            xlab = "Time from index ACS event (years)",
+#            ylab = "Freedom from emergency hospital admission",
+#            ylim = c(0.0, 1.0),
+#            legend       = c(0.15,0.4),
+#            legend.title = "",
+#            legend.labs = paste0("Segment ", 1:5),
+#            ggtheme      = theme_classic())
+# km_plot_any_readmission
+```
 
-any_readmission <- acsprojectns::create_survival_timings(all_subsequent_events |> 
-                                               dplyr::filter(event_end>index_end | is.na(event_end)), outcome_groupings)
+## Survival - MACCE
+```{r }
+
+outcome_groupings = list("macce" = c("death", "^acs_", "stroke"))
+
+any_readmission <- acsprojectns::create_survival_timings(
+  # only take events that happened after the end of the index spell OR patients with no events (as still need to represent these)
+  all_subsequent_events |> dplyr::filter(event_end>index_end | is.na(event_desc)), outcome_groupings) |> 
+  dplyr::filter(outcome=="macce")|>
+  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
 
 # Create the Survival object - for any readmission
 surv_tt_obj_any_read <- survival::Surv(any_readmission$tstart, any_readmission$tstop, any_readmission$status)
 # surv_gt_obj_any_read <- survival::Surv(rep(0, length(any_readmission$tstart)), any_readmission$tstop-any_readmission$tstart, any_readmission$status)
 
 # Survival table
-summary(survfit(surv_tt_obj_any_read ~ 1, data=any_readmission))
+#summary(survfit(surv_tt_obj_any_read ~ 1, data=any_readmission))
 
 # Plot 
-km_plot_any_readmission <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ 1, data=any_readmission),
+km_plot_any_readmission <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_readmission),
            surv.scale   = "percent",
            xscale       = 365.25,
            break.time.by= 365.25,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = wes_palette("Darjeeling1", 2),
+           palette      = wes_palette("Darjeeling1", 5),
            censor.shape ="",
-           xlab = "Time from index ACS event",
+           xlab = "Time from index ACS event (years)",
            ylab = "Freedom from hospital admission",
            legend       = c(0.75,0.90),
            legend.title = "",
-           legend.labs = c("Test"),
+          # legend.labs = c("Test"),
            ggtheme      = theme_classic())
+km_plot_any_readmission
+
 ```
-
-## Survival - MACCE
-
 ## Table - MACCE diagnoses (in first 12 months)
 
 ## Cox PH model of factors affecting death and re-admission

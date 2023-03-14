@@ -1,0 +1,79 @@
+- table: apc_spells_primary_diagnosis
+  docs: "The APC (admitted patient care) contains records from patients who have been admitted into the hospital. The rows in the table correspond to episodes: individual care activities performed by one consultant. Groups of rows are organised into spells, which represent the entirety of the patient's stay in hospital This table contains the spells."
+  source:
+    catalog: ABI
+    schema: dbo
+    table: vw_APC_SEM_Spell_001
+  columns:
+  - column: nhs_number
+    docs: "The NHS NUMBER, the primary identifier of a PERSON, is a unique identifier
+      for a PATIENT within the NHS in England and Wales.\r\n\r\nThis will not vary
+      by any ORGANISATION of which a PERSON is a PATIENT.\r\n\r\nIt is mandatory to
+      record the NHS NUMBER. There are exceptions, such as Accident and Emergency
+      care, sexual health and major incidents, as defined in existing national policies.\r\n\r\nThe
+      NHS NUMBER is 10 numeric digits in length. The tenth digit is a check digit
+      used to confirm its validity. The check digit is validated using the Modulus
+      11 algorithm and the use of this algorithm is mandatory."
+    use: yes
+    source:
+    - AIMTC_Pseudo_NHS
+    - NHSnumber # This is what is in the database
+    #- NHSNumber
+    strategy: coalesce_exclude_null
+  - column: method_of_admission_hospital_provider_spell
+    docs: The method of admission to a Hospital Provider Spell.
+    use: yes
+    source:
+    - AdmissionMethod_HospitalProviderSpell
+    strategy: coalesce
+  - column: age_on_admission
+    docs: "AGE ON ADMISSION is derived as the number of completed years between the
+      PERSON BIRTH DATE of the PATIENT and the START DATE (HOSPITAL PROVIDER SPELL).
+
+      Note: using a derived age for this column -- need to check what AIMTC_Age is
+      actually derived from. There are a few different age columns in CDS 130 that
+      this column might map to."
+    use: yes
+    source:
+    - AIMTC_Age
+    #- AgeOnAdmission
+    strategy: coalesce
+  ## Columns added below here do not directly correspond to an entry in CDS 130
+  ## They combine several datetime columns into one
+  - column: "spell_start"
+    docs: "A datetime field that is the time when the associated spell for this episode began."
+    source:
+    - "AIMTC_ProviderSpell_Start_Date"
+    - "StartDate_HospitalProviderSpell"
+    - "StartTime_HospitalProviderSpell"
+    strategy: "coalesce"
+    use: yes
+  - column: "spell_end"
+    docs: "A datetime field that is the time when the associated spell for this episode ended."
+    source:
+    - "AIMTC_ProviderSpell_End_Date"
+    - "DischargeDate_FromHospitalProviderSpell"
+    - "DischargeTime_HospitalProviderSpell"
+    strategy: "coalesce"
+    use: yes
+  - column: "ethnic_group"
+    docs: "Listed as "
+    source:
+    - "EthnicGroup"
+    strategy: "coalesce"
+    use: yes
+  - column: "sex"
+    docs: "Listed as "
+    source:
+    - "Sex"
+    strategy: "coalesce"
+    use: yes
+
+  - column: primary_diagnosis_icd
+    docs: "PRIMARY DIAGNOSIS (ICD) is the International Classification of Diseases
+      (ICD) code used to identify the PRIMARY DIAGNOSIS."
+    use: yes
+    source:
+    - DiagnosisPrimary_ICD # This is the name in the database
+    #- PrimaryDiagnosis_ICD
+    strategy: coalesce

@@ -1,0 +1,10 @@
+variable,value
+driver,SQL Server
+server,Xsw-00-ash01
+trusted_connection,True
+port,1433
+host,localhost
+database,ABI
+table,vw_AE_SEM_001
+user,db_user
+password,Mjstedman6^^

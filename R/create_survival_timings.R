@@ -79,6 +79,7 @@ create_survival_timings <- function(data, outcome_groupings=NA) {
                   tstop  = dplyr::if_else(status,
                                           lubridate::time_length(lubridate::interval(index_start, event_start), unit="days"),
                                           lubridate::time_length(lubridate::interval(index_start, Sys.Date()), unit="days")),
+                  tstop  = dplyr::if_else(tstop==0|tstart==tstop, tstop+0.01, tstop),
                   event  = 1:dplyr::n(),
                   len = lubridate::time_length(lubridate::interval(event_start, event_end), unit="days")) |>
     # always ungroup

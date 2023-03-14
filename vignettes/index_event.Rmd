@@ -6,7 +6,6 @@ library(acsprojectns)
 library(devtools)
 load_all()
 library(icdb)
-library(modeest)
 library(kableExtra)
 ```
 ## Index ACS event
@@ -14,7 +13,7 @@ library(kableExtra)
 # all the diagnosis codes from the episodes within the index spell
 index_acs_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # select the needed columns
@@ -43,13 +42,14 @@ index_acs_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   dplyr::mutate(diagnosis = icdb::icd10(diagnosis, 
                                         system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>% 
   # Make sure ICD10 codes are all valid
-  {if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  dplyr::filter(icdb::is_valid(diagnosis)) |>
+  #{if(all(icdb::is_valid(.$diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
   # pivot wider, one column per diagnosis
   dplyr::mutate(diagnosis_str = dplyr::if_else(icdb::group_string(diagnosis)!="",
                                                icdb::group_string(diagnosis), 
                                                as.character(diagnosis)), 
                 value=TRUE) |>
-    # separate the groups if there are multiple
+  # separate the groups if there are multiple
   tidyr::separate_longer_delim(diagnosis_str, delim=",") |>
   # only allow one of each diagnosis per patient
   dplyr::group_by(nhs_number, diagnosis_str) |>
@@ -58,7 +58,7 @@ index_acs_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   tidyr::pivot_wider(names_from=diagnosis_str, values_from=value) |>
   # replace any injected NAs with FALSE
   dplyr::mutate(dplyr::across(dplyr::everything(), ~tidyr::replace_na(.x, FALSE)))
-  
+
 ```
 
 ## Index ACS admission procedures
@@ -71,7 +71,7 @@ opcs_codes       <- rbind(opcs_angio_codes, opcs_pci_codes, opcs_cabg_codes)
 
 index_acs_procedures <- msrv$sus$apc_spells_procedures |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # select the needed columns
@@ -94,40 +94,100 @@ index_acs_procedures <- msrv$sus$apc_spells_procedures |>
   dplyr::group_by(nhs_number, group) |>
   dplyr::slice_min(date, with_ties=FALSE) |>
   tidyr::pivot_wider(names_from=group, values_from=date) |>
-  dplyr::right_join(data.frame("nhs_number"=cohort_ids), by="nhs_number")
+  dplyr::right_join(data.frame("nhs_number"=cohort_ids), by="nhs_number") |>
+  dplyr::mutate(only_angiogram = dplyr::if_else(!is.na(angiogram) & is.na(pci), angiogram, NA),
+                any_angiogram  = dplyr::coalesce(angiogram, pci))
 ```
 
 ## Index ACS admission
 ```{r index_acs_main, results="markup"}
 index_acs_main <- index_acs |>
-  dplyr::select(nhs_number, spell_start, spell_end, primary_diagnosis, critical_care_days) |>
+  dplyr::select(nhs_number, spell_start, spell_end, primary_diagnosis) |>
   dplyr::mutate(length_of_stay = lubridate::time_length(lubridate::interval(spell_start, spell_end), unit="days")) |>
   dplyr::left_join(index_acs_diagnoses, by="nhs_number") |>
   dplyr::left_join(index_acs_procedures, by="nhs_number") |>
-  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, cambridge), by="nhs_number")
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number,
+                                                     age,
+                                                     cambridge_score, 
+                                                     cambridge_segment,
+                                                     fudge_cambridge_score, 
+                                                     fudge_cambridge_segment), by="nhs_number")
 ```
 
 ## ACS type
 ```{r index_acs_type, results="markup"}
 # Overall
-index_acs_main |>
-  dplyr::summarise(dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
-                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
-  t()
+kbl(
+  index_acs_main |>
+    dplyr::summarise(
+      dplyr::across(dplyr::where(is.numeric), list(missing     = ~sum(is.na(.x)),
+                                                   missing_pct = ~sum(is.na(.x))/dplyr::n(),
+                                                   mean        = ~mean(.x, na.rm=T),
+                                                   sd          = ~sd(.x, na.rm=T))),
+      dplyr::across(dplyr::where(is.logical), list(n           = ~sum(.x, na.rm=T),
+                                                   pct         = ~sum(.x, na.rm=T)/sum(!is.na(.x)))),
+      dplyr::across(dplyr::matches("^pci$|angiogram|^cabg$"), list(n   = ~sum(!is.na(.x)),
+                                                                   pct = ~sum(!is.na(.x))/dplyr::n()))) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+    dplyr::relocate(dplyr::matches("[A-Z][0-9]{2}"), .after=dplyr::last_col()) |>
+    t(),
+longtable = T, booktabs = T, caption = "Index ACS summary data")
+
+
 
 # By ACS diagnosis
-index_acs_main |>
-  dplyr::group_by(icdb::group_string(primary_diagnosis)) |>
-  dplyr::summarise(dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
-                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
-  t()
+kbl(
+  index_acs_main |>
+    dplyr::group_by(icdb::group_string(primary_diagnosis)) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::where(is.numeric), list(missing     = ~sum(is.na(.x)),
+                                                   missing_pct = ~sum(is.na(.x))/dplyr::n(),
+                                                   mean        = ~mean(.x, na.rm=T),
+                                                   sd          = ~sd(.x, na.rm=T))),
+      dplyr::across(dplyr::where(is.logical), list(n           = ~sum(.x, na.rm=T),
+                                                   pct         = ~sum(.x, na.rm=T)/sum(!is.na(.x)))),
+      dplyr::across(dplyr::matches("^pci$|angiogram|^cabg$"), list(n   = ~sum(!is.na(.x)),
+                                                                   pct = ~sum(!is.na(.x))/dplyr::n()))) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+    dplyr::relocate(dplyr::matches("[A-Z][0-9]{2}"), .after=dplyr::last_col()) |>
+    t(),
+longtable = T, booktabs = T, caption = "Index ACS summary data by ACS type")
 
 # By frailty score
-index_acs_main |>
-  dplyr::group_by(cambridge) |>
-  dplyr::summarise(dplyr::across(dplyr::where(is.numeric), ~mean(.x, na.rm=T)),
-                   dplyr::across(dplyr::where(is.logical), ~sum(.x)/dplyr::n())) |>
-  t()
+kbl(
+  index_acs_main |>
+    dplyr::group_by(cambridge_segment) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::where(is.numeric), list(missing     = ~sum(is.na(.x)),
+                                                   missing_pct = ~sum(is.na(.x))/dplyr::n(),
+                                                   mean        = ~mean(.x, na.rm=T),
+                                                   sd          = ~sd(.x, na.rm=T))),
+      dplyr::across(dplyr::where(is.logical), list(n           = ~sum(.x, na.rm=T),
+                                                   pct         = ~sum(.x, na.rm=T)/sum(!is.na(.x)))),
+      dplyr::across(dplyr::matches("^pci$|angiogram|^cabg$"), list(n   = ~sum(!is.na(.x)),
+                                                                   pct = ~sum(!is.na(.x))/dplyr::n()))) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+    dplyr::relocate(dplyr::matches("[A-Z][0-9]{2}"), .after=dplyr::last_col()) |>
+    t(),
+longtable = T, booktabs = T, caption = "Index ACS summary data by Cambridge segment")
+
+# By fudged frailty score
+kbl(
+  index_acs_main |>
+    dplyr::group_by(fudge_cambridge_segment) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::where(is.numeric), list(missing     = ~sum(is.na(.x)),
+                                                   missing_pct = ~sum(is.na(.x))/dplyr::n(),
+                                                   mean        = ~mean(.x, na.rm=T),
+                                                   sd          = ~sd(.x, na.rm=T))),
+      dplyr::across(dplyr::where(is.logical), list(n           = ~sum(.x, na.rm=T),
+                                                   pct         = ~sum(.x, na.rm=T)/sum(!is.na(.x)))),
+      dplyr::across(dplyr::matches("^pci$|angiogram|^cabg$"), list(n   = ~sum(!is.na(.x)),
+                                                                   pct = ~sum(!is.na(.x))/dplyr::n()))) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(.x,3))) |>
+    dplyr::relocate(dplyr::matches("[A-Z][0-9]{2}"), .after=dplyr::last_col()) |>
+    t(),
+longtable = T, booktabs = T, caption = "Index ACS summary data by fudged Cambridge segment")
 ```
 
 

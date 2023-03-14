@@ -1,0 +1,10 @@
+variable,value
+driver,SQL Server
+server,Xsw-00-ash01
+trusted_connection,True
+port,1433
+host,localhost
+database,MODELLING_SQL_AREA
+table,swd_LSOA_descriptions
+user,db_user
+password,Mjstedman6^^

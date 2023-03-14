@@ -50,31 +50,39 @@ unlist(unname(acs_icd_codes))
 ## Connect to the server
 If working outside of the ICB we need to use the synthetic testing data, to create run the script located in scripts/create_dummy_database_scripts/write_testing_sqlite_database.R
 ```{r connection}
-if(flag == "home"){
-  msrv <- icdb::mapped_server(config  = system.file("database_connections", flag, "mysql.yaml", package="acsprojectns"), 
-                              mapping = system.file("database_connections", flag, "mapping.yaml", package="acsprojectns"))
-}else{
-  msrv <- icdb::mapped_server(dsn     ="XSW", 
-                              mapping = system.file("database_connections", flag, "mapping.yaml", package="acsprojectns"))
+if(.Platform$OS.type == "unix") {
+  msrv <- icdb::mapped_server(config  = system.file("database_connections", "home", "mysql.yaml", package="acsprojectns"), 
+                              mapping = system.file("database_connections", "home", "mapping.yaml", package="acsprojectns"))
+}else if (.Platform$OS.type == "windows") {
+  msrv <- icdb::mapped_server("XSW", 
+                              mapping = system.file("database_connections", "work", "mapping.yaml", package="acsprojectns"))
 }
 ```
 
 ### Generate the cohort
 ```{r generate_cohort_ids, results="markup"}
 # Define the unique cohort ids
-cohort_ids <- msrv$sus$apc_spells_diagnosis |>
+cohort_ids <- msrv$sus$apc_spells_primary_diagnosis |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # Emergency admission
   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
   # Acute coronary syndrome primary diagnosis
-  icdb::codes_from(system.file("icd10_codes", "acs.yaml", package="acsprojectns"), primary_diagnosis_icd) |>
-  # Distinct NHS numbers
-  dplyr::distinct(nhs_number) |>
+  #icdb::codes_from(system.file("icd10_codes", "acs.yaml", package="acsprojectns"), primary_diagnosis_icd) |>
   # Only bnssg patients
   dplyr::inner_join(msrv$swd$attr_h |> dplyr::distinct(nhs_number), by="nhs_number") |>
   # Collect to local
   icdb::run() |>
+  # Recode the ICD10 codes
+  dplyr::mutate(nhs_number = as.character(nhs_number), 
+                primary_diagnosis = icdb::icd10(primary_diagnosis_icd, 
+                                                system.file("icd10_codes", "icd10_ns.yaml", package="acsprojectns"))) %>%
+  # Make sure ICD10 codes are all valid
+  # {if(all(icdb::is_valid(.$primary_diagnosis))) . else stop("error1 - couldn't parse all the ICD codes")} |>
+  # Only ACS events
+  dplyr::filter(primary_diagnosis %in_group% c("acs_stemi", "acs_nstemi", "acs_unstable_angina")) |>
+  # Distinct NHS numbers
+  dplyr::distinct(nhs_number) |>
   # As a plain character vector
   dplyr::pull() |> as.character()
 
