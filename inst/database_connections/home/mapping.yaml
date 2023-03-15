@@ -38,6 +38,7 @@
   tables:
     - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_episodes.yaml"
     - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells_diagnosis.yaml"
+    - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells_primary_only_diagnosis.yaml"
     - include: "/Users/nicholassunderland/git/acsprojectns/inst/database_connections/home/apc_spells_procedures.yaml"
 
 - database: "mort"
