@@ -125,8 +125,8 @@ opcs_codes       <- rbind(opcs_angio_codes, opcs_pci_codes, opcs_cabg_codes)
 
 subsequent_procedures <- msrv$sus$apc_spells_procedures |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
-  #dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  #dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # Time window - start of the cohort window to present
   dplyr::filter(spell_start >= acs_date_min) |>
   # select the needed columns
@@ -141,8 +141,9 @@ subsequent_procedures <- msrv$sus$apc_spells_procedures |>
   dplyr::filter(proc_spell_start > index_end) |>
   dplyr::select(-c(proc_spell_start, proc_spell_end)) |>
   #dplyr::filter(event_start >= index_start) |>
-  # ensure all columns characters
-  dplyr::mutate(dplyr::across(dplyr::contains("procedure"), ~ as.character(.x))) |>
+  # ensure all columns characters and empty character strings are NA
+  dplyr::mutate(dplyr::across(dplyr::matches("procedure_(\\d+)_opcs"), ~ as.character(.x)), 
+                dplyr::across(dplyr::where(is.character), ~ dplyr::na_if(.x,""))) |>
   # pivot long
   tidyr::pivot_longer(-c(nhs_number, index_start, index_end), names_to=c("procedure", ".value"), names_pattern="procedure_(\\d+)_(\\w+)", values_drop_na=TRUE) |>
   dplyr::left_join(opcs_codes, by=c("opcs"="opcs_codes")) |>
@@ -156,12 +157,12 @@ subsequent_procedures <- msrv$sus$apc_spells_procedures |>
 ```{r subsequent_measurements, results="markup"}
 subsequent_measurements <- msrv$swd$swd_measurement |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
-  #dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  #dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
   # Time window - start of the cohort window to present
   dplyr::filter(measurement_date >= acs_date_min) |>
   # select the needed columns
-  dplyr::select(nhs_number, event_start=measurement_date, event_end=measurement_date, measurement_value, measurement_name) |>
+  dplyr::select(nhs_number, event_start=measurement_date, event_end=measurement_date, measurement_value, measurement_name, measurement_group) |>
   # collect to local
   icdb::run() |>
   # shouldnt need to do this at work
@@ -169,11 +170,12 @@ subsequent_measurements <- msrv$swd$swd_measurement |>
   # join the index spell data
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), by="nhs_number") |>
   # make sure that the spell comes after the end of the index ACS spell
-#dplyr::filter(event_start > index_end) |>
+  dplyr::filter(event_start > index_end) |>
   #dplyr::filter(event_start >= index_start) |>
   # extract procedure grouping / coding
+  dplyr::mutate(event_desc = paste(measurement_name, measurement_group)) |>
   # only take id, spell dates and event description
-  dplyr::select(nhs_number, event_desc=measurement_name, event_start, event_end)
+  dplyr::select(nhs_number, event_desc, event_start, event_end)
 ```
 
 ```{r subsequent_prescriptions, results="markup"}
@@ -182,10 +184,11 @@ med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
 
 subsequent_prescriptions <- msrv$swd$swd_activity |>
   # Only cohort NHS numbers
-  dplyr::filter(nhs_number %in% cohort_ids) |>
-  #dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
-  # Time window - start of the cohort window to present
-  dplyr::filter(arr_date >= acs_date_min) |>
+  #dplyr::filter(nhs_number %in% cohort_ids) |>
+  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  # Time window - start of the cohort window to present; and only prescriptions
+  dplyr::filter(arr_date >= acs_date_min, 
+                pod_l1 == "primary_care_prescription") |>
   # select the needed columns
   dplyr::select(nhs_number, 
                 event_start=arr_date, 
@@ -199,16 +202,13 @@ subsequent_prescriptions <- msrv$swd$swd_activity |>
   # join the index spell data
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), by="nhs_number") |>
   # make sure that the spell comes after the end of the index ACS spell
-  dplyr::filter(event_start > index_end, 
-                event_type=="primary_care_prescription") |>
+  dplyr::filter(event_start > index_end) |>
   #dplyr::filter(event_start >= index_start) |>
   # prescription grouping / coding
   dplyr::mutate(medication_name   = tolower(trimws(stringr::str_match(event_info, pattern = med_filter_string)[,2])),
                 medication_dose   = stringr::str_match(event_info, pattern = med_filter_string)[,3],
                 medication_units  = stringr::str_match(event_info, pattern = med_filter_string)[,4], 
                 event_desc = dplyr::case_when(
-                  grepl("edoxaban", medication_name) ~ "testing edoxaban",
-                  
                   grepl("inclisiran", medication_name) ~ "inclisiran", 
                   # High dose statin therapy
                   (grepl("atorvastatin", medication_name) & medication_dose>=40) |
@@ -219,13 +219,15 @@ subsequent_prescriptions <- msrv$swd$swd_activity |>
                   (grepl("rosuvastatin", medication_name) & medication_dose<20)  |
                   (grepl("fluvastatin",  medication_name) & medication_dose>40)  |
                   (grepl("pravastatin",  medication_name) & medication_dose>=40) |
-                  (grepl("simvastatin",  medication_name) & medication_dose>=20) ~ "mod_statin",
+                  (grepl("simvastatin",  medication_name) & medication_dose>=20) ~ "subopt_statin",
                   # Low dose statin therapy
                   (grepl("fluvastatin",  medication_name) & medication_dose<=40) |
                   (grepl("pravastatin",  medication_name) & medication_dose<40)  |
-                  (grepl("simvastatin",  medication_name) & medication_dose<20) ~ "low_statin",
+                  (grepl("simvastatin",  medication_name) & medication_dose<20) ~ "subopt_statin",
                   
                   TRUE ~ NA_character_)) |>
+  # for now, just get rid of things that aren't statins
+  dplyr::filter(!is.na(event_desc)) |>
   # only take id, spell dates and event description
   dplyr::select(nhs_number, event_desc, event_start, event_end)
 
@@ -238,8 +240,6 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
                                           subsequent_measurements,
                                           subsequent_prescriptions,
                                           death_events) |>
-  # keep only deaths and emergency admissions
-  dplyr::filter(grepl("emergency$|^death", event_desc)) |>
   # keep all the nhs numbers represented
   dplyr::right_join(index_acs |> dplyr::select(nhs_number, index_start=spell_start, index_end=spell_end), 
                     by=c("nhs_number")) |>
@@ -268,6 +268,10 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
 ## Table - cause of death (in first 12 months)
 ```{r all_cause_death, results="markup"}
 outcome_groupings = list("any_death" = "death")
+
+  # keep only deaths and emergency admissions
+  # dplyr::filter(grepl("emergency$|^death", event_desc)) |>
+
 # ,
 #                          "macce_death" = c("death_acs_[a-z]+", 
 #                                            "death_[a-z]+_cardiomyopathy", 
@@ -308,8 +312,57 @@ km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_camb
 km_plot_any_death
 
 ```
+## Survival - cardiovascular death
+## Table - cause of death (in first 12 months)
+```{r cv_death, results="markup"}
+# outcome_groupings = list("any_death" = "death")
+# 
+#   # keep only deaths and emergency admissions
+#   # dplyr::filter(grepl("emergency$|^death", event_desc)) |>
+# 
+# # ,
+# #                          "macce_death" = c("death_acs_[a-z]+", 
+# #                                            "death_[a-z]+_cardiomyopathy", 
+# #                                            "death_heart_failure",
+# #                                            "death_ischaemic_stroke",
+# #                                            "death_ventricular_arrhy", 
+# #                                            "death_cardiomegaly", 
+# #                                            "death_presence_of_coronary_stent", 
+# #                                            "death_presence_of_cabg", 
+# #                                            "death_conduction_disease", 
+# #                                            "death_[a-z]+_valve_regurgitation", 
+# #                                            "death_[a-z]+_valve_stenosis", 
+# #                                            "death_cardiac_arrest"))
+# 
+# any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+#   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
+# 
+# # Create the Survival object - for any readmission
+# surv_tt_obj_any_read <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
+# 
+# # Plot 
+# km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_death),
+#            surv.scale   = "percent",
+#            xscale       = 365.25,
+#            break.time.by= 365.25,
+#            conf.int      = TRUE,
+#            conf.int.alpha=0.25,
+#            palette      = colorRampPalette(c("black", "red"))(5),
+#            censor.shape ="",
+#            xlab = "Time from index ACS event (years)",
+#            ylab = "Survival",
+#            ylim = c(0.0, 1.0),
+#            legend       = c(0.15,0.4),
+#            legend.title = "",
+#            legend.labs = paste0("Segment ", 1:5),
+#            risk.table = TRUE,
+#            ggtheme      = theme_classic())
+# km_plot_any_death
 
-## Survival - all-cause emergency admission back to hospital
+```
+
+
+## Readmissions - all-cause emergency admission back to hospital
 ## Table - re-admission diagnosis (in first 12 months)
 ```{r all_cause_emergency_readmission, results="markup"}
 
@@ -347,46 +400,206 @@ km_plot_any_death
 # km_plot_any_readmission
 ```
 
-## Survival - MACCE
-```{r }
+## Readmissions - cardiovascular readmission
+```{r cv_emergency_readmission}
 
-outcome_groupings = list("macce" = c("death", "^acs_", "stroke"))
+# outcome_groupings = list("macce" = c("death", "^acs_", "stroke"))
+# 
+# any_readmission <- acsprojectns::create_survival_timings(
+#   # only take events that happened after the end of the index spell OR patients with no events (as still need to represent these)
+#   all_subsequent_events |> dplyr::filter(event_end>index_end | is.na(event_desc)), outcome_groupings) |> 
+#   dplyr::filter(outcome=="macce")|>
+#   dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
+# 
+# # Create the Survival object - for any readmission
+# surv_tt_obj_any_read <- survival::Surv(any_readmission$tstart, any_readmission$tstop, any_readmission$status)
+# # surv_gt_obj_any_read <- survival::Surv(rep(0, length(any_readmission$tstart)), any_readmission$tstop-any_readmission$tstart, any_readmission$status)
+# 
+# # Survival table
+# #summary(survfit(surv_tt_obj_any_read ~ 1, data=any_readmission))
+# 
+# # Plot 
+# km_plot_any_readmission <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_readmission),
+#            surv.scale   = "percent",
+#            xscale       = 365.25,
+#            break.time.by= 365.25,
+#            conf.int      = TRUE,
+#            conf.int.alpha=0.25,
+#            palette      = wes_palette("Darjeeling1", 5),
+#            censor.shape ="",
+#            xlab = "Time from index ACS event (years)",
+#            ylab = "Freedom from hospital admission",
+#            legend       = c(0.75,0.90),
+#            legend.title = "",
+#           # legend.labs = c("Test"),
+#            ggtheme      = theme_classic())
+# km_plot_any_readmission
 
-any_readmission <- acsprojectns::create_survival_timings(
-  # only take events that happened after the end of the index spell OR patients with no events (as still need to represent these)
-  all_subsequent_events |> dplyr::filter(event_end>index_end | is.na(event_desc)), outcome_groupings) |> 
-  dplyr::filter(outcome=="macce")|>
-  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
+```
+## Table - CV readmission diagnoses (in first 12 months)
+
+
+## Cox PH model of factors affecting death and re-admission
+Is frailty the main driver? If so...
+
+
+
+
+
+## Time to lipid prescription
+```{r time_to_lipid_prescription, results="markup"}
+# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
+#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
+
+outcome_groupings = list("any_lipid_lowering" = c("inclisiran", "high_statin", "subopt_statin"))
+lipids <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
 
 # Create the Survival object - for any readmission
-surv_tt_obj_any_read <- survival::Surv(any_readmission$tstart, any_readmission$tstop, any_readmission$status)
-# surv_gt_obj_any_read <- survival::Surv(rep(0, length(any_readmission$tstart)), any_readmission$tstop-any_readmission$tstart, any_readmission$status)
-
+surv_tt_obj <- survival::Surv(lipids$tstart, lipids$tstop, lipids$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=lipids)
 # Survival table
-#summary(survfit(surv_tt_obj_any_read ~ 1, data=any_readmission))
+survtbl <- summary(surv_fit)
+# survival at time points
+time_points <- seq(1, 365*2, 90)
+data.frame("time"=time_points, "survival"=round(survtbl$ surv[time_points], digits=3))
 
 # Plot 
-km_plot_any_readmission <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_readmission),
+km_plot_lipids <- ggsurvplot(
+           fit          = surv_fit,
+           fun          = "event", 
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 30,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = colorRampPalette(c("black", "red"))(length(surv_fit$strata)),
+           censor.shape ="",
+           xlab = "Time from index ACS event (years)",
+           ylab = "Survival",
+           ylim = c(0.0, 1.0),
+           xlim = c(0.0, 366.0),
+           legend       = c(0.15,0.4),
+           legend.title = "",
+           #legend.labs = paste0("Segment ", 1:5),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())
+km_plot_lipids
+
+```
+## Survival (all-cause death) by lipid prescribing at 4 months post discharge
+```{r survival_by_lipid_prescribing, results="markup"}
+# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
+#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
+
+post_discharge_blanking = 120 #days
+
+#lipid strategy
+lipid_strat <- all_subsequent_events |>
+  # only take statin or inclisiran prescription events
+  dplyr::filter(grepl("statin", event_desc)) |>
+  # only take prescription events within the blanking period
+  dplyr::filter(event_start < (index_end + lubridate::duration(post_discharge_blanking, units="days"))) |>
+  # order by the most potent strategy and take that for each patient
+  dplyr::mutate(event_desc = factor(event_desc, levels = c("high_statin", "subopt_statin"))) |>
+  dplyr::group_by(nhs_number) |>
+  dplyr::arrange(event_desc, .by_group = TRUE) |>
+  dplyr::slice_head(n=1) |>
+  dplyr::select(nhs_number, lipid_strat=event_desc)
+
+#survival data
+outcome_groupings = list("any_death" = "^death")
+
+surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+  dplyr::left_join(lipid_strat, by="nhs_number") |>
+  dplyr::mutate(lipid_strat = as.character(lipid_strat),
+                lipid_strat = tidyr::replace_na(lipid_strat,"none"),
+                lipid_strat = dplyr::if_else(tstop<post_discharge_blanking, "blanking_window", lipid_strat), 
+                
+                # NB dont just copy the above line for things that could happen more than once!!!!
+                
+                lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window")))
+                
+# Create the Survival object - for any readmission
+surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + lipid_strat, data=surf_data)
+# Survival table
+survtbl <- summary(surv_fit)
+
+# Plot 
+km_plot_lipids <- ggsurvplot(
+           fit          = surv_fit,
            surv.scale   = "percent",
            xscale       = 365.25,
            break.time.by= 365.25,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = wes_palette("Darjeeling1", 5),
+           palette      = c("darkgreen", "orange3", "darkred", "darkgrey"),
            censor.shape ="",
            xlab = "Time from index ACS event (years)",
-           ylab = "Freedom from hospital admission",
-           legend       = c(0.75,0.90),
+           ylab = "Survival",
+           ylim = c(0.0, 1.0),
+           #xlim = c(0.0, 366.0),
+           legend       = c(0.7,0.3),
            legend.title = "",
-          # legend.labs = c("Test"),
+           legend.labs = c("High dose statin", "Sub-optimal dose statin", "No statin", "Blanking window event"),
+           risk.table = TRUE,
            ggtheme      = theme_classic())
-km_plot_any_readmission
+km_plot_lipids
 
 ```
-## Table - MACCE diagnoses (in first 12 months)
 
-## Cox PH model of factors affecting death and re-admission
-Is frailty the main driver? If so...
 
-## Survival by frailty score
+## Survival (cardiovascular death) by lipid prescribing at 4 months post discharge
+```{r cv_survival_by_lipid_prescribing, results="markup"}
+# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
+#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
+# 
+# #survival data
+# outcome_groupings = list("acs" = c("acs_[a-z]+"))
+# 
+# surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+#   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+#   dplyr::left_join(lipid_strat, by="nhs_number") |>
+#   dplyr::mutate(lipid_strat = as.character(lipid_strat),
+#                 lipid_strat = tidyr::replace_na(lipid_strat,"none"),
+#                 lipid_strat = dplyr::if_else(tstop<post_discharge_blanking, "blanking_window", lipid_strat), 
+#                 lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none","blanking_window"))) |>
+#   dplyr::group_by(nhs_number) |>
+#   dplyr::mutate(had_blanking_event = any(lipid_strat=="blanking_window")) |>
+#   dplyr::filter(!had_blanking_event)
+#                 
+# # Create the Survival object - for any readmission
+# surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
+# # Survival fit
+# surv_fit <- survfit(surv_tt_obj ~ outcome + lipid_strat, data=surf_data)
+# # Survival table
+# survtbl <- summary(surv_fit)
+# 
+# # Plot 
+# km_plot_lipids <- ggsurvplot(
+#            fit          = surv_fit,
+#            #data = surf_data,
+#            #facet.by = "fudge_cambridge_segment",
+#            surv.scale   = "percent",
+#            xscale       = 365.25,
+#            break.time.by= 365.25,
+#            conf.int      = TRUE,
+#            conf.int.alpha=0.25,
+#            palette      = c("darkgreen", "orange3", "darkred"),
+#            censor.shape ="",
+#            xlab = "Time from index ACS event (years)",
+#            ylab = "Survival",
+#            ylim = c(0.0, 1.0),
+#            #xlim = c(0.0, 366.0),
+#            legend       = c(0.7,0.3),
+#            legend.title = "",
+#            legend.labs = c("High dose statin", "Sub-optimal dose statin", "No statin"),
+#            risk.table = TRUE,
+#            ggtheme      = theme_classic())
+# km_plot_lipids
 
+```

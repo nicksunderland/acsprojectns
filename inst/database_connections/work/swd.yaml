@@ -1891,19 +1891,19 @@
     docs: Name of measurement recorded
     source: measurement_name
     strategy: coalesce
-    use: no
+    use: yes
   - column: measurement_value
     docs: Value of the measurement recorded
     source: measurement_value
     strategy: coalesce
-    use: no
+    use: yes
   - column: measurement_date
     docs: Date the measurement was recorded
     source: measurement_date
     strategy: coalesce
-    use: no
+    use: yes
   - column: measurement_group
     docs: derived measurement classification groupings
     source: measurement_group
     strategy: coalesce
-    use: no
+    use: yes
