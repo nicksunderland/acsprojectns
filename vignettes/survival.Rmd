@@ -286,9 +286,7 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
                      dplyr::select(nhs_number, attribute_period) |>
                      icdb::run() |>
                      dplyr::mutate(nhs_number = as.character(nhs_number)), by="nhs_number") |>
-  
   # TODO: add the max date from diagnoses and procedures
-  
   
   dplyr::group_by(nhs_number) |>
   dplyr::mutate(last_data = dplyr::if_else(attribute_period>max(event_end) | is.na(event_end), attribute_period, max(event_end)), 
@@ -302,23 +300,6 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
 ## Table - cause of death (in first 12 months)
 ```{r all_cause_death, results="markup"}
 outcome_groupings = list("any_death" = "death")
-
-  # keep only deaths and emergency admissions
-  # dplyr::filter(grepl("emergency$|^death", event_desc)) |>
-
-# ,
-#                          "macce_death" = c("death_acs_[a-z]+", 
-#                                            "death_[a-z]+_cardiomyopathy", 
-#                                            "death_heart_failure",
-#                                            "death_ischaemic_stroke",
-#                                            "death_ventricular_arrhy", 
-#                                            "death_cardiomegaly", 
-#                                            "death_presence_of_coronary_stent", 
-#                                            "death_presence_of_cabg", 
-#                                            "death_conduction_disease", 
-#                                            "death_[a-z]+_valve_regurgitation", 
-#                                            "death_[a-z]+_valve_stenosis", 
-#                                            "death_cardiac_arrest"))
 
 any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
