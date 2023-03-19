@@ -16,9 +16,13 @@ index_acs <- msrv$sus$apc_spells_diagnosis |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # # Emergency admission
-  dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) |>
+  dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # Collect to local
   icdb::run() |>
   # Recode the ICD10 codes
@@ -55,14 +59,23 @@ dat_age <- index_acs |> dplyr::select(nhs_number, age = age_on_admission)
 sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
 
 # get the sex data from the SUS data, then add in that from the SWD attribute history data
-dat_sex <- msrv$sus$apc_spells_primary_diagnosis |>
+dat_sex <- msrv$sus$apc_spells_primary_diagnosis %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # only nhs number and sex
   dplyr::select(nhs_number, sex_sus = sex) |>
   # combine with the sex data from the SWD attribute history
-  dplyr::full_join(msrv$swd$attr_h |>
-                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  dplyr::left_join(msrv$swd$attr_h %>% 
+                       # Only cohort NHS numbers
+                      {if(.Platform$OS.type == "windows") {
+                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                      } else {
+                        dplyr::filter(., nhs_number %in% cohort_ids)
+                      }} |>
                      dplyr::select(nhs_number, sex_swd = sex), by="nhs_number") |>
   # collect to local
   run() |>
@@ -88,14 +101,23 @@ dat_sex <- msrv$sus$apc_spells_primary_diagnosis |>
 ethnicity_codes <- read.csv(system.file("ethnicity_codes/ethnicity_codes.csv", package = "acsprojectns"))
 
 # get the ethnicity data from the SUS data, then add in that from the SWD attribute history data
-dat_ethnicity <- msrv$sus$apc_spells_primary_diagnosis |>
+dat_ethnicity <- msrv$sus$apc_spells_primary_diagnosis %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # Just ethnicity
   dplyr::select(nhs_number, ethnicity_sus = ethnic_group) |>
   # Add SWD attribute data
-  dplyr::left_join(msrv$swd$attr_h |>
-                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  dplyr::left_join(msrv$swd$attr_h  %>% 
+                      # Only cohort NHS numbers
+                      {if(.Platform$OS.type == "windows") {
+                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                      } else {
+                        dplyr::filter(., nhs_number %in% cohort_ids)
+                      }} |>
                      dplyr::select(nhs_number, ethnicity_swd = ethnicity), by="nhs_number") |>
   # collect to local
   icdb::run() |>
@@ -122,9 +144,13 @@ kbl(dplyr::slice_head(dat_ethnicity, n=5), longtable = T, booktabs = T, caption 
 ## Index of Multiple Deprivation
 ```{r demographics_imd, results="markup"}
 # extract the IMD data from the swd_attributes table
-dat_imd <- msrv$swd$swd_attribute |>
+dat_imd <- msrv$swd$swd_attribute %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # just the IMD
   dplyr::select(nhs_number, wd_imd_decile_19) |>
   # collect to local 
@@ -145,9 +171,13 @@ kbl(dplyr::slice_head(dat_imd, n=5), longtable = T, booktabs = T, caption = "IMD
 ## Employment decile
 ```{r demographics_employment, results="markup"}
 # extract the employment decile data from the swd_attributes table
-dat_employment_decile <- msrv$swd$swd_attribute |>
+dat_employment_decile <- msrv$swd$swd_attribute %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # just the employment decile
   dplyr::select(nhs_number, wd_employment_decile) |>
   # collect to local 
@@ -168,9 +198,13 @@ kbl(dplyr::slice_head(dat_employment_decile, n=5), longtable = T, booktabs = T, 
 ## Income decile
 ```{r demographics_income, results="markup"}
 # extract the income decile data from the swd_attributes table
-dat_income_decile <- msrv$swd$swd_attribute |>
+dat_income_decile <- msrv$swd$swd_attribute %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # just the income decile
   dplyr::select(nhs_number, wd_income_decile) |>
   # collect to local 
@@ -191,9 +225,13 @@ kbl(dplyr::slice_head(dat_income_decile, n=5), longtable = T, booktabs = T, capt
 ## Frailty
 ```{r demographics_frailty, results="markup"}
 # extract the electronic frailty index data from the swd attributes history table
-dat_frailty <- msrv$swd$attr_h |>
+dat_frailty <- msrv$swd$attr_h %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # just the efi decile
   dplyr::select(nhs_number, attribute_period, score = efi_category) |>
   # label the score
@@ -201,14 +239,24 @@ dat_frailty <- msrv$swd$attr_h |>
   # collect to local 
   icdb::run() |>
   # add the Cambridge segment data
-  dplyr::bind_rows(msrv$swd$cambridge |>
-                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  dplyr::bind_rows(msrv$swd$cambridge %>% 
+                       # Only cohort NHS numbers
+                      {if(.Platform$OS.type == "windows") {
+                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                      } else {
+                        dplyr::filter(., nhs_number %in% cohort_ids)
+                      }} |>
                      dplyr::select(nhs_number, attribute_period, score = segment) |>
                      dplyr::mutate(frailty_score = "cambridge_segment") |> 
                      icdb::run()) |>
   # add the Cambridge score data
-  dplyr::bind_rows(msrv$swd$cambridge |>
-                     dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  dplyr::bind_rows(msrv$swd$cambridge %>% 
+                      # Only cohort NHS numbers
+                      {if(.Platform$OS.type == "windows") {
+                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                      } else {
+                        dplyr::filter(., nhs_number %in% cohort_ids)
+                      }} |>
                      dplyr::select(nhs_number, attribute_period, score = cambridge_score) |>
                      dplyr::mutate(frailty_score = "cambridge_score") |> 
                      icdb::run()) |>
@@ -238,11 +286,18 @@ dat_frailty <- msrv$swd$attr_h |>
 # score is at either: just before the ACS, or if missing, the monthly extract in
 # closest proximity to the ACS (this will be after their ACS event, but should
 # give us a good idea of the cormorbidity)
-dat_fudge_cambridge <- msrv$swd$cambridge |>
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+dat_fudge_cambridge <- msrv$swd$cambridge %>% 
+  # Only cohort NHS numbers
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   dplyr::select(nhs_number, attribute_period, cambridge_score_coal=cambridge_score, 
                                               cambridge_segment_coal=segment) |>
   icdb::run() |>
+  # shouldnt need to do this at work 
+  dplyr::mutate(nhs_number = as.character(nhs_number)) |>
   # take the oldest recent of each score
   dplyr::group_by(nhs_number) |>
   dplyr::slice_min(attribute_period, with_ties=FALSE) |>
@@ -262,9 +317,13 @@ kbl(dplyr::slice_head(dat_frailty, n=5), longtable = T, booktabs = T, caption = 
 ```{r demographics_comorbidities, results="markup"}
 # extract all of the hospital admission for the cohort (use episodes for finer details - not sure if
 # this makes a difference)
-dat_comorbs <- msrv$sus$apc_episodes |>
+dat_comorbs <- msrv$sus$apc_episodes %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # collect to local
   icdb::run() |>
   # ensure all columns characters
@@ -281,8 +340,13 @@ dat_comorbs <- msrv$sus$apc_episodes |>
   dplyr::mutate(dplyr::across(c(episode_start, episode_end), ~as.Date(.x))) |>
   # add the cormorbidities from the SWD
   dplyr::bind_rows(
-    msrv$swd$attr_h |>
-      dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+    msrv$swd$attr_h %>% 
+       # Only cohort NHS numbers
+      {if(.Platform$OS.type == "windows") {
+        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+      } else {
+        dplyr::filter(., nhs_number %in% cohort_ids)
+      }} |>
       dplyr::select(nhs_number, 
                     episode_start=attribute_period, 
                     episode_end=attribute_period,
@@ -370,7 +434,6 @@ dat_demographics <- purrr::reduce(dat_lst, dplyr::left_join, by='nhs_number')
 kbl(
 dat_demographics |>
   dplyr::ungroup() |>
-  
   dplyr::summarise(male = sum(sex=="male", na.rm=T)/dplyr::n(),
                    dplyr::across(dplyr::where(is.numeric), list(missing     = ~sum(is.na(.x)),
                                                                 missing_pct = ~sum(is.na(.x))/dplyr::n(),

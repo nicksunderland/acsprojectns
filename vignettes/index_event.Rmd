@@ -11,9 +11,13 @@ library(kableExtra)
 ## Index ACS event
 ```{r index_acs_diagnoses, results="markup"}
 # all the diagnosis codes from the episodes within the index spell
-index_acs_diagnoses <- msrv$sus$apc_spells_diagnosis |>
+index_acs_diagnoses <- msrv$sus$apc_spells_diagnosis %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # select the needed columns
@@ -69,9 +73,13 @@ opcs_pci_codes   <- read.csv(system.file("opcs_codes/pci_procedure_codes.csv", p
 opcs_cabg_codes  <- read.csv(system.file("opcs_codes/cabg_procedure_codes.csv", package = "acsprojectns"))
 opcs_codes       <- rbind(opcs_angio_codes, opcs_pci_codes, opcs_cabg_codes)
 
-index_acs_procedures <- msrv$sus$apc_spells_procedures |>
+index_acs_procedures <- msrv$sus$apc_spells_procedures %>% 
   # Only cohort NHS numbers
-  dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy=TRUE) |>
+  {if(.Platform$OS.type == "windows") {
+    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    dplyr::filter(., nhs_number %in% cohort_ids)
+  }} |>
   # Time window
   dplyr::filter(spell_start >= acs_date_min & spell_end <= acs_date_max) |>
   # select the needed columns
