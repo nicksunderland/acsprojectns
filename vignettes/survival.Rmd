@@ -195,7 +195,7 @@ subsequent_measurements <- msrv$swd$swd_measurement %>%
   dplyr::filter(event_start > index_end) |>
   #dplyr::filter(event_start >= index_start) |>
   # extract procedure grouping / coding
-  dplyr::mutate(event_desc = paste(measurement_name, measurement_group)) |>
+  dplyr::mutate(event_desc = paste0(measurement_name, "_", measurement_value)) |>
   # only take id, spell dates and event description
   dplyr::select(nhs_number, event_desc, event_start, event_end)
 ```
@@ -561,25 +561,50 @@ km_plot_lipids <- ggsurvplot(
 km_plot_lipids
 
 ```
-## Survival (all-cause death) by lipid prescribing at 4 months post discharge
-```{r survival_by_lipid_prescribing, results="markup"}
-# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
-#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
 
-post_discharge_blanking = 120 #days
+## lipid prescribing strategy
+```{r lipid_prescribing_strategy, results="markup"}
+lipid_strat_blanking = 120 #days
 
 #lipid strategy
 lipid_strat <- all_subsequent_events |>
   # only take statin or inclisiran prescription events
   dplyr::filter(grepl("statin", event_desc)) |>
   # only take prescription events within the blanking period
-  dplyr::filter(event_start < (index_end + lubridate::duration(post_discharge_blanking, units="days"))) |>
+  dplyr::filter(event_start < (index_end + lubridate::duration(lipid_strat_blanking, units="days"))) |>
   # order by the most potent strategy and take that for each patient
   dplyr::mutate(event_desc = factor(event_desc, levels = c("high_statin", "subopt_statin"))) |>
   dplyr::group_by(nhs_number) |>
   dplyr::arrange(event_desc, .by_group = TRUE) |>
   dplyr::slice_head(n=1) |>
   dplyr::select(nhs_number, lipid_strat=event_desc)
+```
+
+## cholesterol measurements
+```{r cholesterol_levels, results="markup"}
+cholesterol_blanking = 180 #days
+
+#lipid strategy
+cholesterol_control <- all_subsequent_events |>
+  # only take statin or inclisiran prescription events
+  dplyr::filter(grepl("cholesterol_\\d+", event_desc)) |>
+  # only take prescription events within the blanking period
+  dplyr::filter(event_start < (index_end + lubridate::duration(cholesterol_blanking, units="days"))) |>
+  dplyr::mutate(value = as.numeric(stringr::str_extract(event_desc, "\\d+")), 
+                event_desc = cut(value, 
+                                 breaks=seq(0,14,2), 
+                                 labels=paste0(seq(0,14,2),"<chol<=",dplyr::lead(seq(0,14,2)))[1:7], right=T)) |>
+  # take the best/lowest cholesterol
+  dplyr::group_by(nhs_number) |>
+  dplyr::arrange(event_desc, .by_group = TRUE) |>
+  dplyr::slice_head(n=1) |>
+  dplyr::select(nhs_number, chol_control=event_desc)
+```
+
+## Survival (all-cause death) by lipid prescribing at 4 months post discharge
+```{r survival_by_lipid_prescribing, results="markup"}
+# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
+#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
 
 #survival data
 outcome_groupings = list("any_death" = "^death")
@@ -589,10 +614,10 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
   dplyr::left_join(lipid_strat, by="nhs_number") |>
   dplyr::mutate(lipid_strat = as.character(lipid_strat),
                 lipid_strat = tidyr::replace_na(lipid_strat,"none"),
-                lipid_strat = dplyr::if_else(tstop<post_discharge_blanking, "blanking_window", lipid_strat), 
+                lipid_strat = dplyr::if_else(tstop<lipid_strat_blanking, "blanking_window", lipid_strat), 
                 
                 # NB dont just copy the above line for things that could happen more than once!!!!
-                
+      
                 lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window")))
                 
 # Create the Survival object - for any readmission
@@ -625,6 +650,56 @@ km_plot_lipids
 
 ```
 
+## Survival (all-cause death) by cholesterol control
+```{r survival_by_cholesterol_control, results="markup"}
+# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
+#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
+
+#survival data
+outcome_groupings = list("any_death" = "^death")
+
+surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+  dplyr::left_join(cholesterol_control, by="nhs_number") |>
+  dplyr::mutate(chol_control = as.character(chol_control),
+                chol_control = tidyr::replace_na(chol_control,"not measured"),
+                chol_control = dplyr::if_else(tstop<cholesterol_blanking, "blanking_window", chol_control)) |>
+               # NB dont just copy the above line for things that could happen more than once!!!!
+                # Fixed with below group by which causes anyone that has an event in the blanking period to have ALL subsequent events removed
+  dplyr::group_by(nhs_number) |>
+  dplyr::mutate(chol_control = dplyr::if_else(rep(any(chol_control=="blanking_window"), dplyr::n()), "blanking_window", chol_control), 
+                chol_control = factor(chol_control, levels=c("blanking_window", "not measured", levels(cholesterol_control$chol_control))))
+                
+# Create the Survival object - for any readmission
+surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + chol_control, data=surf_data)
+# Survival table
+survtbl <- summary(surv_fit)
+
+# Plot 
+km_plot_cholesterol <- ggsurvplot(
+           fit          = surv_fit,
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = c("darkgrey", "purple3", colorRampPalette(c("orange", "orange3", "brown"))(length(surv_fit$strata)-2)),
+           censor.shape ="",
+           xlab = "Time from index ACS event (years)",
+           ylab = "Survival",
+           ylim = c(0.0, 1.0),
+           #xlim = c(0.0, 366.0),
+           # legend       = c(0.7,0.3),
+           # legend.title = "",
+           # legend.labs = c("High dose statin", "Sub-optimal dose statin", "No statin", "Blanking window event"),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())
+km_plot_cholesterol
+
+```
+
 
 ## Survival (cardiovascular death) by lipid prescribing at 4 months post discharge
 ```{r macce_by_lipid_prescribing, results="markup"}
@@ -651,27 +726,12 @@ outcome_groupings = list("macce" = c("death_acs_[a-z]+",
                                      "^pci", 
                                      "^cabg"))
 
-post_discharge_blanking = 120 #days
-
-#lipid strategy
-lipid_strat <- all_subsequent_events |>
-  # only take statin or inclisiran prescription events
-  dplyr::filter(grepl("statin", event_desc)) |>
-  # only take prescription events within the blanking period
-  dplyr::filter(event_start < (index_end + lubridate::duration(post_discharge_blanking, units="days"))) |>
-  # order by the most potent strategy and take that for each patient
-  dplyr::mutate(event_desc = factor(event_desc, levels = c("high_statin", "subopt_statin"))) |>
-  dplyr::group_by(nhs_number) |>
-  dplyr::arrange(event_desc, .by_group = TRUE) |>
-  dplyr::slice_head(n=1) |>
-  dplyr::select(nhs_number, lipid_strat=event_desc)
-
 surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
   dplyr::left_join(lipid_strat, by="nhs_number") |>
   dplyr::mutate(lipid_strat = as.character(lipid_strat),
                 lipid_strat = tidyr::replace_na(lipid_strat,"none"),
-                lipid_strat = dplyr::if_else(tstop<post_discharge_blanking, "blanking_window", lipid_strat), 
+                lipid_strat = dplyr::if_else(tstop<lipid_strat_blanking, "blanking_window", lipid_strat), 
                 # NB dont just copy the above line for things that could happen more than once!!!!
                 # Fixed with below group by which causes anyone that has an event in the blanking period to have ALL subsequent events removed
                 lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window"))) |>
@@ -706,3 +766,5 @@ km_plot_macce <- ggsurvplot(
            ggtheme      = theme_classic())
 km_plot_macce
 ```
+
+
