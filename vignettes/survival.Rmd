@@ -297,25 +297,32 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
 
 ```
 
-## Survival - all-cause death
-## Table - cause of death (in first 12 months)
-```{r all_cause_death, results="markup"}
-outcome_groupings = list("any_death" = "death")
 
+## Survival - all-cause death
+
+
+```{r all_cause_death, results="markup"}
+# create the survival timings 
+outcome_groupings = list("any_death" = "death")
 any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
-
-# Create the Survival object - for any readmission
+# Create the Survival object - for any death
 surv_tt_obj_any_read <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
-
+# Create the Survival object - for any death
+surv_tt_obj <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=any_death)
+# Survival table
+survtbl <- summary(surv_fit)
 # Plot 
-km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_death),
+km_plot_any_death <- ggsurvplot(
+           fit          = surv_fit,
            surv.scale   = "percent",
            xscale       = 365.25,
            break.time.by= 365.25,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = colorRampPalette(c("black", "red"))(5),
+           palette      = viridis(n=length(surv_fit$strata), option="inferno"),
            censor.shape ="",
            xlab = "Time from index ACS event (years)",
            ylab = "Survival",
@@ -326,7 +333,6 @@ km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_camb
            risk.table = TRUE,
            ggtheme      = theme_classic())
 km_plot_any_death
-
 ```
 
 ## MACCE
@@ -354,17 +360,14 @@ outcome_groupings = list("macce" = c("death_acs_[a-z]+",
                                      "^angiogram",
                                      "^pci", 
                                      "^cabg"))
-
 macce <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
-
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(macce$tstart, macce$tstop, macce$status)
 # Survival fit
 surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=macce)
 # Survival table
 survtbl <- summary(surv_fit)
-
 # Plot 
 km_plot_macce <- ggsurvplot(
            fit          = surv_fit,
@@ -373,7 +376,7 @@ km_plot_macce <- ggsurvplot(
            break.time.by= 365.25,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = colorRampPalette(c("black", "red"))(length(surv_fit$strata)),
+           palette      = viridis(n=length(surv_fit$strata), option="inferno"),
            censor.shape ="",
            xlab = "Time from index ACS event (years)",
            ylab = "Survival",
@@ -479,13 +482,12 @@ outcome_groupings = list("any_lipid_lowering" = c("inclisiran", "high_statin", "
 lipids <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
 
-# Create the Survival object - for any readmission
+# Create the Survival object
 surv_tt_obj <- survival::Surv(lipids$tstart, lipids$tstop, lipids$status)
 # Survival fit
 surv_fit <- survfit(surv_tt_obj ~ outcome, data=lipids) #+ fudge_cambridge_segment
 # Survival table
 survtbl <- summary(surv_fit)
-
 # Plot 
 plot_lipids_prescription <- ggsurvplot(
            fit          = surv_fit,
@@ -501,8 +503,8 @@ plot_lipids_prescription <- ggsurvplot(
            ylab = "Survival",
            ylim = c(0.0, 1.0),
            xlim = c(0.0, 366.0),
-           legend       = c(0.15,0.4),
-           legend.title = "",
+           # legend       = c(0.15,0.4),
+           # legend.title = "",
            #legend.labs = paste0("Segment ", 1:5),
            risk.table = TRUE,
            ggtheme      = theme_classic())
@@ -511,16 +513,27 @@ plot_lipids_prescription
 
 ```
 
-## Cholesterol measurement
+## Cholesterol measurements
+```{r when_did_we_start_collecting_cholesterol_data}
+#TODO here work out when the first cholesterol test was in the whole swd; then filter on ACS events
+#happening after this date then make sure to filter out people before this date in the survival
+#analysis as they may falsely categorized as not having had their cholesterol checked
+
+
+x=1
+```
+
+
 ```{r time_to_cholesterol_measurement, results="markup"}
 
 outcome_groupings = list("cholesterol_measurement" = c("cholesterol"))
 
-# here work out when the first cholesterol test was in the whole swd; 
-# then filter on ACS events happening after this date
-
 cholesterol <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
+
+#TODO filter out patients before the cholesterol data epoch
+
+
 
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(cholesterol$tstart, cholesterol$tstop, cholesterol$status)
@@ -528,7 +541,6 @@ surv_tt_obj <- survival::Surv(cholesterol$tstart, cholesterol$tstop, cholesterol
 surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=cholesterol)
 # Survival table
 survtbl <- summary(surv_fit)
-
 # Plot 
 km_plot_chol <- ggsurvplot(
            fit          = surv_fit,
@@ -538,49 +550,48 @@ km_plot_chol <- ggsurvplot(
            break.time.by= 30,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = colorRampPalette(c("black", "red"))(length(surv_fit$strata)),
+           palette      = viridis(n=length(surv_fit$strata), option="inferno"),
            censor.shape ="",
            xlab = "Time from index ACS event (years)",
            ylab = "Survival",
            ylim = c(0.0, 1.0),
            xlim = c(0.0, 366.0),
-           legend       = c(0.15,0.4),
-           legend.title = "",
+           # legend       = c(0.15,0.4),
+           # legend.title = "",
            #legend.labs = paste0("Segment ", 1:5),
            risk.table = TRUE,
            ggtheme      = theme_classic())
 km_plot_chol
-
 ```
 
 
 ## lipid prescribing strategy
 ```{r lipid_prescribing_strategy, results="markup"}
-lipid_strat_blanking = 120 #days
-
+# days from ACS event in which to look for prescribing data
+lipid_strat_blanking = 120 
 #lipid strategy
 lipid_strat <- all_subsequent_events |>
-  # only take statin or inclisiran prescription events
+  # only take statin prescription events
   dplyr::filter(grepl("statin", event_desc)) |>
   # only take prescription events within the blanking period
   dplyr::filter(event_start < (index_end + lubridate::duration(lipid_strat_blanking, units="days"))) |>
   # order by the most potent strategy and take that for each patient
   dplyr::mutate(event_desc = factor(event_desc, levels = c("high_statin", "subopt_statin"))) |>
   dplyr::group_by(nhs_number) |>
-  dplyr::arrange(event_desc, .by_group = TRUE) |>
+  dplyr::arrange(event_desc, .by_group=TRUE) |>
   dplyr::slice_head(n=1) |>
   dplyr::select(nhs_number, lipid_strat=event_desc)
 ```
 
 ## cholesterol measurements
 ```{r cholesterol_levels, results="markup"}
+# days from ACS event in which to look for measurement data
 cholesterol_blanking = 180 #days
-
 #lipid strategy
 cholesterol_control <- all_subsequent_events |>
-  # only take statin or inclisiran prescription events
+  # only take cholesterol measurement events
   dplyr::filter(grepl("cholesterol_\\d+", event_desc)) |>
-  # only take prescription events within the blanking period
+  # only take events within the blanking period
   dplyr::filter(event_start < (index_end + lubridate::duration(cholesterol_blanking, units="days"))) |>
   dplyr::mutate(value = as.numeric(stringr::str_extract(event_desc, "\\d+")), 
                 event_desc = cut(value, 
@@ -607,9 +618,8 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
   dplyr::mutate(lipid_strat = as.character(lipid_strat),
                 lipid_strat = tidyr::replace_na(lipid_strat,"none"),
                 lipid_strat = dplyr::if_else(tstop<lipid_strat_blanking, "blanking_window", lipid_strat), 
-                
                 # NB dont just copy the above line for things that could happen more than once!!!!
-      
+                # Fine here as death can't occur twice
                 lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window")))
                 
 # Create the Survival object - for any readmission
@@ -655,13 +665,19 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
   dplyr::left_join(cholesterol_control, by="nhs_number") |>
   dplyr::mutate(chol_control = as.character(chol_control),
                 chol_control = tidyr::replace_na(chol_control,"not measured"),
-                chol_control = dplyr::if_else(tstop<cholesterol_blanking, "blanking_window", chol_control)) |>
-               # NB dont just copy the above line for things that could happen more than once!!!!
-                # Fixed with below group by which causes anyone that has an event in the blanking period to have ALL subsequent events removed
-  dplyr::group_by(nhs_number) |>
-  dplyr::mutate(chol_control = dplyr::if_else(rep(any(chol_control=="blanking_window"), dplyr::n()), "blanking_window", chol_control), 
-                chol_control = factor(chol_control, levels=c("blanking_window", "not measured", levels(cholesterol_control$chol_control))))
-                
+                chol_control = dplyr::if_else(tstop<cholesterol_blanking, "blanking_window", chol_control), 
+                # NB dont just copy the above line for things that could happen more than once!!!!
+                # Fine here as death can't occur twice
+                chol_control = factor(chol_control, levels=c("blanking_window", 
+                                                             "not measured",
+                                                             levels(cholesterol_control$chol_control))))
+
+#TODO filter out patients before the cholesterol data epoch
+
+
+
+
+
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
 # Survival fit
@@ -693,7 +709,7 @@ km_plot_cholesterol
 ```
 
 
-## Survival (cardiovascular death) by lipid prescribing at 4 months post discharge
+## MACCE by lipid prescribing at 4 months post discharge
 ```{r macce_by_lipid_prescribing, results="markup"}
 outcome_groupings = list("macce" = c("death_acs_[a-z]+", 
                                      "death_[a-z]+_cardiomyopathy",
@@ -759,4 +775,76 @@ km_plot_macce <- ggsurvplot(
 km_plot_macce
 ```
 
+
+## MACCE by cholesterol control post discharge
+```{r macce_by_cholesterol_control, results="markup"}
+# outcome_groupings = list("macce" = c("death_acs_[a-z]+", 
+#                                      "death_[a-z]+_cardiomyopathy",
+#                                      "death_heart_failure",
+#                                      "death_ischaemic_stroke",
+#                                      "death_ventricular_arrhy",
+#                                      "death_atrial_fib",
+#                                      "death_atrial_arrhy",
+#                                      "death_cardiomegaly",
+#                                      "death_periph_vasc_disease",
+#                                      "death_presence_of_coronary_stent",
+#                                      "death_presence_of_cabg",
+#                                      "death_presence_of_prosthetic_heart_valve",
+#                                      "death_presence_of_cied",
+#                                      "death_conduction_disease",
+#                                      "death_[a-z]+_valve_regurgitation",
+#                                      "death_[a-z]+_valve_stenosis",
+#                                      "death_cardiac_arrest", 
+#                                      "^acs_[a-z]+_[a-z]*_emergency$",
+#                                      "ischaemic_stroke",
+#                                      "^angiogram",
+#                                      "^pci", 
+#                                      "^cabg"))
+# 
+# surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+#   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+#   dplyr::left_join(lipid_strat, by="nhs_number") |>
+#   dplyr::mutate(lipid_strat = as.character(lipid_strat),
+#                 lipid_strat = tidyr::replace_na(lipid_strat,"none"),
+#                 lipid_strat = dplyr::if_else(tstop<lipid_strat_blanking, "blanking_window", lipid_strat), 
+#                 # NB dont just copy the above line for things that could happen more than once!!!!
+#                 # Fixed with below group by which causes anyone that has an event in the blanking period to have ALL subsequent events removed
+#                 lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window"))) |>
+#   dplyr::group_by(nhs_number) |>
+#   dplyr::mutate(lipid_strat = dplyr::if_else(rep(any(lipid_strat=="blanking_window"), dplyr::n()), "blanking_window", lipid_strat))
+
+
+#TODO filter out patients before the cholesterol data epoch
+
+
+
+# 
+# # Create the Survival object - for any readmission
+# surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
+# # Survival fit
+# surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=surf_data)
+# # Survival table
+# survtbl <- summary(surv_fit)
+# 
+# # Plot 
+# km_plot_macce <- ggsurvplot(
+#            fit          = surv_fit,
+#            surv.scale   = "percent",
+#            xscale       = 365.25,
+#            break.time.by= 365.25,
+#            conf.int      = TRUE,
+#            conf.int.alpha=0.25,
+#            palette      = colorRampPalette(c("black", "red"))(length(surv_fit$strata)),
+#            censor.shape ="",
+#            xlab = "Time from index ACS event (years)",
+#            ylab = "Survival",
+#            ylim = c(0.0, 1.0),
+#            #xlim = c(0.0, 366.0),
+#            # legend       = c(0.7,0.3),
+#            # legend.title = "",
+#            # legend.labs = c("High dose statin", "Sub-optimal dose statin", "No statin", "Blanking window event"),
+#            risk.table = TRUE,
+#            ggtheme      = theme_classic())
+# km_plot_macce
+```
 
