@@ -10,6 +10,7 @@ library(kableExtra)
 library(survival)
 library(survminer)
 library(wesanderson)
+library(viridis)
 ```
 
 ## Subsequent events - deaths
@@ -327,56 +328,8 @@ km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_camb
 km_plot_any_death
 
 ```
-## Survival - cardiovascular death
-## Table - cause of death (in first 12 months)
-```{r cv_death, results="markup"}
-# outcome_groupings = list("any_death" = "death")
-# 
-#   # keep only deaths and emergency admissions
-#   # dplyr::filter(grepl("emergency$|^death", event_desc)) |>
-# 
-# # ,
-# #                          "macce_death" = c("death_acs_[a-z]+", 
-# #                                            "death_[a-z]+_cardiomyopathy", 
-# #                                            "death_heart_failure",
-# #                                            "death_ischaemic_stroke",
-# #                                            "death_ventricular_arrhy", 
-# #                                            "death_cardiomegaly", 
-# #                                            "death_presence_of_coronary_stent", 
-# #                                            "death_presence_of_cabg", 
-# #                                            "death_conduction_disease", 
-# #                                            "death_[a-z]+_valve_regurgitation", 
-# #                                            "death_[a-z]+_valve_stenosis", 
-# #                                            "death_cardiac_arrest"))
-# 
-# any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
-#   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
-# 
-# # Create the Survival object - for any readmission
-# surv_tt_obj_any_read <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
-# 
-# # Plot 
-# km_plot_any_death <- ggsurvplot(fit = surv_fit(surv_tt_obj_any_read ~ fudge_cambridge_segment, data=any_death),
-#            surv.scale   = "percent",
-#            xscale       = 365.25,
-#            break.time.by= 365.25,
-#            conf.int      = TRUE,
-#            conf.int.alpha=0.25,
-#            palette      = colorRampPalette(c("black", "red"))(5),
-#            censor.shape ="",
-#            xlab = "Time from index ACS event (years)",
-#            ylab = "Survival",
-#            ylim = c(0.0, 1.0),
-#            legend       = c(0.15,0.4),
-#            legend.title = "",
-#            legend.labs = paste0("Segment ", 1:5),
-#            risk.table = TRUE,
-#            ggtheme      = theme_classic())
-# km_plot_any_death
 
-```
-
-## MACCE end points
+## MACCE
 MACCE is defined as a composite of cardiovascular mortality, recurrent myocardial infarction, and ischemic stroke.
 ```{r macce, results="markup"}
 outcome_groupings = list("macce" = c("death_acs_[a-z]+", 
@@ -518,28 +471,66 @@ Is frailty the main driver? If so...
 
 
 
-
 ## Time to lipid prescription
 ```{r time_to_lipid_prescription, results="markup"}
-# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
-#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
-
-outcome_groupings = list("any_lipid_lowering" = c("inclisiran", "high_statin", "subopt_statin"))
+outcome_groupings = list("any_lipid_lowering" = c("inclisiran", "high_statin", "subopt_statin"), 
+                         "high_intensity" = c("inclisiran", "high_statin"),
+                         "subopt_statin"  = "subopt_statin")
 lipids <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
 
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(lipids$tstart, lipids$tstop, lipids$status)
 # Survival fit
-surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=lipids)
+surv_fit <- survfit(surv_tt_obj ~ outcome, data=lipids) #+ fudge_cambridge_segment
 # Survival table
 survtbl <- summary(surv_fit)
-# survival at time points
-time_points <- seq(1, 365*2, 90)
-data.frame("time"=time_points, "survival"=round(survtbl$ surv[time_points], digits=3))
 
 # Plot 
-km_plot_lipids <- ggsurvplot(
+plot_lipids_prescription <- ggsurvplot(
+           fit          = surv_fit,
+           fun          = "event", 
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 30,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = viridis(n=length(surv_fit$strata), option="inferno"),
+           censor.shape ="",
+           xlab = "Time from index ACS event (years)",
+           ylab = "Survival",
+           ylim = c(0.0, 1.0),
+           xlim = c(0.0, 366.0),
+           legend       = c(0.15,0.4),
+           legend.title = "",
+           #legend.labs = paste0("Segment ", 1:5),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())
+plot_lipids_prescription
+
+
+```
+
+## Cholesterol measurement
+```{r time_to_cholesterol_measurement, results="markup"}
+
+outcome_groupings = list("cholesterol_measurement" = c("cholesterol"))
+
+# here work out when the first cholesterol test was in the whole swd; 
+# then filter on ACS events happening after this date
+
+cholesterol <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
+
+# Create the Survival object - for any readmission
+surv_tt_obj <- survival::Surv(cholesterol$tstart, cholesterol$tstop, cholesterol$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + fudge_cambridge_segment, data=cholesterol)
+# Survival table
+survtbl <- summary(surv_fit)
+
+# Plot 
+km_plot_chol <- ggsurvplot(
            fit          = surv_fit,
            fun          = "event", 
            surv.scale   = "percent",
@@ -558,9 +549,10 @@ km_plot_lipids <- ggsurvplot(
            #legend.labs = paste0("Segment ", 1:5),
            risk.table = TRUE,
            ggtheme      = theme_classic())
-km_plot_lipids
+km_plot_chol
 
 ```
+
 
 ## lipid prescribing strategy
 ```{r lipid_prescribing_strategy, results="markup"}
