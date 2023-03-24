@@ -890,7 +890,7 @@ survtbl <- summary(surv_fit)
              break.time.by= 365.25,
              conf.int      = TRUE,
              conf.int.alpha=0.25,
-             # palette      = c("darkgreen", "orange3", "darkred", "darkgrey"),
+             palette      = c("darkgreen", "darkred"),
              censor.shape ="",
              xlab = "Time from index ACS event (years)",
              ylab = "Survival",
