@@ -491,6 +491,7 @@ survtbl <- summary(surv_fit)
 # Plot 
 plot_lipids_prescription <- ggsurvplot(
            fit          = surv_fit,
+           facet.by     = "fudge_cambridge_segment", 
            fun          = "event", 
            surv.scale   = "percent",
            xscale       = 365.25,
@@ -576,7 +577,9 @@ lipid_strat <- all_subsequent_events |>
   # only take prescription events within the blanking period
   dplyr::filter(event_start < (index_end + lubridate::duration(lipid_strat_blanking, units="days"))) |>
   # order by the most potent strategy and take that for each patient
-  dplyr::mutate(event_desc = factor(event_desc, levels = c("high_statin", "subopt_statin"))) |>
+  dplyr::mutate(event_desc = factor(event_desc, 
+                                    levels = c("high_statin", "subopt_statin"),
+                                    labels = c("high_statin", "subopt_statin"))) |>
   dplyr::group_by(nhs_number) |>
   dplyr::arrange(event_desc, .by_group=TRUE) |>
   dplyr::slice_head(n=1) |>
@@ -620,7 +623,9 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
                 lipid_strat = dplyr::if_else(tstop<lipid_strat_blanking, "blanking_window", lipid_strat), 
                 # NB dont just copy the above line for things that could happen more than once!!!!
                 # Fine here as death can't occur twice
-                lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window")))
+                lipid_strat = factor(lipid_strat, 
+                                     levels=c("high_statin", "subopt_statin","none", "blanking_window"),
+                                     labels=c("high_statin", "subopt_statin","none", "blanking_window")))
                 
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
@@ -668,9 +673,10 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
                 chol_control = dplyr::if_else(tstop<cholesterol_blanking, "blanking_window", chol_control), 
                 # NB dont just copy the above line for things that could happen more than once!!!!
                 # Fine here as death can't occur twice
-                chol_control = factor(chol_control, levels=c("blanking_window", 
-                                                             "not measured",
-                                                             levels(cholesterol_control$chol_control))))
+                chol_control = factor(chol_control, 
+                                      levels=c("blanking_window","not measured",levels(cholesterol_control$chol_control)),
+                                      labels=c("blanking_window","not measured",levels(cholesterol_control$chol_control))
+                                      ))
 
 #TODO filter out patients before the cholesterol data epoch
 
@@ -742,7 +748,9 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
                 lipid_strat = dplyr::if_else(tstop<lipid_strat_blanking, "blanking_window", lipid_strat), 
                 # NB dont just copy the above line for things that could happen more than once!!!!
                 # Fixed with below group by which causes anyone that has an event in the blanking period to have ALL subsequent events removed
-                lipid_strat = factor(lipid_strat, levels=c("high_statin", "subopt_statin","none", "blanking_window"))) |>
+                lipid_strat = factor(lipid_strat, 
+                                     levels=c("high_statin", "subopt_statin","none", "blanking_window"),
+                                     labels=c("high_statin", "subopt_statin","none", "blanking_window"))) |>
   dplyr::group_by(nhs_number) |>
   dplyr::mutate(lipid_strat = dplyr::if_else(rep(any(lipid_strat=="blanking_window"), dplyr::n()), "blanking_window", lipid_strat))
 
@@ -846,5 +854,58 @@ km_plot_macce
 #            risk.table = TRUE,
 #            ggtheme      = theme_classic())
 # km_plot_macce
+```
+
+
+
+## Cardiovascular emergency readmission by index procedural status
+Look at the cardiovascular readmissions split by whether the patient underwent an invasive procedure
+```{r cv_readmission_by_index_procedure_status, results="markup"}
+# look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
+#unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
+
+outcome_groupings = list("acs_readmission" = c("^acs_[a-z]+_[a-z]*_emergency$"),
+                         "emergency_angio" = c("angiogram_emergency", "pci_emergency"))
+                                              #TODO add CABG
+surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
+  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, any_angiogram), by="nhs_number") |>
+  dplyr::mutate(any_angiogram = factor(dplyr::if_else(!is.na(any_angiogram),T,F),
+                                       levels = c(T,F),
+                                       labels = c("Index angiogram", "No index angiogram")))
+                
+# Create the Survival object - for any readmission
+surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + any_angiogram, data=surf_data)
+# Survival table
+survtbl <- summary(surv_fit)
+
+# Plot 
+  km_plot <- ggsurvplot(
+             fit          = surv_fit,
+             facet.by     = c("fudge_cambridge_segment", "outcome"),
+             surv.scale   = "percent",
+             xscale       = 365.25,
+             break.time.by= 365.25,
+             conf.int      = TRUE,
+             conf.int.alpha=0.25,
+             # palette      = c("darkgreen", "orange3", "darkred", "darkgrey"),
+             censor.shape ="",
+             xlab = "Time from index ACS event (years)",
+             ylab = "Survival",
+             ylim = c(0.0, 1.0),
+             #xlim = c(0.0, 366.0),
+             legend       = c(0.8,0.3),
+             legend.title = "",
+             legend.labs =  levels(surf_data$any_angiogram),
+             # paste(rep(levels(surf_data$outcome), each=length(levels(surf_data$any_angiogram))),
+             #                      levels(surf_data$any_angiogram), 
+             #                      sep=" - "),
+             #TODO when faceting try removing the risk table
+             # risk.table = TRUE, 
+             ggtheme      = theme_classic())
+  km_plot
+
 ```
 
