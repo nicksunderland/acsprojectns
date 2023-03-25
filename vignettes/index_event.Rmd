@@ -7,6 +7,7 @@ library(devtools)
 load_all()
 library(icdb)
 library(kableExtra)
+library(ggplot2)
 ```
 ## Index ACS event
 ```{r index_acs_diagnoses, results="markup"}
@@ -73,6 +74,9 @@ opcs_pci_codes   <- read.csv(system.file("opcs_codes/pci_procedure_codes.csv", p
 opcs_cabg_codes  <- read.csv(system.file("opcs_codes/cabg_procedure_codes.csv", package = "acsprojectns"))
 opcs_codes       <- rbind(opcs_angio_codes, opcs_pci_codes, opcs_cabg_codes)
 
+# manually code as missing so we can add if they dont appear in the dataset
+proc_cols <- c(cabg=NA, angiogram=NA, pci=NA, none=NA)
+
 index_acs_procedures <- msrv$sus$apc_spells_procedures %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
@@ -105,6 +109,16 @@ index_acs_procedures <- msrv$sus$apc_spells_procedures %>%
   dplyr::right_join(data.frame("nhs_number"=cohort_ids), by="nhs_number") |>
   dplyr::mutate(only_angiogram = dplyr::if_else(!is.na(angiogram) & is.na(pci), angiogram, NA),
                 any_angiogram  = dplyr::coalesce(angiogram, pci))
+
+# add procedure cols if don't exist (i.e. they didn't appear anywhere for anyone
+index_acs_procedures <- index_acs_procedures |>
+  tibble::add_column(!!!proc_cols[setdiff(names(proc_cols), names(index_acs_procedures))]) |>
+  # create sinlge procedure column
+  dplyr::mutate(procedure = dplyr::case_when(
+    !is.na(cabg)      ~ factor("cabg", levels=names(proc_cols)),
+    !is.na(pci)       ~ factor("pci", levels=names(proc_cols)),
+    !is.na(angiogram) ~ factor("angiogram", levels=names(proc_cols)),
+    TRUE              ~ factor("none", levels=names(proc_cols))))
 ```
 
 ## Index ACS admission
@@ -198,4 +212,17 @@ kbl(
 longtable = T, booktabs = T, caption = "Index ACS summary data by fudged Cambridge segment")
 ```
 
-
+## Procedures
+```{r index_acs_procedures, results="markup"}
+index_acs_main |>
+  dplyr::count(fudge_cambridge_segment, procedure) |>
+  dplyr::group_by(fudge_cambridge_segment) |>
+  dplyr::mutate(pct = prop.table(n) * 100) |>
+  ggplot(aes(fudge_cambridge_segment, n, fill=procedure)) +
+  geom_bar(stat="identity") +
+  ylab("Number of patients") +
+  geom_text(aes(label=paste0(sprintf("%1.1f", pct),"%")),
+            position=position_stack(vjust=0.5)) +
+  ggtitle("Procedure breakdown")
+    
+```
