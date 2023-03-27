@@ -19,7 +19,7 @@ library(viridis)
 death_events <- msrv$mort$civil_reg %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -66,7 +66,7 @@ admission_code_map <- acsprojectns::get_codes(system.file("admission_method_code
 subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -137,7 +137,7 @@ opcs_codes       <- rbind(opcs_angio_codes, opcs_pci_codes, opcs_cabg_codes)
 subsequent_procedures <- msrv$sus$apc_spells_procedures %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -178,7 +178,7 @@ subsequent_procedures <- msrv$sus$apc_spells_procedures %>%
 subsequent_measurements <- msrv$swd$swd_measurement %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -205,22 +205,20 @@ subsequent_measurements <- msrv$swd$swd_measurement %>%
 # Low dose statin therapy without ezetimibe - # low dose = simva 10, prava 10-20, lova 20, fluva 20-40, pitva 1            https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.uspharmacist.com%2Farticle%2Flipidlowering-therapies-a-review-of-current-and-future-options&psig=AOvVaw1oUjYp0LCmvmyKdwPQM3UM&ust=1649363828741000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCMDY-pqlgPcCFQAAAAAdAAAAABAD
 med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
 
-subsequent_prescriptions <- msrv$swd$swd_activity %>% 
+subsequent_prescriptions <- msrv$swd$swd_prescription %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
   # Time window - start of the cohort window to present; and only prescriptions
-  dplyr::filter(arr_date >= acs_date_min, 
-                pod_l1 == "primary_care_prescription") |>
+  dplyr::filter(prescription_date >= acs_date_min) |>
   # select the needed columns
-  dplyr::select(nhs_number, 
-                event_start=arr_date, 
-                event_end=dep_date, 
-                event_type=pod_l1,#primary_care_prescription
-                event_info=spec_l1b) |>
+  dplyr::select(nhs_number,
+                event_start=prescription_date,
+                event_end=prescription_date,
+                prescription_name) |>
   # collect to local
   icdb::run() |>
   # shouldnt need to do this at work
@@ -231,9 +229,9 @@ subsequent_prescriptions <- msrv$swd$swd_activity %>%
   dplyr::filter(event_start > index_end) |>
   #dplyr::filter(event_start >= index_start) |>
   # prescription grouping / coding
-  dplyr::mutate(medication_name   = tolower(trimws(stringr::str_match(event_info, pattern = med_filter_string)[,2])),
-                medication_dose   = stringr::str_match(event_info, pattern = med_filter_string)[,3],
-                medication_units  = stringr::str_match(event_info, pattern = med_filter_string)[,4], 
+  dplyr::mutate(medication_name   = tolower(trimws(stringr::str_match(prescription_name, pattern = med_filter_string)[,2])),
+                medication_dose   = stringr::str_match(prescription_name, pattern = med_filter_string)[,3],
+                medication_units  = stringr::str_match(prescription_name, pattern = med_filter_string)[,4], 
                 event_desc = dplyr::case_when(
                   grepl("inclisiran", medication_name) ~ "inclisiran", 
                   # High dose statin therapy
@@ -278,7 +276,7 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
   dplyr::left_join(msrv$swd$attr_h %>% 
                      # Only cohort NHS numbers; group by patient and take maximum attribute period
                       {if(.Platform$OS.type == "windows") {
-                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                        dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
                       } else {
                         dplyr::filter(., nhs_number %in% cohort_ids)
                       }} |>
@@ -498,7 +496,7 @@ plot_lipids_prescription <- ggsurvplot(
            break.time.by= 30,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = viridis(n=length(surv_fit$strata), option="inferno"),
+           #palette      = viridis(n=length(surv_fit$strata), option="inferno"),
            censor.shape ="",
            xlab = "Time from index ACS event (years)",
            ylab = "Survival",
@@ -507,7 +505,7 @@ plot_lipids_prescription <- ggsurvplot(
            # legend       = c(0.15,0.4),
            # legend.title = "",
            #legend.labs = paste0("Segment ", 1:5),
-           risk.table = TRUE,
+           #risk.table = TRUE,
            ggtheme      = theme_classic())
 plot_lipids_prescription
 
@@ -864,15 +862,24 @@ Look at the cardiovascular readmissions split by whether the patient underwent a
 # look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
 #unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
 
-outcome_groupings = list("acs_readmission" = c("^acs_[a-z]+_[a-z]*_emergency$"),
-                         "emergency_angio" = c("angiogram_emergency", "pci_emergency"))
-                                              #TODO add CABG
+outcome_groupings = list("emergency_acs_readmission" = c("^acs_[a-z]+_[a-z]*_emergency$"),
+                         "emergency_angio" = c("angiogram_emergency"), 
+                         "emergency_pci"   = c("pci_emergency"),
+                         "emergency_cabg"  = c("(?<!presence_of_)cabg_emergency"))
+# check which outcomes you're about to look at (what have the regexes above found?)
+unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
+# create data
 surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
-  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
-  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, any_angiogram), by="nhs_number") |>
+  dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, age, fudge_cambridge_segment), by="nhs_number") |>
+  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, primary_diagnosis, any_angiogram), by="nhs_number") |>
   dplyr::mutate(any_angiogram = factor(dplyr::if_else(!is.na(any_angiogram),T,F),
                                        levels = c(T,F),
-                                       labels = c("Index angiogram", "No index angiogram")))
+                                       labels = c("Index angiogram/PCI", "No index angiogram/PCI")), 
+                age_cat = cut(age, breaks=c(0,40,60,80,120), labels=c("<40", "40-59", "60-79","80+"), right=F), 
+                primary_diagnosis = icdb::group_string(primary_diagnosis)) |>
+  
+  #TODO NB this filter 
+  dplyr::filter(grepl("nstemi|unstable_angina", primary_diagnosis))
                 
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
@@ -882,9 +889,9 @@ surv_fit <- survfit(surv_tt_obj ~ outcome + any_angiogram, data=surf_data)
 survtbl <- summary(surv_fit)
 
 # Plot 
-  km_plot <- ggsurvplot(
+km_plot <- ggsurvplot(
              fit          = surv_fit,
-             facet.by     = c("fudge_cambridge_segment", "outcome"),
+             facet.by     = c("outcome", "age_cat"),
              surv.scale   = "percent",
              xscale       = 365.25,
              break.time.by= 365.25,
@@ -892,20 +899,16 @@ survtbl <- summary(surv_fit)
              conf.int.alpha=0.25,
              palette      = c("darkgreen", "darkred"),
              censor.shape ="",
+             title = "Emergency ACS or coronary procedure readmission by index ACS procedure and age",
              xlab = "Time from index ACS event (years)",
-             ylab = "Survival",
-             ylim = c(0.0, 1.0),
-             #xlim = c(0.0, 366.0),
-             legend       = c(0.8,0.3),
+             ylab = "Freedom from outcome",
+             ylim = c(0.50, 1.0),
+             legend       = c(0.8,0.2),
              legend.title = "",
              legend.labs =  levels(surf_data$any_angiogram),
-             # paste(rep(levels(surf_data$outcome), each=length(levels(surf_data$any_angiogram))),
-             #                      levels(surf_data$any_angiogram), 
-             #                      sep=" - "),
-             #TODO when faceting try removing the risk table
              # risk.table = TRUE, 
              ggtheme      = theme_classic())
-  km_plot
+km_plot
 
 ```
 

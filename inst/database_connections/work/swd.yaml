@@ -1907,3 +1907,45 @@
     source: measurement_group
     strategy: coalesce
     use: yes
+- table: swd_prescription
+  docs: "The SWD prescriptions table"
+  source:
+    catalog: MODELLING_SQL_AREA
+    schema: dbo
+    table: swd_prescription
+  columns:
+  - column: nhs_number
+    docs: Pseudo NHS number
+    source: nhs_number
+    strategy: coalesce_exclude_null
+    use: yes
+  - column: practice_code
+    docs: Registered GP practice code
+    source: practice_code
+    strategy: coalesce
+    use: no
+  - column: prescription_name
+    docs: Name of the drug being prescribed and the dosage e.g. "Doxazosin 4mg tablets"
+    source: prescription_name
+    strategy: coalesce
+    use: yes
+  - column: prescription_quantity
+    docs: Quantity of meds/tablets prescribed
+    source: prescription_quantity
+    strategy: coalesce
+    use: yes
+  - column: prescription_date
+    docs: Date the prescription was recorded
+    source: prescription_date
+    strategy: coalesce
+    use: yes
+  - column: prescription_type
+    docs: type of prescription e.g. "acute", or "repeat"
+    source: prescription_type
+    strategy: coalesce
+    use: yes
+  - column: cost
+    docs: cost of the prescription
+    source: cost
+    strategy: coalesce
+    use: yes

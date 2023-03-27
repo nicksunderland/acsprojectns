@@ -19,7 +19,7 @@ index_acs <- msrv$sus$apc_spells_diagnosis |>
   dplyr::filter(as.character(method_of_admission_hospital_provider_spell) %in% !!adm_method$admission_method_code) %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -62,7 +62,7 @@ sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsproje
 dat_sex <- msrv$sus$apc_spells_primary_diagnosis %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -72,7 +72,7 @@ dat_sex <- msrv$sus$apc_spells_primary_diagnosis %>%
   dplyr::left_join(msrv$swd$attr_h %>% 
                        # Only cohort NHS numbers
                       {if(.Platform$OS.type == "windows") {
-                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                        dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
                       } else {
                         dplyr::filter(., nhs_number %in% cohort_ids)
                       }} |>
@@ -104,7 +104,7 @@ ethnicity_codes <- read.csv(system.file("ethnicity_codes/ethnicity_codes.csv", p
 dat_ethnicity <- msrv$sus$apc_spells_primary_diagnosis %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -114,7 +114,7 @@ dat_ethnicity <- msrv$sus$apc_spells_primary_diagnosis %>%
   dplyr::left_join(msrv$swd$attr_h  %>% 
                       # Only cohort NHS numbers
                       {if(.Platform$OS.type == "windows") {
-                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                        dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
                       } else {
                         dplyr::filter(., nhs_number %in% cohort_ids)
                       }} |>
@@ -147,7 +147,7 @@ kbl(dplyr::slice_head(dat_ethnicity, n=5), longtable = T, booktabs = T, caption 
 dat_imd <- msrv$swd$swd_attribute %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -174,7 +174,7 @@ kbl(dplyr::slice_head(dat_imd, n=5), longtable = T, booktabs = T, caption = "IMD
 dat_employment_decile <- msrv$swd$swd_attribute %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -201,7 +201,7 @@ kbl(dplyr::slice_head(dat_employment_decile, n=5), longtable = T, booktabs = T, 
 dat_income_decile <- msrv$swd$swd_attribute %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -228,7 +228,7 @@ kbl(dplyr::slice_head(dat_income_decile, n=5), longtable = T, booktabs = T, capt
 dat_frailty <- msrv$swd$attr_h %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -242,7 +242,7 @@ dat_frailty <- msrv$swd$attr_h %>%
   dplyr::bind_rows(msrv$swd$cambridge %>% 
                        # Only cohort NHS numbers
                       {if(.Platform$OS.type == "windows") {
-                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                        dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
                       } else {
                         dplyr::filter(., nhs_number %in% cohort_ids)
                       }} |>
@@ -253,7 +253,7 @@ dat_frailty <- msrv$swd$attr_h %>%
   dplyr::bind_rows(msrv$swd$cambridge %>% 
                       # Only cohort NHS numbers
                       {if(.Platform$OS.type == "windows") {
-                        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+                        dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
                       } else {
                         dplyr::filter(., nhs_number %in% cohort_ids)
                       }} |>
@@ -289,7 +289,7 @@ dat_frailty <- msrv$swd$attr_h %>%
 dat_fudge_cambridge <- msrv$swd$cambridge %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -320,7 +320,7 @@ kbl(dplyr::slice_head(dat_frailty, n=5), longtable = T, booktabs = T, caption = 
 dat_comorbs <- msrv$sus$apc_episodes %>% 
   # Only cohort NHS numbers
   {if(.Platform$OS.type == "windows") {
-    dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+    dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
   } else {
     dplyr::filter(., nhs_number %in% cohort_ids)
   }} |>
@@ -343,7 +343,7 @@ dat_comorbs <- msrv$sus$apc_episodes %>%
     msrv$swd$attr_h %>% 
        # Only cohort NHS numbers
       {if(.Platform$OS.type == "windows") {
-        dplyr::right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+        dplyr::right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
       } else {
         dplyr::filter(., nhs_number %in% cohort_ids)
       }} |>
