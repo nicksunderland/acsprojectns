@@ -8,8 +8,8 @@ output:
     toc: yes
     toc_depth: 2
 #bibliography: /Users/nicholassunderland/git/thesis/bibliography/phd_proposal.bib
-csl: https://www.zotero.org/styles/nature
-link-citations: true
+#csl: https://www.zotero.org/styles/nature
+#link-citations: true
 reference-section-title: References
 header-includes:
 - \usepackage{fvextra}

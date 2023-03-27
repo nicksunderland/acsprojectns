@@ -353,13 +353,20 @@ outcome_groupings = list("macce" = c("death_acs_[a-z]+",
                                      "death_[a-z]+_valve_regurgitation",
                                      "death_[a-z]+_valve_stenosis",
                                      "death_cardiac_arrest", 
-                                     "^acs_[a-z]+_[a-z]*_emergency$",
+                                     "^acs_[a-z]+_[a-z_]*emergency$",
                                      "ischaemic_stroke",
                                      "^angiogram",
                                      "^pci", 
                                      "^cabg"))
+# check which outcomes you're about to look at (what have the regexes above found?)
+unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
+
 macce <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
+#TODO ?need this bit
+  # dplyr::group_by(nhs_number, outcome) |> 
+  # dplyr::slice_min(tstop, with_ties=F)
+
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(macce$tstart, macce$tstop, macce$status)
 # Survival fit
@@ -477,6 +484,9 @@ Is frailty the main driver? If so...
 outcome_groupings = list("any_lipid_lowering" = c("inclisiran", "high_statin", "subopt_statin"), 
                          "high_intensity" = c("inclisiran", "high_statin"),
                          "subopt_statin"  = "subopt_statin")
+# check which outcomes you're about to look at (what have the regexes above found?)
+unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
+
 lipids <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
 
@@ -526,6 +536,8 @@ x=1
 ```{r time_to_cholesterol_measurement, results="markup"}
 
 outcome_groupings = list("cholesterol_measurement" = c("cholesterol"))
+# check which outcomes you're about to look at (what have the regexes above found?)
+unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
 
 cholesterol <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number")
@@ -635,6 +647,7 @@ survtbl <- summary(surv_fit)
 # Plot 
 km_plot_lipids <- ggsurvplot(
            fit          = surv_fit,
+           #facet.by = c("fudge_cambridge_segment"),
            surv.scale   = "percent",
            xscale       = 365.25,
            break.time.by= 365.25,
@@ -648,8 +661,8 @@ km_plot_lipids <- ggsurvplot(
            #xlim = c(0.0, 366.0),
            legend       = c(0.7,0.3),
            legend.title = "",
-           legend.labs = c("High dose statin", "Sub-optimal dose statin", "No statin", "Blanking window event"),
-           risk.table = TRUE,
+           legend.labs = levels(surf_data$lipid_strat),
+           #risk.table = TRUE,
            ggtheme      = theme_classic())
 km_plot_lipids
 
@@ -732,11 +745,13 @@ outcome_groupings = list("macce" = c("death_acs_[a-z]+",
                                      "death_[a-z]+_valve_regurgitation",
                                      "death_[a-z]+_valve_stenosis",
                                      "death_cardiac_arrest", 
-                                     "^acs_[a-z]+_[a-z]*_emergency$",
+                                     "^acs_[a-z]+_[a-z_]*emergency$",
                                      "ischaemic_stroke",
                                      "^angiogram",
                                      "^pci", 
                                      "^cabg"))
+# check which outcomes you're about to look at (what have the regexes above found?)
+unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
 
 surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, fudge_cambridge_segment), by="nhs_number") |>
@@ -862,32 +877,30 @@ Look at the cardiovascular readmissions split by whether the patient underwent a
 # look at the unique outcome options and choose those to assess; filter some stuff out to make it easier
 #unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
 
-outcome_groupings = list("emergency_acs_readmission" = c("^acs_[a-z]+_[a-z]*_emergency$"),
-                         "emergency_angio+or_revasc" = c("angiogram_emergency","pci_emergency","(?<!presence_of_)cabg_emergency"))
+outcome_groupings = list("emergency ACS readmission" = "^acs_[a-z]+_*[a-z_]*emergency$",
+                         "emergency angiogram+/-PCI" = c("angiogram_emergency","pci_emergency")) #"(?<!presence_of_)cabg_emergency")
 # check which outcomes you're about to look at (what have the regexes above found?)
 unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
 # create data
 surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |> 
   dplyr::left_join(dat_demographics |> dplyr::select(nhs_number, age, fudge_cambridge_segment), by="nhs_number") |>
-  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, primary_diagnosis, any_angiogram), by="nhs_number") |>
-  dplyr::mutate(any_angiogram = factor(dplyr::if_else(!is.na(any_angiogram),T,F),
-                                       levels = c(T,F),
-                                       labels = c("Index angiogram/PCI", "No index angiogram/PCI")), 
+  dplyr::left_join(index_acs_main |> dplyr::select(nhs_number, primary_diagnosis, procedure), by="nhs_number") |>
+  dplyr::mutate(strategy = factor(grepl("angiogram|pci|cabg", procedure), 
+                                  levels = c(F,T),
+                                  labels = c("Conservative initial strategy", "Invasive initial strategy")), 
                 age_cat = cut(age, breaks=c(0,40,60,80,120), labels=c("<40", "40-59", "60-79","80+"), right=F), 
-                primary_diagnosis = icdb::group_string(primary_diagnosis)) 
-# 
-# |>
-#   
-#   #TODO NB this filter 
-#   dplyr::filter(grepl("nstemi|unstable_angina", primary_diagnosis))
-                
+                primary_diagnosis = icdb::group_string(primary_diagnosis)) |>
+  dplyr::group_by(nhs_number, outcome) |> 
+  dplyr::slice_min(tstop, with_ties=F) 
+#  dplyr::filter(grepl("acs_nstemi", primary_diagnosis))
+#  dplyr::filter(!acs_stemi, !acs_nstemi, !acs_unstable_angina)
+
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
 # Survival fit
-surv_fit <- survfit(surv_tt_obj ~ outcome + any_angiogram, data=surf_data)
+surv_fit <- survfit(surv_tt_obj ~ outcome + strategy, data=surf_data)
 # Survival table
 survtbl <- summary(surv_fit)
-
 # Plot 
 km_plot <- ggsurvplot(
              fit          = surv_fit,
@@ -897,15 +910,16 @@ km_plot <- ggsurvplot(
              break.time.by= 365.25,
              conf.int      = TRUE,
              conf.int.alpha=0.25,
-             palette      = c("darkgreen", "darkred"),
+             palette      = wes_palette("GrandBudapest1", length(levels(surf_data$strategy)), type="discrete"), #c("darkgreen", "darkred"),
              censor.shape ="",
              title = "Emergency ACS or coronary procedure readmission by index ACS procedure and age",
+             subtitle = "",
              xlab = "Time from index ACS event (years)",
              ylab = "Freedom from outcome",
-             ylim = c(0.50, 1.0),
-             legend       = c(0.8,0.2),
+             ylim = c(0.65, 1.0),
+             legend       = c(0.8,0.15),
              legend.title = "",
-             legend.labs =  levels(surf_data$any_angiogram),
+             legend.labs =  levels(surf_data$strategy),
              # risk.table = TRUE, 
              ggtheme      = theme_classic())
 km_plot
