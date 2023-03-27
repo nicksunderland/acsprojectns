@@ -863,9 +863,7 @@ Look at the cardiovascular readmissions split by whether the patient underwent a
 #unique(all_subsequent_events$event_desc[!grepl("elective|emergency|[A-Z]\\d+", all_subsequent_events$event_desc)])
 
 outcome_groupings = list("emergency_acs_readmission" = c("^acs_[a-z]+_[a-z]*_emergency$"),
-                         "emergency_angio" = c("angiogram_emergency"), 
-                         "emergency_pci"   = c("pci_emergency"),
-                         "emergency_cabg"  = c("(?<!presence_of_)cabg_emergency"))
+                         "emergency_angio+or_revasc" = c("angiogram_emergency","pci_emergency","(?<!presence_of_)cabg_emergency"))
 # check which outcomes you're about to look at (what have the regexes above found?)
 unique(all_subsequent_events$event_desc)[grepl(paste0(unlist(outcome_groupings),collapse="|"),unique(all_subsequent_events$event_desc),perl=TRUE)]
 # create data
@@ -876,10 +874,12 @@ surf_data <- acsprojectns::create_survival_timings(all_subsequent_events, outcom
                                        levels = c(T,F),
                                        labels = c("Index angiogram/PCI", "No index angiogram/PCI")), 
                 age_cat = cut(age, breaks=c(0,40,60,80,120), labels=c("<40", "40-59", "60-79","80+"), right=F), 
-                primary_diagnosis = icdb::group_string(primary_diagnosis)) |>
-  
-  #TODO NB this filter 
-  dplyr::filter(grepl("nstemi|unstable_angina", primary_diagnosis))
+                primary_diagnosis = icdb::group_string(primary_diagnosis)) 
+# 
+# |>
+#   
+#   #TODO NB this filter 
+#   dplyr::filter(grepl("nstemi|unstable_angina", primary_diagnosis))
                 
 # Create the Survival object - for any readmission
 surv_tt_obj <- survival::Surv(surf_data$tstart, surf_data$tstop, surf_data$status)
