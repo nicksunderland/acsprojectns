@@ -7,3 +7,5 @@
 /materials/figures
 /materials/notes
 inst/doc
+cache
+/cache/*
