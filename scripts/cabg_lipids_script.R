@@ -273,7 +273,57 @@ dat_lipid_profile <- msrv$swd$swd_measurement %>%
 
 
 ## Prescribing data
-
+# # Low dose statin therapy without ezetimibe - # low dose = simva 10, prava 10-20, lova 20, fluva 20-40, pitva 1            https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.uspharmacist.com%2Farticle%2Flipidlowering-therapies-a-review-of-current-and-future-options&psig=AOvVaw1oUjYp0LCmvmyKdwPQM3UM&ust=1649363828741000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCMDY-pqlgPcCFQAAAAAdAAAAABAD
+# med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
+# subsequent_prescriptions <- msrv$swd$swd_prescription %>%
+#   # Only cohort NHS numbers
+#   {if(.Platform$OS.type == "windows") {
+#     right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE)
+#   } else {
+#     filter(., nhs_number %in% cohort_ids)
+#   }} |>
+#   # Time window - start of the cohort window to present; and only prescriptions
+#   filter(prescription_date >= acs_date_min) |>
+#   # select the needed columns
+#   select(nhs_number,
+#          event_start=prescription_date,
+#          event_end=prescription_date,
+#          prescription_name) |>
+#   # collect to local
+#   icdb::run() |>
+#   # shouldnt need to do this at work
+#   mutate(nhs_number = as.character(nhs_number)) |>
+#   # join the index spell data
+#   right_join(dat_index_spell |> select(nhs_number, index_start=spell_start, index_end=spell_end), by="nhs_number") |>
+#   # make sure that the spell comes after the end of the index ACS spell
+#   filter(event_start > index_end) |>
+#   #dplyr::filter(event_start >= index_start) |>
+#   # prescription grouping / coding
+#   mutate(medication_name   = tolower(trimws(stringr::str_match(prescription_name, pattern = med_filter_string)[,2])),
+#                 medication_dose   = stringr::str_match(prescription_name, pattern = med_filter_string)[,3],
+#                 medication_units  = stringr::str_match(prescription_name, pattern = med_filter_string)[,4],
+#                 event_desc = dplyr::case_when(
+#                   grepl("inclisiran", medication_name) ~ "inclisiran",
+#                   # High dose statin therapy
+#                   (grepl("atorvastatin", medication_name) & medication_dose>=40) |
+#                     (grepl("rosuvastatin", medication_name) & medication_dose>=20) |
+#                     (grepl("simvastatin",  medication_name) & medication_dose>=80) ~ "high_statin",
+#                   # Moderate dose statin therapy
+#                   (grepl("atorvastatin", medication_name) & medication_dose<40)  |
+#                     (grepl("rosuvastatin", medication_name) & medication_dose<20)  |
+#                     (grepl("fluvastatin",  medication_name) & medication_dose>40)  |
+#                     (grepl("pravastatin",  medication_name) & medication_dose>=40) |
+#                     (grepl("simvastatin",  medication_name) & medication_dose>=20) ~ "subopt_statin",
+#                   # Low dose statin therapy
+#                   (grepl("fluvastatin",  medication_name) & medication_dose<=40) |
+#                     (grepl("pravastatin",  medication_name) & medication_dose<40)  |
+#                     (grepl("simvastatin",  medication_name) & medication_dose<20) ~ "subopt_statin",
+#
+#                   TRUE ~ NA_character_)) |>
+#   # for now, just get rid of things that aren't statins
+#   dplyr::filter(!is.na(event_desc)) |>
+#   # only take id, spell dates and event description
+#   dplyr::select(nhs_number, event_desc, event_start, event_end)
 
 
 ## Combined data
