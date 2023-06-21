@@ -26,6 +26,14 @@
     source:
     - AdmissionMethod_HospitalProviderSpell
     strategy: coalesce
+  - column: age_on_admission
+    docs: AGE ON ADMISSION is derived as the number of completed years between the
+      PERSON BIRTH DATE of the PATIENT and the START DATE (HOSPITAL PROVIDER SPELL).
+    use: yes
+    source:
+    - AIMTC_Age
+    #- AgeOnAdmission
+    strategy: coalesce
 
 
   ## Columns added below here do not directly correspond to an entry in CDS 130

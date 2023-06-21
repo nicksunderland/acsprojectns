@@ -42,7 +42,7 @@ if(.Platform$OS.type == "unix") {
 }
 
 # the date we started collecting cholesterol data in the SWD
-start <- as.Date("2022-01-01")
+start <- as.Date("2018-07-01")
 
 # today's date; maximize cohort size
 end   <- Sys.Date()
@@ -53,7 +53,23 @@ cabg_opcs_codes = c("K401","K402","K403","K404","K408","K409",
                     "K431","K432","K433","K434","K438","K439",
                     "K441","K442","K448","K449",
                     "K451","K452","K453","K454","K455","K456","K457","K458",
-                    "K461","K462","K463","K464","K465","K468","K469",                 "K631")
+                    "K461","K462","K463","K464","K465","K468","K469")
+
+# maybe look at pure cabg cohort later i.e. removing patient with one of the below codes
+# cabg_plus_opcs_codes = c("K221","K222","K223","K228","K229",
+#                          "K231","K232","K233","K234","K235","K236","K238","K239",
+#                          "K251", "K252", "K253", "K254", "K255", "K258", "K259",
+#                          "K261", "K262", "K263", "K264", "K265", "K268", "K269",
+#                          "K271", "K272", "K273", "K274", "K275", "K276", "K278", "K279",
+#                          "K281", "K282", "K283", "K284", "K285", "K288","K289",
+#                          "K291", "K292", "K293", "K294", "K295", "K296", "K297", "K298","K299",
+#                          "K301", "K302", "K303", "K304", "K305", "K308", "K309",
+#                          "K311", "K312", "K313", "K314", "K315", "K318", "K319",
+#                          "K321", "K322", "K323", "K324", "K328", "K329",
+#                          "K331", "K332", "K333", "K334", "K335", "K336", "K338", "K339",
+#                          "K341", "K342", "K343", "K344", "K345", "K346", "K348", "K349",
+#                          "K381", "K382", "K383", "K384", "K385", "K386", "K388","K389",
+#                          "K521", "K522", "K523", "K524", "K525", "K526", "K527", "K528", "K529")
 
 
 ## Identify the pseudoNHS IDs of people who have had a CABG
@@ -99,7 +115,6 @@ dat_index_spell <- msrv$sus$apc_spells_procedures |>
 
 ## Age data
 dat_age <- dat_index_spell |> select(nhs_number, age = age_on_admission)
-
 
 ## Sex data
 # read in the code mappnigs for sex
@@ -182,29 +197,6 @@ dat_ethnicity <- msrv$sus$apc_spells_primary_diagnosis %>%
   right_join(dat_index_spell |> dplyr::select(nhs_number), by="nhs_number")
 
 
-## Index of Multiple Deprivation
-# extract the IMD data from the swd_attributes table
-dat_imd <- msrv$swd$swd_attribute %>%
-  # Only cohort NHS numbers
-  {if(.Platform$OS.type == "windows") {
-    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE)
-  } else {
-    filter(., nhs_number %in% cohort_ids)
-  }} |>
-  # just the IMD
-  select(nhs_number, wd_imd_decile_19) |>
-  # collect to local
-  icdb::run()  |>
-  # group by each patient
-  group_by(nhs_number) |>
-  # take the most recent
-  slice_head(n=1) |>
-  # shouldnt need to do this at work
-  mutate(nhs_number = as.character(nhs_number)) |>
-  # ensure all nhs numbers represented
-  right_join(dat_index_spell |> select(nhs_number), by="nhs_number")
-
-
 ## Frailty
 # extract the electronic frailty index data from the swd attributes history table
 dat_frailty <- msrv$swd$attr_h %>%
@@ -260,77 +252,116 @@ dat_lipid_profile <- msrv$swd$swd_measurement %>%
   } else {
     filter(., nhs_number %in% cohort_ids)
   }} |>
+  # collect to local
+  icdb::run() |>
   # shouldn't need to do this at work
   mutate(nhs_number = as.character(nhs_number)) |>
   # filter for cholesterol
   filter(measurement_name %in% "cholesterol") |>
-  # collect to local
-  icdb::run() |>
+  # all represented
+  right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number") |>
   # link to CABG date
   left_join(dat_index_spell |> select(nhs_number, spell_start, spell_end), by="nhs_number") |>
   # time relative to CABG
-  mutate(lipid_timing_d = time_length(interval(spell_start, measurement_date), unit="days"))
+  mutate(lipid_timing_d = time_length(interval(spell_start, measurement_date), unit="days")) |>
+  # group by patient
+  group_by(nhs_number) |>
+  # lipid profile within timeframes
+  mutate(lipid_profile_after_1y = if_else(any(between(lipid_timing_d, 0, 365))&!is.na(lipid_timing_d),T,F),
+         lipid_profile_before_1y= if_else(any(between(lipid_timing_d, -365, -1))&!is.na(lipid_timing_d),T,F),
+         lipid_profile_after = if_else(any(between(lipid_timing_d, 0, 10*365))&!is.na(lipid_timing_d),T,F)) |>
+  # collapse to single patients
+  distinct(nhs_number, .keep_all = TRUE) |>
+  # select only the summary data
+  select(nhs_number,
+         lipid_profile_after,
+         lipid_profile_after_1y,
+         lipid_profile_before_1y)
 
 
-## Prescribing data
-# # Low dose statin therapy without ezetimibe - # low dose = simva 10, prava 10-20, lova 20, fluva 20-40, pitva 1            https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.uspharmacist.com%2Farticle%2Flipidlowering-therapies-a-review-of-current-and-future-options&psig=AOvVaw1oUjYp0LCmvmyKdwPQM3UM&ust=1649363828741000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCMDY-pqlgPcCFQAAAAAdAAAAABAD
-# med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
-# subsequent_prescriptions <- msrv$swd$swd_prescription %>%
-#   # Only cohort NHS numbers
-#   {if(.Platform$OS.type == "windows") {
-#     right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE)
-#   } else {
-#     filter(., nhs_number %in% cohort_ids)
-#   }} |>
-#   # Time window - start of the cohort window to present; and only prescriptions
-#   filter(prescription_date >= acs_date_min) |>
-#   # select the needed columns
-#   select(nhs_number,
-#          event_start=prescription_date,
-#          event_end=prescription_date,
-#          prescription_name) |>
-#   # collect to local
-#   icdb::run() |>
-#   # shouldnt need to do this at work
-#   mutate(nhs_number = as.character(nhs_number)) |>
-#   # join the index spell data
-#   right_join(dat_index_spell |> select(nhs_number, index_start=spell_start, index_end=spell_end), by="nhs_number") |>
-#   # make sure that the spell comes after the end of the index ACS spell
-#   filter(event_start > index_end) |>
-#   #dplyr::filter(event_start >= index_start) |>
-#   # prescription grouping / coding
-#   mutate(medication_name   = tolower(trimws(stringr::str_match(prescription_name, pattern = med_filter_string)[,2])),
-#                 medication_dose   = stringr::str_match(prescription_name, pattern = med_filter_string)[,3],
-#                 medication_units  = stringr::str_match(prescription_name, pattern = med_filter_string)[,4],
-#                 event_desc = dplyr::case_when(
-#                   grepl("inclisiran", medication_name) ~ "inclisiran",
-#                   # High dose statin therapy
-#                   (grepl("atorvastatin", medication_name) & medication_dose>=40) |
-#                     (grepl("rosuvastatin", medication_name) & medication_dose>=20) |
-#                     (grepl("simvastatin",  medication_name) & medication_dose>=80) ~ "high_statin",
-#                   # Moderate dose statin therapy
-#                   (grepl("atorvastatin", medication_name) & medication_dose<40)  |
-#                     (grepl("rosuvastatin", medication_name) & medication_dose<20)  |
-#                     (grepl("fluvastatin",  medication_name) & medication_dose>40)  |
-#                     (grepl("pravastatin",  medication_name) & medication_dose>=40) |
-#                     (grepl("simvastatin",  medication_name) & medication_dose>=20) ~ "subopt_statin",
-#                   # Low dose statin therapy
-#                   (grepl("fluvastatin",  medication_name) & medication_dose<=40) |
-#                     (grepl("pravastatin",  medication_name) & medication_dose<40)  |
-#                     (grepl("simvastatin",  medication_name) & medication_dose<20) ~ "subopt_statin",
-#
-#                   TRUE ~ NA_character_)) |>
-#   # for now, just get rid of things that aren't statins
-#   dplyr::filter(!is.na(event_desc)) |>
-#   # only take id, spell dates and event description
-#   dplyr::select(nhs_number, event_desc, event_start, event_end)
+# Prescribing data
+# Low dose statin therapy without ezetimibe - # low dose = simva 10, prava 10-20, lova 20, fluva 20-40, pitva 1            https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.uspharmacist.com%2Farticle%2Flipidlowering-therapies-a-review-of-current-and-future-options&psig=AOvVaw1oUjYp0LCmvmyKdwPQM3UM&ust=1649363828741000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCMDY-pqlgPcCFQAAAAAdAAAAABAD
+med_filter_string <- "(?i)([A-z ]+)(\\d+\\.?\\d*)?([A-z]+)?[ ]*(?:[A-z]*)"
+prescriptions <- msrv$swd$swd_prescription %>%
+  # Only cohort NHS numbers
+  {if(.Platform$OS.type == "windows") {
+    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE)
+  } else {
+    filter(., nhs_number %in% cohort_ids)
+  }} |>
+  # Time window - start of the cohort window to present; and only prescriptions
+  filter(prescription_date >= start) |>
+  # select the needed columns
+  select(nhs_number,
+         prescription_date,
+         prescription_name) |>
+  # collect to local
+  icdb::run() |>
+  # shouldnt need to do this at work
+  mutate(nhs_number = as.character(nhs_number)) |>
+  # link to CABG date
+  left_join(dat_index_spell |> select(nhs_number, spell_start, spell_end), by="nhs_number") |>
+  # time relative to CABG
+  mutate(prescription_timing_d = time_length(interval(spell_start, prescription_date), unit="days")) |>
+  #dplyr::filter(event_start >= index_start) |>
+  # prescription grouping / coding
+  mutate(medication_name   = tolower(trimws(stringr::str_match(prescription_name, pattern = med_filter_string)[,2])),
+                medication_dose   = stringr::str_match(prescription_name, pattern = med_filter_string)[,3],
+                medication_units  = stringr::str_match(prescription_name, pattern = med_filter_string)[,4],
+                event_desc = dplyr::case_when(
+                  grepl("inclisiran", medication_name) ~ "inclisiran",
+                  grepl("ezetimibe", medication_name) ~ "ezetimibe",
+                  # High dose statin therapy
+                  (grepl("atorvastatin", medication_name) & medication_dose>=40) |
+                    (grepl("rosuvastatin", medication_name) & medication_dose>=20) |
+                    (grepl("simvastatin",  medication_name) & medication_dose>=80) ~ "high_statin",
+                  # Moderate dose statin therapy
+                  (grepl("atorvastatin", medication_name) & medication_dose<40)  |
+                    (grepl("rosuvastatin", medication_name) & medication_dose<20)  |
+                    (grepl("fluvastatin",  medication_name) & medication_dose>40)  |
+                    (grepl("pravastatin",  medication_name) & medication_dose>=40) |
+                    (grepl("simvastatin",  medication_name) & medication_dose>=20) ~ "subopt_statin",
+                  # Low dose statin therapy
+                  (grepl("fluvastatin",  medication_name) & medication_dose<=40) |
+                    (grepl("pravastatin",  medication_name) & medication_dose<40)  |
+                    (grepl("simvastatin",  medication_name) & medication_dose<20) ~ "subopt_statin",
+
+                  TRUE ~ NA_character_)) |>
+  # for now, just get rid of things that aren't statins
+  dplyr::filter(!is.na(event_desc)) |>
+  # all represented
+  right_join(data.frame("nhs_number" = cohort_ids), by="nhs_number") |>
+  #group
+  group_by(nhs_number) |>
+  # lipid prescription within timeframes
+  mutate(high_statin_after_1y        = if_else(any(between(prescription_timing_d, 0, 365))&any(event_desc=='high_statin')&sum(event_desc=='high_statin')>3&!is.na(prescription_timing_d),T,F),
+         high_statin_before_1y       = if_else(any(between(prescription_timing_d, 0, 365))&any(event_desc=='high_statin')&!is.na(prescription_timing_d),T,F),
+         lipid_prescription_after_1y = if_else(any(between(prescription_timing_d, 0, 365))&!is.na(prescription_timing_d),T,F),
+         lipid_prescription_before_1y= if_else(any(between(prescription_timing_d, -365, -1))&!is.na(prescription_timing_d),T,F)) |>
+  # collapse to single patients
+  distinct(nhs_number, .keep_all = TRUE) |>
+  # select only the summary data
+  select(nhs_number,
+         lipid_prescription_after_1y,
+         high_statin_after_1y,
+         lipid_prescription_before_1y,
+         high_statin_before_1y)
+
 
 
 ## Combined data
-dat_lst <- list(dat_age, dat_sex, dat_ethnicity, dat_imd, dat_frailty)
-dat_demographics <- reduce(dat_lst, left_join, by='nhs_number')
+dat_lst <- list(dat_age, dat_sex, dat_ethnicity, dat_frailty, dat_lipid_profile, prescriptions)
+data <- reduce(dat_lst, left_join, by='nhs_number')
 
 
+data |>
+  group_by(lipid_profile_after) |>
+  summarise(n = n())
 
+data |>
+  group_by(lipid_profile_before_1y, lipid_profile_after_1y) |>
+  summarise(n = n())
 
-
+data |>
+  group_by(high_statin_before_1y, high_statin_after_1y) |>
+  summarise(n = n())
