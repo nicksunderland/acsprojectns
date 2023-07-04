@@ -43,13 +43,14 @@ adm_method <- acsprojectns::get_codes(adm_method_codes) |>
                                              grepl("elective", admission_method_description) ~ "elective",
                                              TRUE ~ "other")) |>
   select(admission_method_code, admission_method)
-icd10_opcs_codes_fp <- system.file("icd10_codes/cabg_lipids_cohort_codes.csv", package="acsprojectns")
+icd10_codes_fp <- system.file("icd10_codes/cabg_lipids_cohort_codes.csv", package="acsprojectns")
+opcs_codes_fp  <- system.file("icd10_codes/cabg_lipids_cohort_codes.csv", package="acsprojectns")
 icd10_opcs_codes <- acsprojectns::get_codes(icd10_opcs_codes_fp) |> filter(!is.na(code))
 sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
 ```
 
 ```{r cohort}
-start <- as.Date("2010-07-01") # "2018-07-01" the date we started collecting cholesterol data in the SWD
+start <- as.Date("2010-01-01") # "2018-07-01" the date we started collecting cholesterol data in the SWD
 end   <- Sys.Date()
 cabg_opcs_codes = icd10_opcs_codes |> filter(group=="cabg") |> select(code) |> pull() 
 
@@ -90,15 +91,16 @@ index_procedures <- msrv$sus$apc_spells_procedure |>
   slice_min(spell_start, with_ties=F) |>
   pivot_longer(matches("procedure_[0-9]+_opcs"), 
                names_to="procedure_num", 
-               values_to="index_procedure", 
+               values_to="index_procedure_code", 
                values_drop_na=TRUE) |>
-  left_join(icd10_opcs_codes, by=c("index_procedure"="code")) |>
-  filter(!is.na(group)) |>
-  mutate(index_procedure_year = as.factor(year(spell_start)),
+  left_join(icd10_opcs_codes, by=c("index_procedure_code"="code")) |>
+  filter(!is.na(group), group!="stroke_tia") |> # hack, as G459 OPCS is also the TIA ICD code...
+  mutate(index_procedure_year = year(spell_start),
          index_procedure      = first(group),
          index_procedure_desc = first(description),
          value=TRUE) |>
   pivot_wider(names_from=group, values_from=value, values_fill=FALSE, names_glue="index_procedure_{group}") |>
+  mutate(across(matches("index_procedure_") & !matches("index_procedure_(desc|year|code)"), ~any(.x))) |>
   slice_min(spell_start, with_ties=F) |>
   ungroup()
  
@@ -125,12 +127,9 @@ index_diagnoses <- msrv$sus$apc_spells_diagnosis |>
   mutate(index_diagnosis      = first(coalesce(group, diagnosis), na_rm=TRUE),
          index_diagnosis_desc = first(description),
          value = TRUE) |>
-  distinct(nhs_number, group, .keep_all = TRUE) |>
-  group_by(nhs_number, group) |>
-  mutate(n=n())
-  
   pivot_wider(names_from=group, values_from=value, values_fill=FALSE, names_glue="index_diagnosis_{group}") |>
   select(-index_diagnosis_NA) |>
+  mutate(across(matches("index_diagnosis_") & !matches("index_diagnosis_(desc|year)"), ~any(.x))) |>
   slice_min(spell_start, with_ties=F) |>
   ungroup()
 
@@ -145,6 +144,16 @@ index_cabg_admission <- left_join(index_procedures, index_diagnoses, by=c("nhs_n
          sex=sex.x,
          starts_with("index_procedure"), 
          starts_with("index_diagnosis"))
+
+```
+
+
+```{r index_event_analysis}
+
+index_cabg_admission |>
+  group_by(index_procedure_year) |> 
+  summarise(n = n()) |>
+  arrange(desc(index_procedure_year))
 
 ```
 
@@ -196,6 +205,7 @@ subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis %>%
                names_to="diag_pos",
                values_to="diagnosis", 
                values_drop_na=TRUE) |>
+  filter(diagnosis!="") |>
   left_join(icd10_opcs_codes, by=c("diagnosis"="code")) |>
   mutate(group = coalesce(group, diagnosis)) |>
   filter(!is.na(group)) |>
@@ -227,6 +237,7 @@ subsequent_procedures <- msrv$sus$apc_spells_procedures %>%
                names_to="proc_pos",
                values_to="procedure", 
                values_drop_na=TRUE) |>
+  filter(procedure!="") |>
   left_join(icd10_opcs_codes, by=c("procedure"="code")) |>
   mutate(group = coalesce(group, procedure)) |>
   filter(!is.na(group)) |>
@@ -290,7 +301,31 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
 
 ```{r all_cause_death, results="markup"}
 # create the survival timings 
-outcome_groupings = list("any_death" = "death")
+outcome_groupings = list("any_death" = "death", 
+                         "cv_death"  = c("death_acs_[a-z]+",
+                                         "death_[a-z]+_cardiomyopathy",
+                                         "death_heart_failure",
+                                     "death_ischaemic_stroke",
+                                     "death_ventricular_arrhy",
+                                     "death_atrial_fib",
+                                     "death_atrial_arrhy",
+                                     "death_cardiomegaly",
+                                     "death_periph_vasc_disease",
+                                     "death_presence_of_coronary_stent",
+                                     "death_presence_of_cabg",
+                                     "death_presence_of_prosthetic_heart_valve",
+                                     "death_presence_of_cied",
+                                     "death_conduction_disease",
+                                     "death_[a-z]+_valve_regurgitation",
+                                     "death_[a-z]+_valve_stenosis",
+                                     "death_cardiac_arrest", 
+                                     "^acs_[a-z]+_[a-z_]*emergency$",
+                                     "ischaemic_stroke",
+                                     "^angiogram",
+                                     "^pci", 
+                                     "^cabg"
+
+
 any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |>
   left_join(index_cabg_admission |> select(nhs_number, index_procedure_year), by="nhs_number") |>
   
