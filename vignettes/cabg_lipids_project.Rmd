@@ -1,0 +1,334 @@
+---
+title: "cabg_lipids_project"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{cabg_lipids_project}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(acsprojectns)
+library(devtools)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(lubridate)
+library(kableExtra)
+library(survival)
+library(survminer)
+library(wesanderson)
+library(viridis)
+library(icdb)
+
+load_all()
+icdb::use_cache(TRUE)
+if(.Platform$OS.type == "unix") {
+  msrv <- icdb::mapped_server(config  = system.file("database_connections", "home", "mysql.yaml", package="acsprojectns"),
+                              mapping = system.file("database_connections", "home", "mapping.yaml", package="acsprojectns"))
+}else if (.Platform$OS.type == "windows") {
+  msrv <- icdb::mapped_server("XSW",
+                              mapping = system.file("database_connections", "work", "mapping.yaml", package="acsprojectns"))
+}
+adm_method_codes <- system.file("admission_method_codes/admission_method_codes.csv", package="acsprojectns")
+adm_method <- acsprojectns::get_codes(adm_method_codes) |>
+  mutate(admission_method = dplyr::case_when(grepl("emergency", admission_method_description) ~ "emergency",
+                                             grepl("elective", admission_method_description) ~ "elective",
+                                             TRUE ~ "other")) |>
+  select(admission_method_code, admission_method)
+icd10_opcs_codes_fp <- system.file("icd10_codes/cabg_lipids_cohort_codes.csv", package="acsprojectns")
+icd10_opcs_codes <- acsprojectns::get_codes(icd10_opcs_codes_fp) |> filter(!is.na(code))
+sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsprojectns"))
+```
+
+```{r cohort}
+start <- as.Date("2010-07-01") # "2018-07-01" the date we started collecting cholesterol data in the SWD
+end   <- Sys.Date()
+cabg_opcs_codes = icd10_opcs_codes |> filter(group=="cabg") |> select(code) |> pull() |> 
+  
+  
+  c("K631") ######### REMOVE THIS AT WORK
+
+
+# Anyone in the date range, with a CABG OPCS code, and in the SWD (i.e. Bristol resident)
+cohort_ids <- msrv$sus$apc_spells_procedures |>
+  filter(spell_start >= start & spell_end <= end) |>
+  inner_join(msrv$swd$attr_h |> distinct(nhs_number), by="nhs_number") |>
+  icdb::run() |>
+  mutate(nhs_number = as.character(nhs_number)) |>
+  filter(if_any(matches("procedure_[0-9]+_opcs"), ~ . %in% cabg_opcs_codes)) |>
+  dplyr::distinct(nhs_number) |>
+  pull() |> as.character()
+```
+
+```{r index_cabg}
+index_procedures <- msrv$sus$apc_spells_procedure |>
+  filter(spell_start >= start & spell_end <= end) %>%
+  {if(.Platform$OS.type == "windows") {
+    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE)
+  } else {
+    filter(., nhs_number %in% cohort_ids)
+  }} |>
+  icdb::run() |>
+  # Clean up
+  mutate(nhs_number = as.character(nhs_number),
+         sex = as.character(sex),
+         admission_method_code = as.character(method_of_admission_hospital_provider_spell), 
+         across(starts_with("procedure"), as.character)) |>
+  left_join(adm_method, by="admission_method_code") |>
+  rename(sex_initial = sex) |>
+  left_join(sex_codes, by=c("sex_initial"="sex_code")) |>
+  # Procedure codes
+  filter(if_any(matches("procedure_[0-9]+_opcs"), ~ . %in% cabg_opcs_codes)) |>
+  group_by(nhs_number) |>
+  slice_min(spell_start, with_ties=F) |>
+  pivot_longer(matches("procedure_[0-9]+_opcs"), 
+               names_to="procedure_num", 
+               values_to="index_procedure", 
+               values_drop_na=TRUE) |>
+  left_join(icd10_opcs_codes, by=c("index_procedure"="code")) |>
+  filter(!is.na(group)) |>
+  mutate(index_procedure_year = as.factor(year(spell_start)),
+         index_procedure      = first(group),
+         index_procedure_desc = first(description),
+         value=TRUE) |>
+  pivot_wider(names_from=group, values_from=value, values_fill=FALSE, names_glue="index_procedure_{group}") |>
+  slice_min(spell_start, with_ties=F) |>
+  ungroup()
+ 
+# Diagnosis codes
+index_diagnoses <- msrv$sus$apc_spells_diagnosis |>
+  filter(spell_start >= start & spell_end <= end) %>%
+  {if(.Platform$OS.type == "windows") {
+    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE)
+  } else {
+    filter(., nhs_number %in% cohort_ids)
+  }} |>
+  icdb::run() |>
+  mutate(across(matches("nhs_number|primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), as.character)) |>
+  # Join on the index CABG time window
+  right_join(index_procedures |> 
+               select(nhs_number, spell_start, spell_end), by=c("nhs_number", "spell_start", "spell_end")) |>
+  pivot_longer(matches("(primary|secondary)_diagnosis_[0-9_]*icd"), 
+               names_to="diag_pos", 
+               values_to="diagnosis", 
+               values_drop_na=TRUE) |>
+  left_join(icd10_opcs_codes, by=c("diagnosis"="code")) |>
+  
+  group_by(nhs_number) |>
+  mutate(index_diagnosis      = first(coalesce(group, diagnosis), na_rm=TRUE),
+         index_diagnosis_desc = first(description),
+         value = TRUE) |>
+  pivot_wider(names_from=group, values_from=value, values_fill=FALSE, names_glue="index_diagnosis_{group}") |>
+  select(-index_diagnosis_NA) |>
+  slice_min(spell_start, with_ties=F) |>
+  ungroup()
+
+# Combine the diagnoses and procedures
+index_cabg_admission <- left_join(index_procedures, index_diagnoses, by=c("nhs_number", "spell_start", "spell_end")) |> 
+  select(nhs_number, 
+         index_start=spell_start,
+         index_end=spell_end,
+         admission_method,
+         index_procedure_year,
+         age=age_on_admission.x,
+         sex=sex.x,
+         starts_with("index_procedure"), 
+         starts_with("index_diagnosis"))
+
+```
+
+
+```{r outcomes}
+## Subsequent events - deaths
+death_events <- msrv$mort$civil_reg %>% 
+  {if(.Platform$OS.type == "windows") {
+    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    filter(., nhs_number %in% cohort_ids)
+  }} |>
+  filter(!is.na(date_of_death)) |>
+  icdb::run() |>
+  # clean up
+  mutate(across(-c(date_of_death), as.character)) |>
+  pivot_longer(-c(nhs_number, date_of_death, place_of_death_ccg_code, place_of_death), 
+               names_to=c("icd_code", ".value"), 
+               names_pattern="(.*)_(\\w+)", 
+               values_drop_na=TRUE) |>
+  filter((line=="a"|line=="b"|line=="c") & !is.na(code)) |> # only the actual cause of death
+  left_join(icd10_opcs_codes, by="code") |>
+  mutate(event_desc = paste0("death_", coalesce(group, code))) |>
+  distinct(nhs_number, event_desc, .keep_all=TRUE) |>
+  dplyr::select(nhs_number, 
+                event_desc, 
+                event_start=date_of_death, 
+                event_end=date_of_death)
+
+## Subsequent admissions
+subsequent_diagnoses <- msrv$sus$apc_spells_diagnosis %>% 
+  {if(.Platform$OS.type == "windows") {
+    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    filter(., nhs_number %in% cohort_ids)
+  }} |>
+  select(nhs_number, 
+         event_start=spell_start, 
+         event_end=spell_end, 
+         admission_method_code=method_of_admission_hospital_provider_spell,
+         matches("(primary|secondary)_diagnosis_[0-9]+_icd")) |>
+  icdb::run() |>
+  mutate(across(matches("nhs_number|admission_method_code|(primary|secondary)_diagnosis_[0-9]+_icd"), as.character)) |>
+  left_join(adm_method, by="admission_method_code") |>
+  # Join on the index CABG
+  right_join(index_cabg_admission |> select(nhs_number, index_start, index_end), by=c("nhs_number")) |>
+  filter(event_start > index_end) |>
+  pivot_longer(matches("(primary|secondary)_diagnosis_[0-9]+_icd"),
+               names_to="diag_pos",
+               values_to="diagnosis", 
+               values_drop_na=TRUE) |>
+  left_join(icd10_opcs_codes, by=c("diagnosis"="code")) |>
+  mutate(group = coalesce(group, diagnosis)) |>
+  filter(!is.na(group)) |>
+  mutate(event_desc = paste0(group, "_", admission_method)) |>
+  select(nhs_number, 
+         event_desc, 
+         event_start, 
+         event_end)
+
+## Subsequent_procedures
+subsequent_procedures <- msrv$sus$apc_spells_procedures %>% 
+  {if(.Platform$OS.type == "windows") {
+    right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+  } else {
+    filter(., nhs_number %in% cohort_ids)
+  }} |>
+  select(nhs_number, 
+         event_start=spell_start, 
+         event_end=spell_end, 
+         admission_method_code=method_of_admission_hospital_provider_spell,
+         matches("procedure_[0-9]+_opcs")) |>
+  icdb::run() |>
+  mutate(across(matches("nhs_number|admission_method_code|procedure_[0-9]+_opcs"), as.character)) |>
+  left_join(adm_method, by="admission_method_code") |>
+  # Join on the index CABG
+  right_join(index_cabg_admission |> select(nhs_number, index_start, index_end), by=c("nhs_number")) |>
+  filter(event_start > index_end) |>
+  pivot_longer(matches("procedure_[0-9]+_opcs"),
+               names_to="proc_pos",
+               values_to="procedure", 
+               values_drop_na=TRUE) |>
+  left_join(icd10_opcs_codes, by=c("procedure"="code")) |>
+  mutate(group = coalesce(group, procedure)) |>
+  filter(!is.na(group)) |>
+  mutate(event_desc = paste0(group, "_", admission_method)) |>
+  select(nhs_number, 
+         event_desc, 
+         event_start, 
+         event_end)
+  
+# combined
+all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
+                                          subsequent_procedures,
+                                          death_events) |>
+  # keep all the nhs numbers represented
+  right_join(index_cabg_admission |> select(nhs_number, index_start, index_end), by=c("nhs_number")) |>
+  # create the latest follow up  # adds 'date_of_death'
+  left_join(death_events |> 
+              select(nhs_number, date_of_death=event_start) |>
+              group_by(nhs_number) |>
+              slice_min(date_of_death, with_ties=FALSE), by=c("nhs_number")) |>
+  # add in max follow up from SWD rather than just assuming today's date; adds 'attribute_period'
+  left_join(msrv$swd$attr_h %>% 
+              {if(.Platform$OS.type == "windows") {
+                right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+              } else {
+                filter(., nhs_number %in% cohort_ids)
+              }} |>
+              group_by(nhs_number) |>
+              slice_max(attribute_period, with_ties=FALSE) |>
+              select(nhs_number, attribute_period) |>
+              icdb::run() |>
+              mutate(nhs_number = as.character(nhs_number)), 
+            by="nhs_number") |>
+  # add the max date from SUS; adds "last_in_hospital"
+  left_join(msrv$sus$apc_spells_diagnosis %>% 
+            {if(.Platform$OS.type == "windows") {
+              right_join(., data.frame("nhs_number" = cohort_ids), by="nhs_number", copy = TRUE) 
+            } else {
+              filter(., nhs_number %in% cohort_ids)
+            }} |>
+            group_by(nhs_number) |>
+            slice_max(spell_end, with_ties=FALSE) |>
+            select(nhs_number, last_in_hospital=spell_end) |>
+            icdb::run() |>
+            mutate(nhs_number = as.character(nhs_number)), 
+          by="nhs_number") |>
+  group_by(nhs_number) |>
+  mutate(last_fu = pmax(event_end, index_end, attribute_period, last_in_hospital, date_of_death, na.rm=TRUE), 
+         last_fu = if_else(!is.na(date_of_death), date_of_death, last_fu)) |>
+  ungroup() |>
+  dplyr::select(nhs_number, 
+                event_desc, 
+                index_start, 
+                index_end, 
+                event_start, 
+                event_end, 
+                last_fu)
+
+```
+
+
+```{r all_cause_death, results="markup"}
+# create the survival timings 
+outcome_groupings = list("any_death" = "death")
+any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |>
+  left_join(index_cabg_admission |> select(nhs_number, index_procedure_year), by="nhs_number") |>
+  
+  
+  
+  
+  ### REMOVE AT WORK 
+  filter(tstop > 0)
+
+
+
+# Create the Survival object - for any death
+surv_tt_obj_any_read <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
+# Create the Survival object - for any death
+surv_tt_obj <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome + index_procedure_year, data=any_death)
+# Survival table
+survtbl <- summary(surv_fit)
+# Plot 
+km_plot_any_death <- ggsurvplot(
+           fit          = surv_fit,
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = viridis(n=length(surv_fit$strata)),
+           censor.shape ="",
+           xlab = "Time from index ACS event (years)",
+           ylab = "Survival",
+           ylim = c(0.0, 1.0),
+           legend       = c(0.15,0.4),
+           legend.title = "",
+           legend.labs = levels(index_cabg_admission$index_procedure_year),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())
+km_plot_any_death
+```
+
+
+
+
+

@@ -1,0 +1,453 @@
+code,description,group
+K401,Saphenous vein graft replacement of one coronary artery,cabg
+K402,Saphenous vein graft replacement of two coronary arteries,cabg
+K403,Saphenous vein graft replacement of three coronary arteries,cabg
+K404,Saphenous vein graft replacement of four or more coronary arteries,cabg
+K408,Other specified saphenous vein graft replacement of coronary artery,cabg
+K409,Unspecified saphenous vein graft replacement of coronary artery,cabg
+K411,Autograft replacement of one coronary artery not elsewhere classified,cabg
+K412,Autograft replacement of two coronary arteries not elsewhere classified,cabg
+K413,Autograft replacement of three coronary arteries not elsewhere classified,cabg
+K414,Autograft replacement of four or more coronary arteries not elsewhere classified,cabg
+K418,Other specified autograft replacement of coronary artery,cabg
+K419,Unspecified other autograft replacement of coronary artery,cabg
+K431,Prosthetic replacement of one coronary artery,cabg
+K432,Prosthetic replacement of two coronary arteries,cabg
+K433,Prosthetic replacement of three coronary arteries,cabg
+K434,Prosthetic replacement of four or more coronary arteries,cabg
+K438,Other specified prosthetic replacement of coronary artery,cabg
+K439,Unspecified prosthetic replacement of coronary artery,cabg
+K441,Replacement of coronary arteries using multiple methods,cabg
+K442,Revision of replacement of coronary artery,cabg
+K448,Other specified other replacement of coronary artery,cabg
+K449,Unspecified other replacement of coronary artery,cabg
+K451,Double anastomosis of mammary arteries to coronary arteries,cabg
+K452,Double anastomosis of thoracic arteries to coronary arteries not elsewhere classified,cabg
+K453,Anastomosis of mammary artery to left anterior descending coronary artery,cabg
+K454,Anastomosis of mammary artery to coronary artery not elsewhere classified,cabg
+K455,Anastomosis of thoracic artery to coronary artery not elsewhere classified,cabg
+K456,Revision of connection of thoracic artery to coronary artery,cabg
+K457,Other specified connection of thoracic artery to coronary artery,cabg
+K458,Unspecified connection of thoracic artery to coronary artery,cabg
+K461,Double implantation of mammary arteries into heart,cabg
+K462,Double implantation of thoracic arteries into heart not elsewhere classified,cabg
+K463,Implantation of mammary artery into heart not elsewhere classified,cabg
+K464,Implantation of thoracic artery into heart not elsewhere classified,cabg
+K465,Revision of implantation of thoracic artery into heart,cabg
+K468,Other specified other bypass of coronary artery,cabg
+K469,Unspecified other bypass of coronary artery,cabg
+,,
+I210,Anterior transmural MI (STEMI),acs
+I211,Inferior transmural MI (STEMI),acs
+I212,Other transmural MI (STEMI),acs
+I213,Unspecified transmural MI (STEMI),acs
+I220,Subsequent Anterior transmural MI (STEMI within 4 weeks of another MI),acs
+I221,Subsequent Inferior transmural MI  (STEMI within 4 weeks of another MI),acs
+I228,Subsequent STEMI of other site (STEMI within 4 weeks of another MI),acs
+I222,Subsequent Non-ST elevation (NSTEMI) myocardial infarction,acs
+I229,Subsequent NSTEMI of other site (NSTEMI within 4 weeks of another MI),acs
+I21,STEMI or NSTEMI,acs
+I21-,STEMI or NSTEMI,acs
+I214,"NSTEMI, subendocardial MI (NSTEMI)",acs
+I219,"MI, unspecified",acs
+I22,All subsequent MI,acs
+I22-,All subsequent MI,acs
+I200,Unstable angina,acs
+I248,Other acute ischaemic heart disease,acs
+I249,Unspecified acute ischaemic heart disease,acs
+,,
+K631,Angiocardiography of combination of right and left side of heart,angiogram
+K632,Angiocardiography of right side of heart NEC,angiogram
+K633,Angiocardiography of left side of heart NEC,angiogram
+K634,Coronary arteriography using two catheters,angiogram
+K635,Coronary arteriography using single catheter,angiogram
+K636,Coronary arteriography NEC,angiogram
+K651,Catheterisation of combination of right and left side of heart NEC,angiogram
+K652,Catheterisation of right side of heart NEC,angiogram
+K653,Catheterisation of left side of heart NEC,angiogram
+K658,Catheterisation of left side of heart via atrial transeptal puncture,angiogram
+K658,Other specified catheterisation of heart,angiogram
+K659,Unspecified catheterisation of heart,angiogram
+,,
+K49,Transluminal balloon angioplasty of coronary artery,pci
+K49-,Transluminal balloon angioplasty of coronary artery,pci
+K491,Percutaneous transluminal balloon angioplasty of one coronary artery,pci
+K492,Percutaneous transluminal balloon angioplasty of multiple coronary arteries,pci
+K493,Percutaneous transluminal balloon angioplasty of bypass graft of coronary artery,pci
+K494,Percutaneous transluminal cutting balloon angioplasty of coronary artery,pci
+K498,Other specified transluminal balloon angioplasty of coronary artery,pci
+K499,Unspecified transluminal balloon angioplasty of coronary artery,pci
+K50,Other therapeutic transluminal operations on coronary artery,pci
+K50-,Other therapeutic transluminal operations on coronary artery,pci
+K501,Percutaneous transluminal laser coronary angioplasty,pci
+K502,Percutaneous transluminal coronary thrombolysis using streptokinase,pci
+K503,Percutaneous transluminal injection of therapeutic substance into coronary artery NEC,pci
+K504,Percutaneous transluminal atherectomy of coronary artery,pci
+K508,Other specified other therapeutic transluminal operations on coronary artery,pci
+K509,Unspecified other therapeutic transluminal operations on coronary artery,pci
+K75,Percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
+K75-,Percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
+K751,Percutaneous transluminal balloon angioplasty and insertion of 1-2 drug-eluting stents into coronary artery,pci
+K752,Percutaneous transluminal balloon angioplasty and insertion of 3 or more drug-eluting stents into coronary artery,pci
+K753,Percutaneous transluminal balloon angioplasty and insertion of 1-2 stents into coronary artery,pci
+K754,Percutaneous transluminal balloon angioplasty and insertion of 3 or more stents into coronary artery NEC,pci
+K758,Other specified percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
+K759,Unspecified percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
+,,
+I48,All AF and flutter,af_afl
+I480,Paroxysmal AF,af_afl
+I481,Persistent AF,af_afl
+I482,Chronic AF,af_afl
+I483,Typical atrial flutter,af_afl
+I484,Atypical atrial flutter,af_afl
+I489,Unspecified AF and atrial flutter,af_afl
+,,
+I63,All cerebral infarction,stroke_isch
+I630,Cerebral infarction due to thrombosis of precerebral arteries,stroke_isch
+I631,Cerebral infarction due to embolism of precerebral arteries,stroke_isch
+I632,Cerebral infarction due to unspecified occlusion or stenosis of precerebral arteries,stroke_isch
+I633,Cerebral infarction due to thrombosis of cerebral arteries,stroke_isch
+I634,Cerebral infarction due to embolism of cerebral arteries,stroke_isch
+I635,Cerebral infarction due to unspecified occlusion or stenosis of cerebral arteries,stroke_isch
+I636,"Cerebral infarction due to cerebral venous thrombosis, nonpyogenic",stroke_isch
+I638,Other cerebral infarction,stroke_isch
+I639,"Cerebral infarction, unspecified",stroke_isch
+G450,Vertebro-basilar artery syndrome TIA,stroke_tia
+G451,Carotid artery syndrome (hemispheric) TIA,stroke_tia
+G452,Multiple and bilateral precerebral artery syndromes TIA,stroke_tia
+G453,Amaurosis fugax TIA,stroke_tia
+G458,Other transient cerebral ischaemic attacks and related syndromes TIA,stroke_tia
+G459,"Transient cerebral ischaemic attack, unspecified TIA",stroke_tia
+I60,All subarachnoid haemorrhage,stroke_sah
+I60-,All subarachnoid haemorrhage,stroke_sah
+I600,Nontraumatic subarachnoid haemorrhage from carotid siphon and bifurcation,stroke_sah
+I601,Nontraumatic subarachnoid haemorrhage from middle cerebral artery,stroke_sah
+I602,Nontraumatic subarachnoid haemorrhage from anterior communicating artery,stroke_sah
+I603,Nontraumatic subarachnoid haemorrhage from posterior communicating artery,stroke_sah
+I604,Nontraumatic subarachnoid haemorrhage from basilar artery,stroke_sah
+I605,Nontraumatic subarachnoid haemorrhage from vertebral artery,stroke_sah
+I606,Nontraumatic subarachnoid haemorrhage from other intracranial arteries,stroke_sah
+I607,Nontraumatic subarachnoid haemorrhage from unspecified intracranial artery,stroke_sah
+I608,Other nontraumatic subarachnoid haemorrhage,stroke_sah
+I609,"Nontraumatic subarachnoid haemorrhage, unspecified",stroke_sah
+I61,All intracerebral haemorrhage,stroke_ich
+I61-,All intracerebral haemorrhage,stroke_ich
+I610,"Nontraumatic intracerebral haemorrhage in hemisphere, subcortical",stroke_ich
+I611,"Nontraumatic intracerebral haemorrhage in hemisphere, cortical",stroke_ich
+I612,"Nontraumatic intracerebral haemorrhage in hemisphere, unpsecified",stroke_ich
+I613,Nontraumatic intracerebral haemorrhage in brainstem,stroke_ich
+I614,Nontraumatic intracerebral haemorrhage in cerebellum,stroke_ich
+I615,"Nontraumatic intracerebral haemorrhage, intraventricular",stroke_ich
+I616,"Nontraumatic intracerebral haemorrhage, multiple localised",stroke_ich
+I618,Other nontraumatic intracerebral hemorrhage,stroke_ich
+I619,"Nontraumatic intracerebral haemorrhage, unspecified",stroke_ich
+I62,All other non-traumatic intracerebral haemorrhage,stroke_ich
+I62-,All other non-traumatic intracerebral haemorrhage,stroke_ich
+I620,Nontraumatic subdural hemorrhage,stroke_sdh
+I621,Nontraumatic extradural hemorrhage,stroke_edh
+I629,"Nontraumatic intracranial hemorrhage, unspecified",stroke_ich
+,,
+I740,Embolism and thrombosis of abdominal aorta,pvd
+I741,Embolism and thrombosis of other and unspecified parts of aorta,pvd
+I742,Embolism and thrombosis of arteries of the upper extremities,pvd
+I743,Embolism and thrombosis of arteries of the lower extremities,pvd
+I744,"Embolism and thrombosis of arteries of the  extremities, unspecified",pvd
+I745,Embolism and thrombosis of iliac artery,pvd
+I748,Embolism and thrombosis of other arteries,pvd
+I749,Embolism and thrombosis of unpecified artery,pvd
+I702,Atherosclerosis of arteries of extremities,pvd
+I731,PVD TAO,pvd
+I738,PVD other specified,pvd
+I739,PVD unspecified,pvd
+,,
+F000,Dementia in Alzheimer's disease,dementia
+F001,Dementia in Alzheimer's disease,dementia
+F002,Dementia in Alzheimer's disease,dementia
+F009,Dementia in Alzheimer's disease,dementia
+F010,Vascular dementia,dementia
+F011,Vascular dementia,dementia
+F012,Vascular dementia,dementia
+F013,Vascular dementia,dementia
+F018,Vascular dementia,dementia
+F019,Vascular dementia,dementia
+F020,Dementia in other diseases - Pick disease,dementia
+F021,Dementia in other diseases - Creutzfeldt-Jakob disease,dementia
+F022,Dementia in other diseases - Huntington disease,dementia
+F023,Dementia in other diseases - Parkinson disease,dementia
+F024,Dementia in other diseases - HIV associated,dementia
+F028,Dementia in other diseases - other,dementia
+F03,Unspecified dementia,dementia
+F03-,Unspecified dementia,dementia
+F030,Unspecified dementia,dementia
+F051,Delirium superimposed on dementia,dementia
+G300,Alzheimer's disease,dementia
+G301,Alzheimer's disease,dementia
+G308,Alzheimer's disease,dementia
+G309,Alzheimer's disease,dementia
+,,
+I10,Essential Hypertension ,hypertension
+I10-,Essential Hypertension ,hypertension
+I110,Hypertensive heart disease with (congestive) heart failure,hypertension
+I119 ,Hypertensive  heart disease without (congestive) heart failure,hypertension
+I120,hypertensive renal disease with renal failure,hypertension
+I129,hypertensive renal disease without renal failure ,hypertension
+I130 ,hypertensive  heart and renal disease with (congestive) heart failure,hypertension
+I131 ,hypertensive  heart and renal disease with renal failure,hypertension
+I132 ,hypertensive  heart and renal disease with both (congestive) heart failure and renal failure,hypertension
+I139,"Hypertensive heart and renal disease, unspecified",hypertension
+I15,Secondary hypertension,hypertension
+I15-,Secondary hypertension,hypertension
+I150,renovascular hypertension,hypertension
+I151 ,Hypertension secondary to other renal disorders,hypertension
+I152,hypertension secondary to endocrine disorders,hypertension
+I158,Other secondary hypertension,hypertension
+I159,"Secondary hypertension, unspecified",hypertension
+,,
+E10,T1DM All type 1 diabetes mellitus,diabetes
+E10-,T1DM All type 1 diabetes mellitus,diabetes
+E100,T1DM with coma,diabetes
+E101,T1DM with ketoacidosis (but no coma),diabetes
+E102,T1DM with renal complications,diabetes
+E103,T1DM with ophthalmic complications,diabetes
+E104,T1DM with neurological complications,diabetes
+E105,T1DM with peripheral circulatory complications,diabetes
+E105,T1DM with diabetic gangrene,diabetes
+E106,T1DM with other complications,diabetes
+E107,T1DM with multiple complications,diabetes
+E108,T1DM with unspecified complications,diabetes
+E109,T1DM without complications,diabetes
+E11,T2DM All type 2 diabetes mellitus,diabetes
+E11-,T2DM All type 2 diabetes mellitus,diabetes
+E110,T2DM with coma,diabetes
+E111,T2DM with ketoacidosis (but no coma),diabetes
+E112,T2DM with renal complications,diabetes
+E113,T2DM with ophthalmic complications,diabetes
+E114,T2DM with neurological complications,diabetes
+E115,T2DM withperipheral circulatory complications,diabetes
+E115,T2DM with diabetic gangrene,diabetes
+E116,T2DM with other complications,diabetes
+E117,T2DM with multiple complications,diabetes
+E118,T2DM with unspecified complications,diabetes
+E119,T2DM without complications,diabetes
+E14,Other diabetes - All unspecified  diabetes mellitus,diabetes
+E14,Other diabetes - All unspecified  diabetes mellitus,diabetes
+E140,Other diabetes - ...  with coma,diabetes
+E141,Other diabetes - ...   with ketoacidosis (but no coma),diabetes
+E142,Other diabetes - ...   with renal complications,diabetes
+E143,Other diabetes - ...  with ophthalmic complications,diabetes
+E144,Other diabetes - ...   with neurological complications,diabetes
+E145,Other diabetes - ...   withperipheral circulatory complications,diabetes
+E146,Other diabetes - ...   with other complications,diabetes
+E147,Other diabetes - ...   with multiple complications,diabetes
+E148,Other diabetes - ...   with unspecified complications,diabetes
+E149,Other diabetes - ...  without complications,diabetes
+,,
+I50,All heart failure,heart_failure
+I50-,All heart failure,heart_failure
+I500,Congestive cardiac failure,heart_failure
+I501,Left ventricular failure,heart_failure
+I502,Systolic (congestive) heart failure,heart_failure
+I503,Diastolic (congestive) heart failure,heart_failure
+I504,Combined systolic (congestive) and diastolic (congestive) heart failure,heart_failure
+I508,Other heart failure,heart_failure
+I509,"Heart failure, unspecified",heart_failure
+I971,Heart failure following cardiac surgery,heart_failure
+R570,Cardiogenic shock,heart_failure
+J81,Pulmonary edema,heart_failure
+J81-,Pulmonary edema,heart_failure
+,,
+F171,Tobacco use ,smoking
+F172,Tobacco dependency syndrome,smoking
+,,
+E78,Disorders of lipoprotein metabolism and other lipidaemias,lipid_disorder
+E78-,Disorders of lipoprotein metabolism and other lipidaemias,lipid_disorder
+E780,Pure hypercholesterolaemia,lipid_disorder
+E781,Pure hyperglyceridaemia,lipid_disorder
+E782,Mixed hyperlipidaemia,lipid_disorder
+E783,Hyperchylomicronaemia,lipid_disorder
+E784,Other hyperlipidaemia,lipid_disorder
+E785,"Hyperlipidaemia, unspecified",lipid_disorder
+E786,Lipoprotein deficiency,lipid_disorder
+E788,Other disorders of lipoprotein metabolism,lipid_disorder
+E789,"Disorder of lipoprotein metabolism, unspecified",lipid_disorder
+,,
+E660,Obesity due to excess calories,obesity
+E6601,Morbid (severe) obesity due to excess calories,obesity
+E6609,Other obesity due to excess calories,obesity
+E661,Drug-induced obesity,obesity
+E662,Morbid (severe) obesity with alveolar hypoventilation,obesity
+E668,Other obesity,obesity
+E669,"Obesity, unspecified ",obesity
+,,
+N18,Chronic kidney disease,ckd
+N18-,Chronic kidney disease,ckd
+N181,"Chronic kidney disease, stage 1",ckd
+N182,"Chronic kidney disease, stage 2 (mild)",ckd
+N183,"Chronic kidney disease, stage 3 (moderate)",ckd
+N184,"Chronic kidney disease, stage 4 (severe)",ckd
+N185,"Chronic kidney disease, stage 5 / end stage renal disease",ckd
+N189,"Chronic kidney disease, unspecified",ckd
+N19,Unspecified kidney failure,ckd
+N19-,Unspecified kidney failure,ckd
+Z992,Dependence on dialysis,ckd
+Z49,Encounter for care involving dialysis,ckd
+Z49-,Encounter for care involving dialysis,ckd
+Z940 ,Kidney translant status ,ckd
+N01,Rapidly progressive nephritic syndrome,ckd
+N01-,Rapidly progressive nephritic syndrome,ckd
+N010, N01.0 Rapidly progressive nephritic syndrome with minor glomerular abnormality,ckd
+N011, N01.1 Rapidly progressive nephritic syndrome with focal and segmental glomerular lesions,ckd
+N012, N01.2 Rapidly progressive nephritic syndrome with diffuse membranous glomerulonephritis,ckd
+N013, N01.3 Rapidly progressive nephritic syndrome with diffuse mesangial proliferative glomerulonephritis,ckd
+N014, N01.4 Rapidly progressive nephritic syndrome with diffuse endocapillary proliferative glomerulonephritis,ckd
+N015, N01.5 Rapidly progressive nephritic syndrome with diffuse mesangiocapillary glomerulonephritis,ckd
+N016, N01.6 Rapidly progressive nephritic syndrome with dense deposit disease,ckd
+N017, N01.7 Rapidly progressive nephritic syndrome with diffuse crescentic glomerulonephritis,ckd
+N018, N01.8 Rapidly progressive nephritic syndrome with other morphologic changes,ckd
+N019, N01.9 Rapidly progressive nephritic syndrome with unspecified morphologic changes,ckd
+N01A, N01.A Rapidly progressive nephritic syndrome with C3 glomerulonephritis,ckd
+N02,Recurrent and persistent hematuria,ckd
+N02-,Recurrent and persistent hematuria,ckd
+N020, N02.0 Recurrent and persistent hematuria with minor glomerular abnormality,ckd
+N021, N02.1 Recurrent and persistent hematuria with focal and segmental glomerular lesions,ckd
+N022, N02.2 Recurrent and persistent hematuria with diffuse membranous glomerulonephritis,ckd
+N023, N02.3 Recurrent and persistent hematuria with diffuse mesangial proliferative glomerulonephritis,ckd
+N024, N02.4 Recurrent and persistent hematuria with diffuse endocapillary proliferative glomerulonephritis,ckd
+N025, N02.5 Recurrent and persistent hematuria with diffuse mesangiocapillary glomerulonephritis,ckd
+N026, N02.6 Recurrent and persistent hematuria with dense deposit disease,ckd
+N027, N02.7 Recurrent and persistent hematuria with diffuse crescentic glomerulonephritis,ckd
+N028, N02.8 Recurrent and persistent hematuria with other morphologic changes,ckd
+N029, N02.9 Recurrent and persistent hematuria with unspecified morphologic changes,ckd
+N02A, N02.A Recurrent and persistent hematuria with C3 glomerulonephritis,ckd
+N03,other_ckd,ckd
+N03-,other_ckd,ckd
+N030,other_ckd,ckd
+N031,other_ckd,ckd
+N032,other_ckd,ckd
+N033,other_ckd,ckd
+N034,other_ckd,ckd
+N035,other_ckd,ckd
+N036,other_ckd,ckd
+N037,other_ckd,ckd
+N038,other_ckd,ckd
+N039,other_ckd,ckd
+N03A,other_ckd,ckd
+N04,other_ckd,ckd
+N04-,other_ckd,ckd
+N041,other_ckd,ckd
+N042,other_ckd,ckd
+N043,other_ckd,ckd
+N044,other_ckd,ckd
+N045,other_ckd,ckd
+N046,other_ckd,ckd
+N047,other_ckd,ckd
+N048,other_ckd,ckd
+N049,other_ckd,ckd
+N04A,other_ckd,ckd
+N05,other_ckd,ckd
+N05-,other_ckd,ckd
+N050,other_ckd,ckd
+N051,other_ckd,ckd
+N052,other_ckd,ckd
+N053,other_ckd,ckd
+N054,other_ckd,ckd
+N055,other_ckd,ckd
+N056,other_ckd,ckd
+N057,other_ckd,ckd
+N058,other_ckd,ckd
+N059,other_ckd,ckd
+N05A,other_ckd,ckd
+N06,other_ckd,ckd
+N06-,other_ckd,ckd
+N060,other_ckd,ckd
+N061,other_ckd,ckd
+N062,other_ckd,ckd
+N063,other_ckd,ckd
+N064,other_ckd,ckd
+N065,other_ckd,ckd
+N066,other_ckd,ckd
+N067,other_ckd,ckd
+N068,other_ckd,ckd
+N069,other_ckd,ckd
+N06A,other_ckd,ckd
+N07,other_ckd,ckd
+N07-,other_ckd,ckd
+N070,other_ckd,ckd
+N071,other_ckd,ckd
+N072,other_ckd,ckd
+N073,other_ckd,ckd
+N074,other_ckd,ckd
+N075,other_ckd,ckd
+N076,other_ckd,ckd
+N077,other_ckd,ckd
+N078,other_ckd,ckd
+N079,other_ckd,ckd
+N07A,other_ckd,ckd
+N08,other_ckd,ckd
+N08-,other_ckd,ckd
+N080,other_ckd,ckd
+N081,other_ckd,ckd
+N082,other_ckd,ckd
+N083,other_ckd,ckd
+N084,other_ckd,ckd
+N085,other_ckd,ckd
+N086,other_ckd,ckd
+N087,other_ckd,ckd
+N088,other_ckd,ckd
+N089,other_ckd,ckd
+N08A,other_ckd,ckd
+N11,other_ckd,ckd
+N11-,other_ckd,ckd
+N110,other_ckd,ckd
+N111,other_ckd,ckd
+N118,other_ckd,ckd
+N119,other_ckd,ckd
+N12,other_ckd,ckd
+N14,other_ckd,ckd
+N14-,other_ckd,ckd
+N140,other_ckd,ckd
+N141,other_ckd,ckd
+N142,other_ckd,ckd
+N143,other_ckd,ckd
+N144,other_ckd,ckd
+N15,other_ckd,ckd
+N15-,other_ckd,ckd
+N150,other_ckd,ckd
+N151,other_ckd,ckd
+N158,other_ckd,ckd
+N159,other_ckd,ckd
+N16,other_ckd,ckd
+N16-,other_ckd,ckd
+N160,other_ckd,ckd
+N161,other_ckd,ckd
+N162,other_ckd,ckd
+N163,other_ckd,ckd
+N164,other_ckd,ckd
+N165,other_ckd,ckd
+N168,other_ckd,ckd
+N25,other_ckd,ckd
+N25-,other_ckd,ckd
+N250,other_ckd,ckd
+N251,other_ckd,ckd
+N258,other_ckd,ckd
+N259,other_ckd,ckd
+N26,other_ckd,ckd
+N27,other_ckd,ckd
+I12,other_ckd,ckd
+I12-,other_ckd,ckd
+I120,other_ckd,ckd
+I129,other_ckd,ckd
+I130,other_ckd,ckd
+I131,other_ckd,ckd
+I132,other_ckd,ckd
+I139,other_ckd,ckd
+Q61,other_ckd,ckd
+Q61-,other_ckd,ckd
+Q610,other_ckd,ckd
+Q611,other_ckd,ckd
+Q612,other_ckd,ckd
+Q613,other_ckd,ckd
+Q614,other_ckd,ckd
+Q615,other_ckd,ckd
+Q618,other_ckd,ckd
+Q619,other_ckd,ckd
