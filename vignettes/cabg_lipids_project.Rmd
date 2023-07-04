@@ -51,10 +51,9 @@ sex_codes <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acsproje
 ```{r cohort}
 start <- as.Date("2010-07-01") # "2018-07-01" the date we started collecting cholesterol data in the SWD
 end   <- Sys.Date()
-cabg_opcs_codes = icd10_opcs_codes |> filter(group=="cabg") |> select(code) |> pull() |> 
-  
-  
-  c("K631") ######### REMOVE THIS AT WORK
+cabg_opcs_codes = icd10_opcs_codes |> filter(group=="cabg") |> select(code) |> pull() 
+
+# |> c("K631") ######### REMOVE THIS AT WORK
 
 
 # Anyone in the date range, with a CABG OPCS code, and in the SWD (i.e. Bristol resident)
@@ -120,12 +119,16 @@ index_diagnoses <- msrv$sus$apc_spells_diagnosis |>
                names_to="diag_pos", 
                values_to="diagnosis", 
                values_drop_na=TRUE) |>
+  filter(diagnosis!="") |>
   left_join(icd10_opcs_codes, by=c("diagnosis"="code")) |>
-  
   group_by(nhs_number) |>
   mutate(index_diagnosis      = first(coalesce(group, diagnosis), na_rm=TRUE),
          index_diagnosis_desc = first(description),
          value = TRUE) |>
+  distinct(nhs_number, group, .keep_all = TRUE) |>
+  group_by(nhs_number, group) |>
+  mutate(n=n())
+  
   pivot_wider(names_from=group, values_from=value, values_fill=FALSE, names_glue="index_diagnosis_{group}") |>
   select(-index_diagnosis_NA) |>
   slice_min(spell_start, with_ties=F) |>

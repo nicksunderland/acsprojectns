@@ -54,6 +54,12 @@
     - "DischargeTime_HospitalProviderSpell"
     strategy: "coalesce"
     use: yes
+  - column: "sex"
+    docs: "Listed as "
+    source:
+    - "Sex"
+    strategy: "coalesce"
+    use: yes
 
   - column: procedure_1_opcs
     docs: OPCS codes for the inpatient procedures that the patient underwent
