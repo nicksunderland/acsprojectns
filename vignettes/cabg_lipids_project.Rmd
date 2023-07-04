@@ -51,7 +51,12 @@ sex_codes      <- read.csv(system.file("sex_codes/sex_codes.csv", package = "acs
 ```
 
 ```{r cohort}
-start <- as.Date("2010-01-01") # "2018-07-01" the date we started collecting cholesterol data in the SWD
+start <- as.Date("2019-10-01") 
+# 2019-10-01 - the min data of SWD attributes. 
+# 2018-07-01 - the min data of SWD activity. 
+# 2018-07-01 - the min data of SWD prescriptions 
+# 2022-01-01 - the date we started collecting cholesterol data in the SWD; 
+# 2013-01-01 - is where most of the death data starts
 end   <- Sys.Date()
 cabg_opcs_codes = opcs_codes |> filter(group=="cabg") |> select(code) |> pull() 
 
@@ -61,7 +66,7 @@ cabg_opcs_codes = opcs_codes |> filter(group=="cabg") |> select(code) |> pull()
 # Anyone in the date range, with a CABG OPCS code, and in the SWD (i.e. Bristol resident)
 cohort_ids <- msrv$sus$apc_spells_procedures |>
   filter(spell_start >= start & spell_end <= end) |>
-  inner_join(msrv$swd$attr_h |> distinct(nhs_number), by="nhs_number") |>
+  #inner_join(msrv$swd$attr_h |> distinct(nhs_number), by="nhs_number") |>
   icdb::run() |>
   mutate(nhs_number = as.character(nhs_number)) |>
   filter(if_any(matches("procedure_[0-9]+_opcs"), ~ . %in% cabg_opcs_codes)) |>
@@ -317,24 +322,20 @@ outcome_groupings = list("any_death" = "death",
                                          "death_stroke[_a-z]*",
                                          "death_stroke_isch"))
 
-
 any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |>
-  left_join(index_cabg_admission |> select(nhs_number, index_procedure_year), by="nhs_number") |>
+  left_join(index_cabg_admission |> select(nhs_number, index_procedure_year), by="nhs_number") 
   
-  
-  
-  
-  ### REMOVE AT WORK 
-  filter(tstop > 0)
+# any_death <- any_death |>
+#   mutate(year_cat = cut(index_procedure_year, breaks=seq(2010, 2025, 1), right=FALSE))
 
+  
+  # ### REMOVE AT WORK 
+  # |> filter(tstop > 0)
 
-
-# Create the Survival object - for any death
-surv_tt_obj_any_read <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
 # Create the Survival object - for any death
 surv_tt_obj <- survival::Surv(any_death$tstart, any_death$tstop, any_death$status)
 # Survival fit
-surv_fit <- survfit(surv_tt_obj ~ outcome + index_procedure_year, data=any_death)
+surv_fit <- survfit(surv_tt_obj ~ outcome, data=any_death)
 # Survival table
 survtbl <- summary(surv_fit)
 # Plot 
@@ -345,17 +346,112 @@ km_plot_any_death <- ggsurvplot(
            break.time.by= 365.25,
            conf.int      = TRUE,
            conf.int.alpha=0.25,
-           palette      = viridis(n=length(surv_fit$strata)),
+           palette      = wes_palette("Royal1", n=length(surv_fit$strata)),
            censor.shape ="",
-           xlab = "Time from index ACS event (years)",
+           xlab = "Time from CABG (years)",
            ylab = "Survival",
            ylim = c(0.0, 1.0),
            legend       = c(0.15,0.4),
            legend.title = "",
-           legend.labs = levels(index_cabg_admission$index_procedure_year),
+           legend.labs = c("Death", "Cardiovascular death"),
            risk.table = TRUE,
            ggtheme      = theme_classic())
+pdf(file = paste0(system.file("extdata", "figures", package="acsprojectns"), "/", "cabg_cohort_death.pdf"), width=12, height=10) # The height of the plot in inches
 km_plot_any_death
+dev.off()
+
+km_plot_any_death_zoom <- ggsurvplot(
+           fit          = surv_fit,
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = wes_palette("Royal1", n=length(surv_fit$strata)),
+           censor.shape ="",
+           xlab = "Time from CABG (years)",
+           ylab = "Survival",
+           ylim = c(0.9, 1.0),
+           legend       = c(0.15,0.4),
+           legend.title = "",
+           legend.labs = c("Death", "Cardiovascular death"),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())
+pdf(file = paste0(system.file("extdata", "figures", package="acsprojectns"), "/", "cabg_cohort_death_zoom.pdf"), width=12, height=10) # The height of the plot in inches
+km_plot_any_death_zoom
+dev.off()
+```
+
+```{r emergency_admission, results="markup"}
+# create the survival timings 
+outcome_groupings = list("emergency_admission" = ".*_emergency",
+                         "acs" = "^acs_emergency",
+                         "heart_failure" = "^heart_failure_emergency|^cardiomyopathy_(isch|nonisch)_emergency",
+                         "any pci" = "^pci", 
+                         "stroke" = "^stroke_emergency", 
+                         "af" = "^af_afl_emergency", 
+                         "dementia" = "^dementia_emergency")
+admissions <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings)
+  
+# any_death <- any_death |>
+#   mutate(year_cat = cut(index_procedure_year, breaks=seq(2010, 2025, 1), right=FALSE))
+
+  
+  # ### REMOVE AT WORK 
+  # |> filter(tstop > 0)
+
+# Create the Survival object - for any death
+surv_tt_obj <- survival::Surv(admissions$tstart, admissions$tstop, admissions$status)
+# Survival fit
+surv_fit <- survfit(surv_tt_obj ~ outcome, data=admissions)
+# Survival table
+survtbl <- summary(surv_fit)
+# Plot 
+km_plot_emergency_admission <- ggsurvplot(
+           fit          = surv_fit,
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = viridis(length(surv_fit$strata)),
+           censor.shape ="",
+           xlab = "Time from CABG (years)",
+           ylab = "Freedom from event",
+           ylim = c(0.0, 1.0),
+           legend       = c(0.45,0.35),
+           legend.title = "",
+           legend.labs = names(outcome_groupings),
+           risk.table = TRUE,
+           ggtheme      = theme_classic())+ guides(colour = guide_legend(nrow = 2))
+km_plot_emergency_admission
+pdf(file = paste0(system.file("extdata", "figures", package="acsprojectns"), "/", "cabg_cohort_emergency_admission.pdf"), width=12, height=10) # The height of the plot in inches
+km_plot_emergency_admission
+dev.off()
+
+
+km_plot_emergency_admission <- ggsurvplot(
+           fit          = surv_fit,
+           surv.scale   = "percent",
+           xscale       = 365.25,
+           break.time.by= 365.25,
+           conf.int      = TRUE,
+           conf.int.alpha=0.25,
+           palette      = viridis(length(surv_fit$strata)),
+           censor.shape ="",
+           xlab = "Time from CABG (years)",
+           ylab = "Freedom from event",
+           ylim = c(0.5, 1.0),
+           # legend       = c(0.45,0.25),
+           # legend.title = "",
+           # legend.labs = names(outcome_groupings),
+           risk.table = TRUE,
+           ggtheme      = theme_classic()) 
+km_plot_emergency_admission
+pdf(file = paste0(system.file("extdata", "figures", package="acsprojectns"), "/", "cabg_cohort_emergency_admission_zoom.pdf"), width=12, height=10) # The height of the plot in inches
+km_plot_emergency_admission
+dev.off()
+
 ```
 
 
