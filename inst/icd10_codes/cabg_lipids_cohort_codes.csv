@@ -451,3 +451,71 @@ Q614,other_ckd,ckd
 Q615,other_ckd,ckd
 Q618,other_ckd,ckd
 Q619,other_ckd,ckd
+,,
+I46,Cardiac arrest,cardiac_arrest
+I46-,Cardiac arrest,cardiac_arrest
+I460,Cardiac arrest with successful resuscitation,cardiac_arrest
+I461,"Sudden cardiac death, so described",cardiac_arrest
+I469,"Cardiac arrest, unspecified",cardiac_arrest
+,,
+I490,Ventricular fibrillation and flutter,dysrhythmia
+I493,Ventricular premature depolarization,dysrhythmia
+I472,Ventricular tachycardia,dysrhythmia
+I495,Sick sinus syndrome,dysrhythmia
+I490,Ventricular fibrillation and flutter,dysrhythmia
+I491,Atrial premature depolarization,dysrhythmia
+I492,Junctional premature depolarization,dysrhythmia
+I493,Ventricular premature depolarization,dysrhythmia
+I494,Other and unspecified premature depolarization,dysrhythmia
+I472,Ventricular tachycardia,dysrhythmia
+I499,"Cardiac arrhythmia, unspecified",dysrhythmia
+I498,Other specified cardiac arrhythmias,dysrhythmia
+I470,Re-entry ventricular arrhythmia,dysrhythmia
+I471,Supraventricular tachycardia,dysrhythmia
+I472,Ventricular tachycardia,dysrhythmia
+I479,"Paroxysmal tachycardia, unspecified",dysrhythmia
+I44,Atrioventricular and left bundle-branch block,dysrhythmia
+I44-,Atrioventricular and left bundle-branch block,dysrhythmia
+I440,"Atrioventricular block, first degree",dysrhythmia
+I441,"Atrioventricular block, second degree",dysrhythmia
+I442,"Atrioventricular block, complete",dysrhythmia
+I443,Other and unspecified atrioventricular block,dysrhythmia
+I444,Left anterior fascicular block,dysrhythmia
+I445,Left posterior fascicular block,dysrhythmia
+I446,Other and unspecified fascicular block,dysrhythmia
+I447,"Left bundle-branch block, unspecified",dysrhythmia
+I45,Other conduction disorders,dysrhythmia
+I45-,Other conduction disorders,dysrhythmia
+I450,Right fascicular block,dysrhythmia
+I451,Other and unspecified right bundle-branch block,dysrhythmia
+I452,Bifascicular block,dysrhythmia
+I453,Trifascicular block,dysrhythmia
+I454,Nonspecific intraventricular block,dysrhythmia
+I455,Other specified heart block,dysrhythmia
+I456,Pre-excitation syndrome,dysrhythmia
+I458,Other specified conduction disorders,dysrhythmia
+I459,"Conduction disorder, unspecified",dysrhythmia
+,,
+I25,All chronic ischaemic heart disease ,cardiomyopathy_isch
+I25-,All chronic ischaemic heart disease ,cardiomyopathy_isch
+I251,Atherosclerotic heart disease,cardiomyopathy_isch
+I252,Old MI,cardiomyopathy_isch
+I253,Aneurysm of hart ,cardiomyopathy_isch
+I254,Coronary artery aneurysm and dissection,cardiomyopathy_isch
+I255,Ischaemic cardiomyopathy,cardiomyopathy_isch
+I256,Silent myocardial ischemia,cardiomyopathy_isch
+I258,Other forms of chronic ischaemic heart disease ,cardiomyopathy_isch
+I259,"Chronic ischaemic heart disease, unspecified",cardiomyopathy_isch
+I42,Cardiomyopathy,cardiomyopathy_nonisch
+I42-,Cardiomyopathy,cardiomyopathy_nonisch
+I420,Dilated cardiomyopathy,cardiomyopathy_nonisch
+I421,Obstructive hypertrophic cardiomyopathy,cardiomyopathy_nonisch
+I422,Other hypertrophic czrdiomyopathy,cardiomyopathy_nonisch
+I423,Endomyocardial (eosinophilic) disease,cardiomyopathy_nonisch
+I424,Endocardial fibroelastosis,cardiomyopathy_nonisch
+I425,Other restrictive cardiomyopathy,cardiomyopathy_nonisch
+I426,Alcoholic cardiomyopathy,cardiomyopathy_nonisch
+I427,Cardiomyopathy due to drugs and other external agents,cardiomyopathy_nonisch
+I428,Other cardiomyopathies,cardiomyopathy_nonisch
+I429,"Cardiomyopathy, unspecified",cardiomyopathy_nonisch
+I430,Cardiomyopathy specified elsewhere,cardiomyopathy_nonisch
