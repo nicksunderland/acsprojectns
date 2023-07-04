@@ -303,28 +303,20 @@ all_subsequent_events <- dplyr::bind_rows(subsequent_diagnoses,
 ```{r all_cause_death, results="markup"}
 # create the survival timings 
 outcome_groupings = list("any_death" = "death", 
-                         "cv_death"  = c("death_acs_[a-z]+",
-                                         "death_[a-z]+_cardiomyopathy",
+                         "cv_death"  = c("death_acs",
+                                         "death_af_afl",
+                                         "death_cardiac_arrest",
+                                         "death_cardiomyopathy_isch",
+                                         "death_cardiomyopathy_nonisch",
+                                         "death_dysrhythmia",
                                          "death_heart_failure",
-                                         "death_ischaemic_stroke",
-                                         "death_ventricular_arrhy",
-                                     "death_atrial_fib",
-                                     "death_atrial_arrhy",
-                                     "death_cardiomegaly",
-                                     "death_periph_vasc_disease",
-                                     "death_presence_of_coronary_stent",
-                                     "death_presence_of_cabg",
-                                     "death_presence_of_prosthetic_heart_valve",
-                                     "death_presence_of_cied",
-                                     "death_conduction_disease",
-                                     "death_[a-z]+_valve_regurgitation",
-                                     "death_[a-z]+_valve_stenosis",
-                                     "death_cardiac_arrest", 
-                                     "^acs_[a-z]+_[a-z_]*emergency$",
-                                     "ischaemic_stroke",
-                                     "^angiogram",
-                                     "^pci", 
-                                     "^cabg"))
+                                         "death_hypertension",
+                                         "death_I38", #endocarditis, add to excel code sheet
+                                         "death_I64", # stroke
+                                         "death_pvd",
+                                         "death_stroke[_a-z]*",
+                                         "death_stroke_isch"))
+
 
 any_death <- acsprojectns::create_survival_timings(all_subsequent_events, outcome_groupings) |>
   left_join(index_cabg_admission |> select(nhs_number, index_procedure_year), by="nhs_number") |>
