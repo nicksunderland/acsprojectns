@@ -38,6 +38,9 @@ I635,Cerebral infarction due to unspecified occlusion or stenosis of cerebral ar
 I636,"Cerebral infarction due to cerebral venous thrombosis, nonpyogenic",stroke_isch
 I638,Other cerebral infarction,stroke_isch
 I639,"Cerebral infarction, unspecified",stroke_isch
+I64,Stroke not specified ,stroke
+I64-,Stroke not specified ,stroke
+I64X,Stroke not specified ,stroke
 G450,Vertebro-basilar artery syndrome TIA,stroke_tia
 G451,Carotid artery syndrome (hemispheric) TIA,stroke_tia
 G452,Multiple and bilateral precerebral artery syndromes TIA,stroke_tia
