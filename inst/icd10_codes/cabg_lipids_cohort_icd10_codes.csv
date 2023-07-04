@@ -1,42 +1,4 @@
 code,description,group
-K401,Saphenous vein graft replacement of one coronary artery,cabg
-K402,Saphenous vein graft replacement of two coronary arteries,cabg
-K403,Saphenous vein graft replacement of three coronary arteries,cabg
-K404,Saphenous vein graft replacement of four or more coronary arteries,cabg
-K408,Other specified saphenous vein graft replacement of coronary artery,cabg
-K409,Unspecified saphenous vein graft replacement of coronary artery,cabg
-K411,Autograft replacement of one coronary artery not elsewhere classified,cabg
-K412,Autograft replacement of two coronary arteries not elsewhere classified,cabg
-K413,Autograft replacement of three coronary arteries not elsewhere classified,cabg
-K414,Autograft replacement of four or more coronary arteries not elsewhere classified,cabg
-K418,Other specified autograft replacement of coronary artery,cabg
-K419,Unspecified other autograft replacement of coronary artery,cabg
-K431,Prosthetic replacement of one coronary artery,cabg
-K432,Prosthetic replacement of two coronary arteries,cabg
-K433,Prosthetic replacement of three coronary arteries,cabg
-K434,Prosthetic replacement of four or more coronary arteries,cabg
-K438,Other specified prosthetic replacement of coronary artery,cabg
-K439,Unspecified prosthetic replacement of coronary artery,cabg
-K441,Replacement of coronary arteries using multiple methods,cabg
-K442,Revision of replacement of coronary artery,cabg
-K448,Other specified other replacement of coronary artery,cabg
-K449,Unspecified other replacement of coronary artery,cabg
-K451,Double anastomosis of mammary arteries to coronary arteries,cabg
-K452,Double anastomosis of thoracic arteries to coronary arteries not elsewhere classified,cabg
-K453,Anastomosis of mammary artery to left anterior descending coronary artery,cabg
-K454,Anastomosis of mammary artery to coronary artery not elsewhere classified,cabg
-K455,Anastomosis of thoracic artery to coronary artery not elsewhere classified,cabg
-K456,Revision of connection of thoracic artery to coronary artery,cabg
-K457,Other specified connection of thoracic artery to coronary artery,cabg
-K458,Unspecified connection of thoracic artery to coronary artery,cabg
-K461,Double implantation of mammary arteries into heart,cabg
-K462,Double implantation of thoracic arteries into heart not elsewhere classified,cabg
-K463,Implantation of mammary artery into heart not elsewhere classified,cabg
-K464,Implantation of thoracic artery into heart not elsewhere classified,cabg
-K465,Revision of implantation of thoracic artery into heart,cabg
-K468,Other specified other bypass of coronary artery,cabg
-K469,Unspecified other bypass of coronary artery,cabg
-,,
 I210,Anterior transmural MI (STEMI),acs
 I211,Inferior transmural MI (STEMI),acs
 I212,Other transmural MI (STEMI),acs
@@ -55,43 +17,6 @@ I22-,All subsequent MI,acs
 I200,Unstable angina,acs
 I248,Other acute ischaemic heart disease,acs
 I249,Unspecified acute ischaemic heart disease,acs
-,,
-K631,Angiocardiography of combination of right and left side of heart,angiogram
-K632,Angiocardiography of right side of heart NEC,angiogram
-K633,Angiocardiography of left side of heart NEC,angiogram
-K634,Coronary arteriography using two catheters,angiogram
-K635,Coronary arteriography using single catheter,angiogram
-K636,Coronary arteriography NEC,angiogram
-K651,Catheterisation of combination of right and left side of heart NEC,angiogram
-K652,Catheterisation of right side of heart NEC,angiogram
-K653,Catheterisation of left side of heart NEC,angiogram
-K658,Catheterisation of left side of heart via atrial transeptal puncture,angiogram
-K659,Unspecified catheterisation of heart,angiogram
-,,
-K49,Transluminal balloon angioplasty of coronary artery,pci
-K49-,Transluminal balloon angioplasty of coronary artery,pci
-K491,Percutaneous transluminal balloon angioplasty of one coronary artery,pci
-K492,Percutaneous transluminal balloon angioplasty of multiple coronary arteries,pci
-K493,Percutaneous transluminal balloon angioplasty of bypass graft of coronary artery,pci
-K494,Percutaneous transluminal cutting balloon angioplasty of coronary artery,pci
-K498,Other specified transluminal balloon angioplasty of coronary artery,pci
-K499,Unspecified transluminal balloon angioplasty of coronary artery,pci
-K50,Other therapeutic transluminal operations on coronary artery,pci
-K50-,Other therapeutic transluminal operations on coronary artery,pci
-K501,Percutaneous transluminal laser coronary angioplasty,pci
-K502,Percutaneous transluminal coronary thrombolysis using streptokinase,pci
-K503,Percutaneous transluminal injection of therapeutic substance into coronary artery NEC,pci
-K504,Percutaneous transluminal atherectomy of coronary artery,pci
-K508,Other specified other therapeutic transluminal operations on coronary artery,pci
-K509,Unspecified other therapeutic transluminal operations on coronary artery,pci
-K75,Percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
-K75-,Percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
-K751,Percutaneous transluminal balloon angioplasty and insertion of 1-2 drug-eluting stents into coronary artery,pci
-K752,Percutaneous transluminal balloon angioplasty and insertion of 3 or more drug-eluting stents into coronary artery,pci
-K753,Percutaneous transluminal balloon angioplasty and insertion of 1-2 stents into coronary artery,pci
-K754,Percutaneous transluminal balloon angioplasty and insertion of 3 or more stents into coronary artery NEC,pci
-K758,Other specified percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
-K759,Unspecified percutaneous transluminal balloon angioplasty and insertion of stent into coronary artery,pci
 ,,
 I48,All AF and flutter,af_afl
 I480,Paroxysmal AF,af_afl
