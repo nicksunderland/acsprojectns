@@ -19,6 +19,8 @@ I248,Other acute ischaemic heart disease,acs
 I249,Unspecified acute ischaemic heart disease,acs
 ,,
 I48,All AF and flutter,af_afl
+I48-,All AF and flutter,af_afl
+I48X,All AF and flutter,af_afl
 I480,Paroxysmal AF,af_afl
 I481,Persistent AF,af_afl
 I482,Chronic AF,af_afl
@@ -109,15 +111,13 @@ G301,Alzheimer's disease,dementia
 G308,Alzheimer's disease,dementia
 G309,Alzheimer's disease,dementia
 ,,
+I10X,Essential Hypertension ,hypertension
 I10,Essential Hypertension ,hypertension
 I10-,Essential Hypertension ,hypertension
-I110,Hypertensive heart disease with (congestive) heart failure,hypertension
 I119 ,Hypertensive  heart disease without (congestive) heart failure,hypertension
 I120,hypertensive renal disease with renal failure,hypertension
 I129,hypertensive renal disease without renal failure ,hypertension
-I130 ,hypertensive  heart and renal disease with (congestive) heart failure,hypertension
 I131 ,hypertensive  heart and renal disease with renal failure,hypertension
-I132 ,hypertensive  heart and renal disease with both (congestive) heart failure and renal failure,hypertension
 I139,"Hypertensive heart and renal disease, unspecified",hypertension
 I15,Secondary hypertension,hypertension
 I15-,Secondary hypertension,hypertension
@@ -177,6 +177,9 @@ I971,Heart failure following cardiac surgery,heart_failure
 R570,Cardiogenic shock,heart_failure
 J81,Pulmonary edema,heart_failure
 J81-,Pulmonary edema,heart_failure
+I110,Hypertensive heart disease with (congestive) heart failure,heart_failure
+I132 ,hypertensive  heart and renal disease with both (congestive) heart failure and renal failure,heart_failure
+I130 ,hypertensive  heart and renal disease with (congestive) heart failure,heart_failure
 ,,
 F171,Tobacco use ,smoking
 F172,Tobacco dependency syndrome,smoking
@@ -434,3 +437,5 @@ I427,Cardiomyopathy due to drugs and other external agents,cardiomyopathy_nonisc
 I428,Other cardiomyopathies,cardiomyopathy_nonisch
 I429,"Cardiomyopathy, unspecified",cardiomyopathy_nonisch
 I430,Cardiomyopathy specified elsewhere,cardiomyopathy_nonisch
+,,
+J90X,Pleural effusioin,pleural_effusion
