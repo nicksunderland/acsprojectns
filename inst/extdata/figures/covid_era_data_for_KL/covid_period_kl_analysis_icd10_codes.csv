@@ -1,0 +1,61 @@
+code,description,description_simple,group
+I210,Anterior transmural MI (STEMI),STEMI,acs
+I211,Inferior transmural MI (STEMI),STEMI,acs
+I212,Other transmural MI (STEMI),STEMI,acs
+I213,Unspecified transmural MI (STEMI),STEMI,acs
+I220,Subsequent Anterior transmural MI (STEMI within 4 weeks of another MI),STEMI,acs
+I221,Subsequent Inferior transmural MI  (STEMI within 4 weeks of another MI),STEMI,acs
+I228,Subsequent STEMI of other site (STEMI within 4 weeks of another MI),STEMI,acs
+I222,Subsequent Non-ST elevation (NSTEMI) myocardial infarction,NSTEMI,acs
+I229,Subsequent NSTEMI of other site (NSTEMI within 4 weeks of another MI),NSTEMI,acs
+I21X,STEMI or NSTEMI,NSTEMI,acs
+I21,STEMI or NSTEMI,NSTEMI,acs
+I21-,STEMI or NSTEMI,NSTEMI,acs
+I214,"NSTEMI, subendocardial MI (NSTEMI)",NSTEMI,acs
+I219,"MI, unspecified",NSTEMI,acs
+I22,All subsequent MI,NSTEMI,acs
+I22-,All subsequent MI,NSTEMI,acs
+I22X,All subsequent MI,NSTEMI,acs
+I200,Unstable angina,NSTEMI,acs
+I248,Other acute ischaemic heart disease,NSTEMI,acs
+I249,Unspecified acute ischaemic heart disease,NSTEMI,acs
+I25,All chronic ischaemic heart disease ,ischaemic_cardiomyopathy,cardiomyopathy
+I25-,All chronic ischaemic heart disease ,ischaemic_cardiomyopathy,cardiomyopathy
+I25X,All chronic ischaemic heart disease ,ischaemic_cardiomyopathy,cardiomyopathy
+I251,Atherosclerotic heart disease,ischaemic_cardiomyopathy,cardiomyopathy
+I252,Old MI,ischaemic_cardiomyopathy,cardiomyopathy
+I255,Ischaemic cardiomyopathy,ischaemic_cardiomyopathy,cardiomyopathy
+I256,Silent myocardial ischemia,ischaemic_cardiomyopathy,cardiomyopathy
+I258,Other forms of chronic ischaemic heart disease ,ischaemic_cardiomyopathy,cardiomyopathy
+I259,"Chronic ischaemic heart disease, unspecified",ischaemic_cardiomyopathy,cardiomyopathy
+I42X,Cardiomyopathy,dilated_cardiomyopathy,cardiomyopathy
+I42,Cardiomyopathy,dilated_cardiomyopathy,cardiomyopathy
+I42-,Cardiomyopathy,dilated_cardiomyopathy,cardiomyopathy
+I420,Dilated cardiomyopathy,dilated_cardiomyopathy,cardiomyopathy
+I421,Obstructive hypertrophic cardiomyopathy,hypertrophic_cardiomyopathy,cardiomyopathy
+I422,Other hypertrophic czrdiomyopathy,hypertrophic_cardiomyopathy,cardiomyopathy
+I423,Endomyocardial (eosinophilic) disease,other_cardiomyopathy,cardiomyopathy
+I424,"Endocardial fibroelastosis, Congenital cardiomyopathy",other_cardiomyopathy,cardiomyopathy
+I425,Other restrictive cardiomyopathy,other_cardiomyopathy,cardiomyopathy
+I426,Alcoholic cardiomyopathy,other_cardiomyopathy,cardiomyopathy
+I427,Cardiomyopathy due to drugs and other external agents,other_cardiomyopathy,cardiomyopathy
+I428,Other cardiomyopathies,other_cardiomyopathy,cardiomyopathy
+I429,"Cardiomyopathy, unspecified",other_cardiomyopathy,cardiomyopathy
+I430,Cardiomyopathy specified elsewhere,other_cardiomyopathy,cardiomyopathy
+I431,Cardiomyopathy in metabolic diseases (Cardiac amyloidosis),other_cardiomyopathy,cardiomyopathy
+I40X,Acute myocarditis,myocarditis,myocarditis
+I400,Infective myocarditis,myocarditis,myocarditis
+I401,Isolated myocarditis,myocarditis,myocarditis
+I408,Other acute myocarditis,myocarditis,myocarditis
+I409,Acute myocarditis unspecified,myocarditis,myocarditis
+I41X,Myocarditis in diseases classified elsewhere,myocarditis,myocarditis
+I410,Myocarditis in bacterial diseases classified elsewhere,myocarditis,myocarditis
+I411,Myocarditis in viral diseases classified elsewhere,myocarditis,myocarditis
+I412,Myocarditis in other infectious and parasitic diseases classified elsewhere,myocarditis,myocarditis
+I418,Myocarditis in other diseases classified elsewhere,myocarditis,myocarditis
+I514,"Myocarditis, unspecified",myocarditis,myocarditis
+I518,Other ill-defined heart diseases - Carditis (acute)(chronic) - Pancarditis (acute)(chronic) maybe Takotsubo,myocarditis_takotsubo,myocarditis
+I300,Acute nonspecific idiopathic pericarditis,pericarditis,pericarditis
+I301,Infective pericarditis,pericarditis,pericarditis
+I308,Other forms of acute pericarditis,pericarditis,pericarditis
+I309,Acute pericarditis unspecified,pericarditis,pericarditis
