@@ -39,10 +39,11 @@ I424,"Endocardial fibroelastosis, Congenital cardiomyopathy",other_cardiomyopath
 I425,Other restrictive cardiomyopathy,other_cardiomyopathy,cardiomyopathy
 I426,Alcoholic cardiomyopathy,other_cardiomyopathy,cardiomyopathy
 I427,Cardiomyopathy due to drugs and other external agents,other_cardiomyopathy,cardiomyopathy
-I428,Other cardiomyopathies,other_cardiomyopathy,cardiomyopathy
+I428,Other cardiomyopathies,other_takotsubo,cardiomyopathy
 I429,"Cardiomyopathy, unspecified",other_cardiomyopathy,cardiomyopathy
 I430,Cardiomyopathy specified elsewhere,other_cardiomyopathy,cardiomyopathy
-I431,Cardiomyopathy in metabolic diseases (Cardiac amyloidosis),other_cardiomyopathy,cardiomyopathy
+I431,Cardiomyopathy in metabolic diseases (Cardiac amyloidosis),other_cardiac_amyloidosis,cardiomyopathy
+I518,Other ill-defined heart diseases - Carditis (acute)(chronic) - Pancarditis (acute)(chronic) maybe Takotsubo,other_cardiomyopathy,cardiomyopathy
 I40X,Acute myocarditis,myocarditis,myocarditis
 I400,Infective myocarditis,myocarditis,myocarditis
 I401,Isolated myocarditis,myocarditis,myocarditis
@@ -54,8 +55,12 @@ I411,Myocarditis in viral diseases classified elsewhere,myocarditis,myocarditis
 I412,Myocarditis in other infectious and parasitic diseases classified elsewhere,myocarditis,myocarditis
 I418,Myocarditis in other diseases classified elsewhere,myocarditis,myocarditis
 I514,"Myocarditis, unspecified",myocarditis,myocarditis
-I518,Other ill-defined heart diseases - Carditis (acute)(chronic) - Pancarditis (acute)(chronic) maybe Takotsubo,myocarditis_takotsubo,myocarditis
 I300,Acute nonspecific idiopathic pericarditis,pericarditis,pericarditis
 I301,Infective pericarditis,pericarditis,pericarditis
 I308,Other forms of acute pericarditis,pericarditis,pericarditis
 I309,Acute pericarditis unspecified,pericarditis,pericarditis
+U071,COVID-19 virus identified,covid_positive,covid
+U10,Multisystem inflammatory syndrome associated with COVID-19,covid_multisystem_inflammation,covid
+U10-,Multisystem inflammatory syndrome associated with COVID-20,covid_multisystem_inflammation,covid
+U10X,Multisystem inflammatory syndrome associated with COVID-21,covid_multisystem_inflammation,covid
+U109,Multisystem inflammatory syndrome associated with COVID-22,covid_multisystem_inflammation,covid

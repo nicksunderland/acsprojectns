@@ -1,10 +1,12 @@
 "description_simple","count"
 "NSTEMI",16620
 "STEMI",5595
+"covid_positive",8438
 "dilated_cardiomyopathy",2932
 "hypertrophic_cardiomyopathy",1645
 "ischaemic_cardiomyopathy",135233
 "myocarditis",469
-"myocarditis_takotsubo",8317
-"other_cardiomyopathy",3409
+"other_cardiac_amyloidosis",347
+"other_cardiomyopathy",10571
+"other_takotsubo",672
 "pericarditis",333

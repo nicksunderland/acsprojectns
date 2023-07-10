@@ -51,40 +51,11 @@ icd10_codes    <- acsprojectns::get_codes(icd10_codes_fp) |> filter(!is.na(code)
 start <- as.Date("2016-07-01") 
 end   <- as.Date("2023-07-01") 
 
+diagnosis_flag <- "primary" #"primary_and_secondary" #
 
-# define any diagnosis code, regardless of position
-# cohort <- msrv$sus$apc_spells_diagnosis |>
-#   filter(spell_start >= start & spell_end <= end) %>%
-#   icdb::run() |>
-#   mutate(across(matches("nhs_number|primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), as.character), 
-#          month_yr = format_ISO8601(spell_start, precision = "ym")) |>
-#   filter(if_any(matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), ~ . %in% icd10_codes$code)) |>
-#   pivot_longer(matches("(primary|secondary)_diagnosis_[0-9_]*icd"), 
-#                names_to="diag_pos", 
-#                values_to="diagnosis", 
-#                values_drop_na=TRUE) |>
-#   left_join(icd10_codes, by=c("diagnosis"="code")) |>
-#   filter(!is.na(group))
-
-# look at ?Takotsubo specifically
-# cohort <- msrv$sus$apc_spells_diagnosis |>
-#   filter(spell_start >= start & spell_end <= end) %>%
-#   icdb::run() |>
-#   mutate(across(matches("nhs_number|primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), as.character),
-#          month_yr = format_ISO8601(spell_start, precision = "ym")) |>
-#   filter(if_any(matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), ~ . %in% icd10_codes$code)) |>
-#   pivot_longer(matches("secondary_diagnosis_[0-9_]*icd"),
-#                names_to="diag_pos",
-#                values_to="diagnosis",
-#                values_drop_na=TRUE) |>
-#   left_join(icd10_codes, by=c("diagnosis"="code")) |>
-#   filter(!is.na(group))
-# primary_icd_with_I518_secondary = cohort |> filter(diagnosis=="I518") |> group_by(primary_diagnosis_icd) |> summarise(n=n()) |> arrange(desc(n)) |> left_join(icd10_codes, by=c("primary_diagnosis_icd"="code"))
-# write.csv(primary_icd_with_I518_secondary, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "primary_icd_code_counts_when_I518_is_a_secondary_code_jul16_jul23.csv"), row.names=FALSE)
-
-
-# define only if in primary position
-cohort <- msrv$sus$apc_spells_diagnosis |>
+if(diagnosis_flag == "primary") {
+  
+  cohort <- msrv$sus$apc_spells_diagnosis |>
   filter(spell_start >= start & spell_end <= end) %>%
   icdb::run() |>
   mutate(across(matches("nhs_number|primary_diagnosis_icd"), as.character),
@@ -96,20 +67,61 @@ cohort <- msrv$sus$apc_spells_diagnosis |>
                values_drop_na=TRUE) |>
   left_join(icd10_codes, by=c("diagnosis"="code")) |>
   filter(!is.na(group))
+  
+}
+
+if( diagnosis_flag == "primary_and_secondary" ) {
+  #define any diagnosis code, regardless of position
+  cohort <- msrv$sus$apc_spells_diagnosis |>
+    filter(spell_start >= start & spell_end <= end) %>%
+    icdb::run() |>
+    mutate(across(matches("nhs_number|primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), as.character),
+           month_yr = format_ISO8601(spell_start, precision = "ym")) |>
+    filter(if_any(matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), ~ . %in% icd10_codes$code)) |>
+    pivot_longer(matches("(primary|secondary)_diagnosis_[0-9_]*icd"),
+                 names_to="diag_pos",
+                 values_to="diagnosis",
+                 values_drop_na=TRUE) |>
+    left_join(icd10_codes, by=c("diagnosis"="code")) |>
+    filter(!is.na(group))
+}
 
 
+# look at ?Takotsubo specifically
+cohort2 <- msrv$sus$apc_spells_diagnosis |>
+  filter(spell_start >= start & spell_end <= end) %>%
+  icdb::run() |>
+  mutate(across(matches("nhs_number|primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), as.character),
+         month_yr = format_ISO8601(spell_start, precision = "ym")) |>
+  filter(if_any(matches("primary_diagnosis_icd|secondary_diagnosis_[0-9]+_icd"), ~ . %in% icd10_codes$code)) |>
+  pivot_longer(matches("secondary_diagnosis_[0-9_]*icd"),
+               names_to="diag_pos",
+               values_to="diagnosis",
+               values_drop_na=TRUE) |>
+  left_join(icd10_codes, by=c("diagnosis"="code")) |>
+  filter(!is.na(group))
+primary_icd_with_I418_secondary = cohort2 |> filter(diagnosis=="I418") |> group_by(primary_diagnosis_icd) |> summarise(n=n()) |> arrange(desc(n)) |> left_join(icd10_codes, by=c("primary_diagnosis_icd"="code"))
+write.csv(primary_icd_with_I418_secondary, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "primary_icd_code_counts_when_I418_is_a_secondary_code_jul16_jul23.csv"), row.names=FALSE)
+
+
+
+
+
+write.csv(icd10_codes, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "icd_10_codes.csv"), row.names=FALSE)
 
 by.icd10 <- cohort |> 
   group_by(diagnosis, month_yr) |>
   summarise(n = length(unique(nhs_number)))
-write.csv(by.icd10, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "counts_by_icd10.csv"), row.names=FALSE)
+write.csv(by.icd10, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0("counts_by_icd10_", diagnosis_flag, ".csv")), row.names=FALSE)
 
 total_icd10_codes <- by.icd10 |> 
   group_by(diagnosis) |> 
   summarise(count=sum(n, na.rm = T)) |> 
   left_join(icd10_codes, by=c("diagnosis"="code"))
-write.csv(total_icd10_codes, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "counts_total_icd10_jul16_jul23.csv"), row.names=FALSE)
+write.csv(total_icd10_codes, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0(diagnosis_flag, "_counts_total_icd10_jul16_jul23", ".csv")), row.names=FALSE)
 
+f = paste0(system.file("extdata/figures/for_KL/", package="acsprojectns"), "/", diagnosis_flag, "_counts_by_icd",  ".pdf")
+pdf(file = f, width = 40, height = 20)
 ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=diagnosis)) +
   geom_bar(stat="count", colour="black") +
   theme_minimal() +
@@ -119,21 +131,22 @@ ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=diagnosis)) +
   xlab("Date") +
   scale_x_date(date_labels="%b %Y") + 
   facet_wrap(~diagnosis, scales = "free")
-
+dev.off()
 
 
 
 by.fine_group <- cohort |> 
   group_by(description_simple, month_yr) |>
   summarise(n = length(unique(nhs_number)))
-write.csv(by.fine_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "counts_by_fine_group.csv"), row.names=FALSE)
+write.csv(by.fine_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0(diagnosis_flag,"_counts_by_fine_group",  ".csv")), row.names=FALSE)
 
 total_fine_group <- by.fine_group |> 
   group_by(description_simple) |> 
   summarise(count=sum(n, na.rm = T))
-write.csv(total_fine_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "counts_total_fine_group_jul16_jul23.csv"),row.names=FALSE)
+write.csv(total_fine_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0(diagnosis_flag,"_counts_total_fine_group_jul16_jul23",  ".csv")),row.names=FALSE)
 
-
+f = paste0(system.file("extdata/figures/for_KL/", package="acsprojectns"), "/", diagnosis_flag, "_counts_by_fine_group", ".pdf")
+pdf(file = f, width = 20, height = 14)
 ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=description_simple)) +
   geom_bar(stat="count", colour="black") +
   theme_minimal() +
@@ -143,7 +156,7 @@ ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=description_simple)) +
   xlab("Date") +
   scale_x_date(date_labels="%b %Y", date_breaks = "1 year") + 
   facet_wrap(~description_simple, scales = "free")
- 
+dev.off()
 
 
 
@@ -151,13 +164,15 @@ ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=description_simple)) +
 by.broad_group <- cohort |> 
   group_by(group, month_yr) |>
   summarise(n = length(unique(nhs_number)))
-write.csv(by.broad_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "counts_by_broad_group.csv"), row.names=FALSE)
+write.csv(by.broad_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0( diagnosis_flag,"_counts_by_broad_group", ".csv")), row.names=FALSE)
 
 total_broad_group <- by.broad_group |> 
   group_by(group) |> 
   summarise(count=sum(n, na.rm = T))
-write.csv(total_broad_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", "counts_total_broad_group_jul16_jul23.csv"),row.names=FALSE)
+write.csv(total_broad_group, paste0(system.file("extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0(diagnosis_flag, "_counts_total_broad_group_jul16_jul23", ".csv")),row.names=FALSE)
 
+f = paste0(system.file("extdata/figures/for_KL/", package="acsprojectns"), "/", diagnosis_flag, "_counts_by_broad_group", ".pdf")
+pdf(file = f, width = 20, height = 14)
 ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=group)) +
   geom_bar(stat="count", colour="black") +
   theme_minimal() +
@@ -167,7 +182,7 @@ ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=group)) +
   xlab("Date") +
   scale_x_date(date_labels="%b %Y", date_breaks = "1 year") + 
   facet_wrap(~group, scales = "free")
-
+dev.off()
 
 
 
