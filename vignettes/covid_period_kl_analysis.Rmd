@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 library(acsprojectns)
 library(devtools)
 library(dplyr)
+library(data.table)
 library(tidyr)
 library(purrr)
 library(lubridate)
@@ -27,6 +28,8 @@ library(survminer)
 library(wesanderson)
 library(viridis)
 library(icdb)
+library(ggplot2)
+library(lubridate)
 
 load_all()
 icdb::use_cache(TRUE)
@@ -185,5 +188,114 @@ ggplot(cohort, aes(x=lubridate::ym(month_yr), fill=group)) +
 dev.off()
 
 
+
+```
+
+```{r analysis}
+diagnosis_flag <- "primary_and_secondary" #"primary" #
+
+if(!exists("by.icd10")) 
+  by.icd10 <- read.csv(paste0(system.file("inst", "extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0("counts_by_icd10_", diagnosis_flag, ".csv"))) 
+
+icd_rollmean <- by.icd10 |>
+  complete(diagnosis, month_yr) |>
+  group_by(diagnosis) |>
+  mutate(n = replace_na(n, 0), 
+         csum = cumsum(n)) |>
+  filter(diagnosis %in% c("U071", "I428"))
+
+icd_rollmean |>
+  ggplot(aes(x=ym(month_yr), fill=diagnosis)) +
+  geom_density(adjust=0.1) +
+  facet_wrap(~diagnosis, scales = "free") +
+  theme_minimal() +
+  scale_fill_viridis_d(begin=0, end=0.8) +
+  labs(title = "Cardiac presentations across COVID-19 era", subtitle = "July 2016 - July 2023", fill = "" ) +
+  ylab("Count (moving average)") +
+  xlab("Date") +
+  scale_x_date(date_labels="%b %Y")
+ 
+
+f = paste0(system.file("inst/extdata/figures/for_KL/", package="acsprojectns"), "/", diagnosis_flag, "_counts_takotsuboI428_covid",  ".pdf")
+pdf(file = f, width = 14, height = 10)
+icd_rollmean |>
+  ggplot(aes(x=ym(month_yr), y=n, fill=diagnosis)) +
+   geom_col() +
+   # geom_smooth(color = "black", span = 0.5, se =  F, 
+   #             linetype = 1, position = position_dodge2(width = 0.6)) + 
+  facet_wrap(~diagnosis, ncol=1, scales = "free") +
+  theme_minimal() +
+  scale_fill_manual(values=wes_palette(n = 2, "GrandBudapest1")) +
+  #scale_fill_viridis_d(begin=0.1, end=0.95) +
+  labs(title = "Cardiac presentations across COVID-19 era", subtitle = "July 2016 - July 2023", fill = "" ) +
+  ylab("Counts (per month)") +
+  xlab("Date") +
+  scale_x_date(date_labels="%b %Y")
+dev.off()
+
+f = paste0(system.file("inst/extdata/figures/for_KL/", package="acsprojectns"), "/", diagnosis_flag, "_cumsum_takotsuboI428_covid",  ".pdf")
+pdf(file = f, width = 14, height = 10)
+icd_rollmean |>
+  ggplot(aes(x=ym(month_yr), y=csum, fill=diagnosis)) +
+   geom_col() +
+   geom_smooth(color = "black", span = 0.5, se =  F, 
+               linetype = 1, position = position_dodge2(width = 0.6)) + 
+  facet_wrap(~diagnosis, ncol=1, scales = "free") +
+  theme_minimal() +
+  scale_fill_manual(values=wes_palette(n = 2, "GrandBudapest1")) +
+  #scale_fill_viridis_d(begin=0.1, end=0.95) +
+  labs(title = "Cardiac presentations across COVID-19 era", subtitle = "July 2016 - July 2023", fill = "" ) +
+  ylab("Cumulative sum") +
+  xlab("Date") +
+  scale_x_date(date_labels="%b %Y")
+dev.off()
+
+  
+if(!exists("by.fine_group")) 
+  by.fine_group <- read.csv(paste0(system.file("inst", "extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0(diagnosis_flag,"_counts_by_fine_group",  ".csv")))
+
+
+
+
+
+if(!exists("by.broad_group")) 
+  by.broad_group <- read.csv(paste0(system.file("inst", "extdata", "figures", "for_KL", package="acsprojectns"), "/", paste0( diagnosis_flag,"_counts_by_broad_group", ".csv")))
+  
+broad_rollmean <- by.broad_group |>
+  complete(group, month_yr) |>
+  group_by(group) |>
+  mutate(n = replace_na(n, 0), 
+         csum = cumsum(n)) |>
+  filter(group %in% c("myocarditis", "pericarditis", "covid"))
+
+
+broad_rollmean |>
+  ggplot(aes(x=ym(month_yr), y=n, fill=group)) +
+   geom_col() +
+   # geom_smooth(color = "black", span = 0.1, se =T, 
+   #             linetype = 1, position = position_dodge2(width = 0.6)) + 
+  facet_wrap(~group, ncol=1, scales = "free") +
+  theme_minimal() +
+  scale_fill_manual(values=wes_palette(n = 3, "GrandBudapest1")) +
+  #scale_fill_viridis_d(begin=0.1, end=0.95) +
+  labs(title = "Cardiac presentations across COVID-19 era", subtitle = "July 2016 - July 2023", fill = "" ) +
+  ylab("Counts (per month)") +
+  xlab("Date") +
+  scale_x_date(date_labels="%b %Y")
+
+
+broad_rollmean |>
+  ggplot(aes(x=ym(month_yr), y=csum, fill=group)) +
+   geom_col() +
+   # geom_smooth(color = "black", span = 0.1, se =  F, 
+   #             linetype = 1, position = position_dodge2(width = 0.6)) + 
+  facet_wrap(~group, ncol=1, scales = "free") +
+  theme_minimal() +
+  scale_fill_manual(values=wes_palette(n = 3, "GrandBudapest1")) +
+  #scale_fill_viridis_d(begin=0.1, end=0.95) +
+  labs(title = "Cardiac presentations across COVID-19 era", subtitle = "July 2016 - July 2023", fill = "" ) +
+  ylab("Cumulative sum") +
+  xlab("Date") +
+  scale_x_date(date_labels="%b %Y")
 
 ```
